@@ -1,0 +1,13 @@
+{
+  "name": "disclosure-daily-engine",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node disclosure-daily-engine.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "@supabase/supabase-js": "^2.49.0",
+    "dotenv": "^16.5.0"
+  }
+}
