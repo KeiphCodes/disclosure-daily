@@ -160,6 +160,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .panel-close:hover{color:var(--glow);border-color:var(--glow)}
 .panel-bc{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
 .panel-body{padding:1.5rem}
+.p-image{width:100%;max-height:320px;object-fit:cover;display:block;margin-bottom:0.5rem;border:1px solid var(--border)}
+.p-image-caption{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);margin-bottom:1.25rem;line-height:1.4;padding:0.4rem 0.5rem;border-left:2px solid var(--border)}
+
 .p-cat{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--glow);margin-bottom:0.5rem}
 .p-hl{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:0.95;color:var(--white);margin-bottom:0.65rem}
 .p-deck{font-size:0.88rem;color:var(--mid);font-style:italic;line-height:1.6;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
@@ -680,6 +683,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     var bc = document.getElementById('panel-bc');
     if (bc) bc.textContent = 'UFO Finders / ' + cap(a.category || 'News');
 
+    var imageHtml = '';
+    if (a.image_url) {
+      imageHtml =
+        '<img class="p-image" src="'+esc(a.image_url)+'" alt="'+esc(a.headline)+'" '+
+          'onerror="this.style.display=\'none\';var cap=document.getElementById(\'p-img-cap\');if(cap)cap.style.display=\'none\'">'+
+        (a.image_caption ? '<div class="p-image-caption" id="p-img-cap">'+esc(a.image_caption)+'</div>' : '');
+    }
+
     var facts = '';
     if (a.key_facts && a.key_facts.length) {
       facts = '<div class="p-facts"><h4>Key Facts</h4><ul>';
@@ -697,6 +708,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
         '<span>'+timeAgo(a.published_at)+'</span>'+
         (a.word_count ? '<span>'+a.word_count+' words</span>' : '')+
       '</div>'+
+      imageHtml+
       '<div class="p-body">'+buildBody(a.body)+'</div>'+
       facts+
       '<div class="comments">'+
