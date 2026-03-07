@@ -6,487 +6,616 @@
 <title>UFO Finders — Daily News, Sightings & Community</title>
 <meta name="description" content="The #1 source for UFO & UAP news, daily sightings, eyewitness reports and government disclosures.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#030508;--deep:#060c14;--surface:#0a1520;--card:#0d1c2e;--border:#112236;--glow:#00ff88;--glow2:#00aaff;--amber:#ffaa00;--red:#ff3344;--white:#e0f0ff;--mid:#6a9ab8;--dim:#2a4a60}
-*{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+*{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
-body::after{content:'';position:fixed;top:0;left:0;right:0;bottom:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,255,136,0.012) 3px,rgba(0,255,136,0.012) 4px);pointer-events:none;z-index:9998}
-nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 1.25rem;gap:1rem}
-.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.5rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--glow),var(--glow2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;flex-shrink:0}
-.nav-links{display:flex;gap:1.25rem;list-style:none;flex:1;overflow:hidden}
-.nav-links a{font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.2s;white-space:nowrap}
+nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem}
+.nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em;color:var(--glow);white-space:nowrap;flex-shrink:0}
+.nav-links{display:flex;gap:1rem;list-style:none;flex:1}
+.nav-links a{font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.2s}
 .nav-links a:hover{color:var(--glow)}
-.nav-sub{font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--glow);color:var(--bg);padding:0.4rem 1rem;border:none;cursor:pointer;font-weight:700;flex-shrink:0;transition:background 0.2s}
-.nav-sub:hover{background:#33ffaa}
-.ticker{background:var(--glow);height:26px;display:flex;align-items:center;overflow:hidden;position:relative;z-index:10}
-.ticker-label{font-family:'Share Tech Mono',monospace;font-size:0.52rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;padding:0 0.875rem;white-space:nowrap;background:var(--bg);color:var(--glow);height:100%;display:flex;align-items:center;flex-shrink:0}
-.ticker-track{display:flex;animation:tick 90s linear infinite;white-space:nowrap}
-.ticker-item{font-family:'Share Tech Mono',monospace;font-size:0.58rem;padding:0 2.5rem;color:var(--bg);font-weight:700}
+.nav-sub{font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--glow);color:var(--bg);padding:0.35rem 0.875rem;border:none;cursor:pointer;font-weight:700;flex-shrink:0}
+.ticker{background:var(--glow);height:24px;display:flex;align-items:center;overflow:hidden}
+.ticker-label{font-family:'Share Tech Mono',monospace;font-size:0.5rem;font-weight:700;letter-spacing:0.2em;padding:0 0.75rem;white-space:nowrap;background:var(--bg);color:var(--glow);height:100%;display:flex;align-items:center;flex-shrink:0}
+.ticker-inner{overflow:hidden;flex:1}
+.ticker-track{display:inline-flex;animation:tick 60s linear infinite;white-space:nowrap}
+.ticker-item{font-family:'Share Tech Mono',monospace;font-size:0.55rem;padding:0 2rem;color:var(--bg);font-weight:700}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
-.page{max-width:1300px;margin:0 auto;padding:2rem 1.25rem;position:relative;z-index:1}
-.hero-card{display:grid;grid-template-columns:1fr 300px;border:1px solid var(--border);margin-bottom:1.5rem;background:var(--surface);cursor:pointer;transition:border-color 0.25s;overflow:hidden}
-.hero-card:hover{border-color:var(--glow)}
-.hero-main{padding:2rem}
-.hero-tag{font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--glow);margin-bottom:0.6rem;display:flex;align-items:center;gap:0.4rem}
-.hero-tag::before{content:'▶';font-size:0.45rem}
-.hero-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(2rem,4.5vw,3.5rem);line-height:0.95;letter-spacing:0.02em;color:var(--white);margin-bottom:1rem;transition:color 0.2s}
-.hero-card:hover .hero-hl{color:var(--glow)}
-.hero-deck{font-size:0.95rem;color:var(--mid);line-height:1.65;margin-bottom:1.25rem}
-.hero-footer{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-.hero-cat{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--bg);background:var(--amber);padding:0.2rem 0.6rem}
-.hero-meta{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim)}
-.read-btn{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid var(--glow);color:var(--glow);padding:0.4rem 1rem;background:none;cursor:pointer;transition:all 0.2s}
-.hero-card:hover .read-btn{background:var(--glow);color:var(--bg)}
-.hero-sidebar{border-left:1px solid var(--border);display:flex;flex-direction:column}
-.hs-label{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--dim);padding:0.875rem 1rem;border-bottom:1px solid var(--border)}
-.hs-item{padding:0.875rem 1rem;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.2s;flex:1;display:flex;flex-direction:column;justify-content:center}
-.hs-item:hover{background:var(--card)}
-.hs-item:hover .hs-title{color:var(--glow)}
-.hs-num{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim);margin-bottom:0.2rem}
-.hs-title{font-weight:600;font-size:0.82rem;line-height:1.3;color:var(--white);transition:color 0.2s;margin-bottom:0.2rem}
-.hs-cat{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--amber)}
-.sec-head{display:flex;align-items:center;gap:0.875rem;margin-bottom:1.25rem;margin-top:2rem}
-.sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--glow);white-space:nowrap}
+.page{max-width:1200px;margin:0 auto;padding:1.5rem 1rem}
+.hero{border:1px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:1.5rem;padding:1.5rem;transition:border-color 0.2s}
+.hero:hover{border-color:var(--glow)}
+.hero-label{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.25em;color:var(--glow);margin-bottom:0.5rem}
+.hero-hl{font-family:'Bebas Neue',sans-serif;font-size:clamp(1.8rem,5vw,3rem);line-height:0.95;color:var(--white);margin-bottom:0.75rem;transition:color 0.2s}
+.hero:hover .hero-hl{color:var(--glow)}
+.hero-deck{font-size:0.9rem;color:var(--mid);line-height:1.6;margin-bottom:1rem}
+.hero-foot{display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap}
+.tag{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.12em;text-transform:uppercase;background:var(--amber);color:var(--bg);padding:0.2rem 0.5rem}
+.meta{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
+.read-more{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;border:1px solid var(--glow);color:var(--glow);padding:0.35rem 0.875rem;background:none;cursor:pointer;transition:all 0.2s}
+.hero:hover .read-more{background:var(--glow);color:var(--bg)}
+.sec-head{display:flex;align-items:center;gap:0.75rem;margin:1.5rem 0 1rem}
+.sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.08em;color:var(--glow);white-space:nowrap}
 .sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
-.sec-count{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);white-space:nowrap}
-.cards-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
-.art-card{background:var(--bg);padding:1.25rem;cursor:pointer;transition:background 0.2s;display:flex;flex-direction:column;gap:0.5rem;position:relative;overflow:hidden}
-.art-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--glow),var(--glow2));transform:scaleX(0);transform-origin:left;transition:transform 0.3s}
-.art-card:hover{background:var(--surface)}
-.art-card:hover::after{transform:scaleX(1)}
-.ac-tag{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.18em;text-transform:uppercase;display:flex;align-items:center;gap:0.35rem}
-.ac-tag.breaking{color:var(--red)}
-.ac-tag.breaking::before{content:'';width:5px;height:5px;background:var(--red);border-radius:50%;animation:blink 1s infinite;flex-shrink:0}
-.ac-tag.normal{color:var(--amber)}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-.ac-hl{font-weight:700;font-size:0.95rem;line-height:1.25;color:var(--white);transition:color 0.2s}
-.art-card:hover .ac-hl{color:var(--glow)}
-.ac-deck{font-size:0.8rem;color:var(--mid);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;flex:1}
-.ac-footer{display:flex;align-items:center;justify-content:space-between;margin-top:auto;padding-top:0.5rem;border-top:1px solid var(--border)}
-.ac-meta{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
-.ac-read{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;color:var(--glow)}
-.arch-item{display:grid;grid-template-columns:90px 1fr 80px;gap:1rem;align-items:center;padding:0.75rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.2s}
-.arch-item:hover{background:var(--surface);padding-left:0.5rem}
-.arch-item:hover .arch-hl{color:var(--glow)}
-.arch-date{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
-.arch-hl{font-weight:600;font-size:0.875rem;color:var(--white);transition:color 0.2s;line-height:1.3}
-.arch-cat{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--amber);text-align:right;text-transform:uppercase;letter-spacing:0.1em}
-.topics-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:0.75rem}
-.topic{background:var(--card);border:1px solid var(--border);padding:1rem;text-align:center;cursor:pointer;transition:all 0.2s}
-.topic:hover{border-color:var(--glow);background:var(--surface)}
-.topic-icon{font-size:1.5rem;margin-bottom:0.4rem;display:block}
-.topic-name{font-family:'Bebas Neue',sans-serif;font-size:0.9rem;letter-spacing:0.08em;color:var(--white);margin-bottom:0.15rem}
-.topic-sub{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
-.submit-wrap{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--glow);padding:2rem;margin-top:2rem}
-.submit-grid{display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
-.submit-hl{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:0.95;letter-spacing:0.05em;color:var(--white);margin-bottom:0.75rem}
-.submit-hl span{color:var(--glow)}
-.submit-sub{font-size:0.875rem;color:var(--mid);line-height:1.65;margin-bottom:1.25rem}
-.type-btns{display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.25rem}
-.type-btn{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid var(--dim);color:var(--mid);padding:0.3rem 0.65rem;cursor:pointer;transition:all 0.2s;background:none}
-.type-btn.on,.type-btn:hover{border-color:var(--glow);color:var(--glow)}
-.s-form{display:flex;flex-direction:column;gap:0.65rem}
-.s-row{display:grid;grid-template-columns:1fr 1fr;gap:0.65rem}
-.s-in{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.875rem;font-family:'Barlow',sans-serif;font-size:0.82rem;outline:none;width:100%;transition:border-color 0.2s}
-.s-in:focus{border-color:var(--glow)}
-.s-ta{background:var(--card);border:1px solid var(--border);color:var(--white);padding:0.65rem 0.875rem;font-family:'Barlow',sans-serif;font-size:0.82rem;outline:none;width:100%;min-height:110px;resize:vertical;transition:border-color 0.2s}
-.s-ta:focus{border-color:var(--glow)}
-.upload-box{border:2px dashed var(--border);padding:1.25rem;text-align:center;cursor:pointer;transition:all 0.2s}
-.upload-box:hover{border-color:var(--glow);background:rgba(0,255,136,0.02)}
-.upload-box p{font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:var(--dim);margin-top:0.25rem}
-.sub-btn{background:var(--glow);color:var(--bg);border:none;padding:0.875rem;width:100%;font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.18em;font-weight:700;cursor:pointer;transition:background 0.2s}
-.sub-btn:hover{background:#33ffaa}
-.guide{background:var(--card);border:1px solid var(--border);padding:1.25rem}
-.guide-title{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--glow);margin-bottom:0.875rem;padding-bottom:0.4rem;border-bottom:1px solid var(--border)}
-.guide-list{display:flex;flex-direction:column;gap:0.55rem}
-.g-row{display:flex;gap:0.65rem;font-size:0.78rem;color:var(--mid);line-height:1.5}
-.g-n{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--glow);flex-shrink:0;margin-top:0.15rem}
-.nl-bar{background:var(--deep);border-top:1px solid var(--border);padding:1.75rem 1.25rem;text-align:center}
-.nl-inner{max-width:500px;margin:0 auto}
-.nl-label{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--glow);margin-bottom:0.35rem}
-.nl-hl{font-family:'Bebas Neue',sans-serif;font-size:1.75rem;letter-spacing:0.05em;color:var(--white);margin-bottom:0.35rem}
-.nl-sub{font-size:0.8rem;color:var(--mid);margin-bottom:1rem}
-.nl-form{display:flex;max-width:400px;margin:0 auto}
-.nl-in{flex:1;background:var(--surface);border:1px solid var(--border);border-right:none;color:var(--white);padding:0.65rem 0.875rem;font-family:'Share Tech Mono',monospace;font-size:0.6rem;outline:none}
+.sec-ct{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);white-space:nowrap}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);margin-bottom:1px}
+.card{background:var(--bg);padding:1.1rem;cursor:pointer;transition:background 0.2s;display:flex;flex-direction:column;gap:0.4rem}
+.card:hover{background:var(--surface)}
+.card:hover .card-hl{color:var(--glow)}
+.card-cat{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber)}
+.card-hl{font-weight:700;font-size:0.9rem;line-height:1.2;color:var(--white);transition:color 0.2s}
+.card-deck{font-size:0.78rem;color:var(--mid);line-height:1.45;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;flex:1}
+.card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:0.35rem;padding-top:0.4rem;border-top:1px solid var(--border)}
+.card-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+.card-read{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--glow)}
+.arch-row{display:grid;grid-template-columns:80px 1fr 70px;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.2s}
+.arch-row:hover{padding-left:0.4rem}
+.arch-row:hover .arch-hl{color:var(--glow)}
+.arch-date{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
+.arch-hl{font-weight:600;font-size:0.82rem;color:var(--white);line-height:1.3;transition:color 0.2s}
+.arch-cat{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--amber);text-align:right;text-transform:uppercase}
+.topics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem}
+.topic{background:var(--card);border:1px solid var(--border);padding:0.875rem;text-align:center;cursor:pointer;transition:all 0.2s}
+.topic:hover{border-color:var(--glow)}
+.topic-icon{font-size:1.25rem;display:block;margin-bottom:0.3rem}
+.topic-name{font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.1rem}
+.topic-sub{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim)}
+
+/* CONTACT SECTION */
+.contact-section{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--glow);padding:2rem;margin-top:1.5rem;text-align:center}
+.contact-hl{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:0.95;color:var(--white);margin-bottom:0.5rem}
+.contact-hl span{color:var(--glow)}
+.contact-sub{font-size:0.88rem;color:var(--mid);line-height:1.65;max-width:520px;margin:0 auto 1.5rem}
+.contact-email-box{display:inline-flex;align-items:center;gap:0;margin-bottom:1rem;border:1px solid var(--border);overflow:hidden}
+.contact-email-addr{font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--glow);padding:0.75rem 1.25rem;background:var(--card);letter-spacing:0.05em}
+.copy-btn{font-family:'Share Tech Mono',monospace;font-size:0.6rem;letter-spacing:0.12em;font-weight:700;text-transform:uppercase;background:var(--glow);color:var(--bg);border:none;padding:0.75rem 1.25rem;cursor:pointer;transition:background 0.2s;white-space:nowrap}
+.copy-btn:hover{background:#33ffaa}
+.contact-types{display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.ctype{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.12em;text-transform:uppercase;border:1px solid var(--dim);color:var(--mid);padding:0.35rem 0.75rem;background:none}
+.contact-guide{display:grid;grid-template-columns:repeat(3,1fr);gap:0.75rem;max-width:700px;margin:0 auto;text-align:left}
+.cg-item{background:var(--card);border:1px solid var(--border);padding:0.875rem}
+.cg-num{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--glow);margin-bottom:0.25rem}
+.cg-text{font-size:0.78rem;color:var(--mid);line-height:1.5}
+
+/* SUPPORT / BUY ME A COFFEE */
+.support-bar{background:var(--deep);border-top:1px solid var(--border);padding:1.5rem 1rem;text-align:center}
+.support-inner{max-width:480px;margin:0 auto}
+.support-label{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--amber);margin-bottom:0.35rem}
+.support-hl{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.05em;color:var(--white);margin-bottom:0.35rem}
+.support-sub{font-size:0.78rem;color:var(--mid);margin-bottom:1rem;line-height:1.55}
+.bmc-btn{display:inline-flex;align-items:center;gap:0.6rem;background:#ffdd00;color:#000;border:none;padding:0.75rem 1.5rem;font-family:'Share Tech Mono',monospace;font-size:0.65rem;letter-spacing:0.1em;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.bmc-btn:hover{background:#ffe833;transform:translateY(-1px)}
+.bmc-icon{font-size:1.1rem}
+
+/* NL */
+.nl-bar{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 1rem;text-align:center}
+.nl-inner{max-width:440px;margin:0 auto}
+.nl-label{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--glow);margin-bottom:0.3rem}
+.nl-hl{font-family:'Bebas Neue',sans-serif;font-size:1.6rem;letter-spacing:0.05em;color:var(--white);margin-bottom:0.3rem}
+.nl-sub{font-size:0.78rem;color:var(--mid);margin-bottom:0.875rem}
+.nl-form{display:flex;max-width:360px;margin:0 auto}
+.nl-in{flex:1;background:var(--surface);border:1px solid var(--border);border-right:none;color:var(--white);padding:0.6rem 0.75rem;font-family:'Share Tech Mono',monospace;font-size:0.6rem;outline:none}
 .nl-in:focus{border-color:var(--glow)}
-.nl-btn{background:var(--glow);color:var(--bg);border:none;padding:0.65rem 1rem;font-family:'Share Tech Mono',monospace;font-size:0.58rem;letter-spacing:0.1em;font-weight:700;cursor:pointer;white-space:nowrap;transition:background 0.2s}
+.nl-btn{background:var(--glow);color:var(--bg);border:none;padding:0.6rem 0.875rem;font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;font-weight:700;cursor:pointer;white-space:nowrap}
 .nl-btn:hover{background:#33ffaa}
-footer{border-top:1px solid var(--border);padding:2rem 1.25rem 1.25rem;position:relative;z-index:1}
-.ft-inner{max-width:1300px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:2rem}
-.ft-brand{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em;background:linear-gradient(135deg,var(--glow),var(--glow2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:0.4rem}
-.ft-tag{font-size:0.78rem;color:var(--dim);line-height:1.6;max-width:220px}
-.ft-col-title{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--dim);margin-bottom:0.65rem;padding-bottom:0.35rem;border-bottom:1px solid var(--border)}
-.ft-links{list-style:none;display:flex;flex-direction:column;gap:0.45rem}
-.ft-links a{font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--mid);text-decoration:none;transition:color 0.2s}
+
+/* FOOTER */
+footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:var(--deep)}
+.ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:1.5rem}
+.ft-brand{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--glow);margin-bottom:0.35rem}
+.ft-tag{font-size:0.72rem;color:var(--dim);line-height:1.5;max-width:200px}
+.ft-col-title{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--dim);margin-bottom:0.55rem;padding-bottom:0.3rem;border-bottom:1px solid var(--border)}
+.ft-links{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
+.ft-links a{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--mid);text-decoration:none;transition:color 0.2s}
 .ft-links a:hover{color:var(--glow)}
-.ft-bottom{max-width:1300px;margin:1.25rem auto 0;padding-top:0.875rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
-.loading{display:flex;align-items:center;justify-content:center;min-height:220px;flex-direction:column;gap:0.875rem}
-.spinner{width:32px;height:32px;border:2px solid var(--border);border-top-color:var(--glow);border-radius:50%;animation:spin 1s linear infinite}
+.ft-bottom{max-width:1200px;margin:1rem auto 0;padding-top:0.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;min-height:180px;flex-direction:column;gap:0.75rem}
+.spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--glow);border-radius:50%;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.load-txt{font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--dim)}
-.empty-msg{padding:2.5rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--dim);letter-spacing:0.1em;border:1px solid var(--border)}
-.panel-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(3,5,8,0.75);z-index:800}
-.panel-overlay.open{display:block}
-.panel{position:fixed;top:0;right:0;bottom:0;width:min(680px,100vw);background:var(--deep);border-left:1px solid var(--border);overflow-y:auto;z-index:900;transform:translateX(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1)}
-.panel.open{transform:translateX(0)}
-.panel-head{position:sticky;top:0;background:rgba(6,12,20,0.97);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0.875rem 1.25rem;display:flex;align-items:center;gap:0.875rem;z-index:10}
-.panel-close{background:none;border:1px solid var(--border);color:var(--mid);font-family:'Share Tech Mono',monospace;font-size:0.52rem;cursor:pointer;padding:0.3rem 0.65rem;letter-spacing:0.1em;transition:all 0.2s;flex-shrink:0}
+.load-txt{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
+.empty{padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);border:1px solid var(--border)}
+
+/* PANEL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(3,5,8,0.8);z-index:800}
+.overlay.on{display:block}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(660px,100vw);background:var(--deep);border-left:1px solid var(--border);overflow-y:auto;z-index:900;transform:translateX(100%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)}
+.panel.on{transform:translateX(0)}
+.panel-nav{position:sticky;top:0;background:rgba(6,12,20,0.97);border-bottom:1px solid var(--border);padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;z-index:10}
+.panel-close{background:none;border:1px solid var(--border);color:var(--mid);font-family:'Share Tech Mono',monospace;font-size:0.52rem;cursor:pointer;padding:0.25rem 0.6rem;transition:all 0.2s}
 .panel-close:hover{color:var(--glow);border-color:var(--glow)}
-.panel-breadcrumb{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);letter-spacing:0.1em}
-.panel-body{padding:1.75rem 1.5rem}
-.p-tag{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.25em;text-transform:uppercase;color:var(--glow);margin-bottom:0.6rem}
-.p-hl{font-family:'Bebas Neue',sans-serif;font-size:2rem;line-height:0.95;letter-spacing:0.02em;color:var(--white);margin-bottom:0.75rem}
-.p-deck{font-size:0.92rem;color:var(--mid);font-style:italic;line-height:1.65;margin-bottom:1.25rem;padding-bottom:1.25rem;border-bottom:1px solid var(--border)}
-.p-meta{display:flex;gap:1rem;margin-bottom:1.5rem;flex-wrap:wrap}
-.p-meta span{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
-.p-meta .p-cat{color:var(--amber)}
-.p-content{font-size:0.88rem;color:var(--white);line-height:1.9}
-.p-content p{margin-bottom:1.1rem}
-.p-keyfacts{margin:1.5rem 0;padding:1.1rem;background:var(--surface);border-left:2px solid var(--glow)}
-.p-keyfacts h4{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--glow);margin-bottom:0.65rem}
-.p-keyfacts ul{list-style:none;display:flex;flex-direction:column;gap:0.4rem}
-.p-keyfacts li{font-size:0.78rem;color:var(--mid);padding-left:0.875rem;position:relative;line-height:1.5}
-.p-keyfacts li::before{content:'▶';position:absolute;left:0;color:var(--glow);font-size:0.42rem;top:0.3rem}
-.comments{margin-top:2rem;padding-top:1.75rem;border-top:1px solid var(--border)}
-.comments-hl{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--white);margin-bottom:1rem}
-.c-form{margin-bottom:1.25rem;display:flex;flex-direction:column;gap:0.6rem}
-.c-row{display:grid;grid-template-columns:1fr 1fr;gap:0.6rem}
-.c-in{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.75rem;font-family:'Barlow',sans-serif;font-size:0.82rem;outline:none;width:100%;transition:border-color 0.2s}
+.panel-bc{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
+.panel-body{padding:1.5rem}
+.p-cat{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--glow);margin-bottom:0.5rem}
+.p-hl{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:0.95;color:var(--white);margin-bottom:0.65rem}
+.p-deck{font-size:0.88rem;color:var(--mid);font-style:italic;line-height:1.6;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.p-meta{display:flex;gap:0.875rem;margin-bottom:1.25rem;flex-wrap:wrap}
+.p-meta span{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
+.p-meta .p-ct{color:var(--amber)}
+.p-body{font-size:0.86rem;color:var(--white);line-height:1.85}
+.p-body p{margin-bottom:1rem}
+.p-facts{margin:1.25rem 0;padding:1rem;background:var(--surface);border-left:2px solid var(--glow)}
+.p-facts h4{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--glow);margin-bottom:0.55rem}
+.p-facts ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem}
+.p-facts li{font-size:0.76rem;color:var(--mid);padding-left:0.75rem;position:relative;line-height:1.45}
+.p-facts li::before{content:'>';position:absolute;left:0;color:var(--glow)}
+.comments{margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border)}
+.c-hl{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.875rem}
+.c-form{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem}
+.c-row{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem}
+.c-in{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.8rem;outline:none;width:100%}
 .c-in:focus{border-color:var(--glow)}
-.c-ta{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:0.6rem 0.75rem;font-family:'Barlow',sans-serif;font-size:0.82rem;outline:none;width:100%;min-height:75px;resize:vertical;transition:border-color 0.2s}
+.c-ta{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.8rem;outline:none;width:100%;min-height:70px;resize:vertical}
 .c-ta:focus{border-color:var(--glow)}
-.c-post{background:var(--glow);color:var(--bg);border:none;padding:0.6rem 1.25rem;font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.15em;font-weight:700;cursor:pointer;align-self:flex-start;transition:background 0.2s}
-.c-post:hover{background:#33ffaa}
-.c-list{display:flex;flex-direction:column;gap:0.75rem}
-.comment{background:var(--surface);border:1px solid var(--border);padding:0.875rem}
-.c-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.4rem}
-.c-author{font-family:'Share Tech Mono',monospace;font-size:0.52rem;letter-spacing:0.1em;color:var(--glow)}
-.c-time{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
-.c-text{font-size:0.82rem;color:var(--mid);line-height:1.55}
-.c-actions{display:flex;gap:0.875rem;margin-top:0.4rem}
-.c-vote{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);background:none;border:none;cursor:pointer;transition:color 0.2s;padding:0;letter-spacing:0.05em}
+.c-btn{background:var(--glow);color:var(--bg);border:none;padding:0.55rem 1.1rem;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.12em;font-weight:700;cursor:pointer;align-self:flex-start}
+.c-list{display:flex;flex-direction:column;gap:0.6rem}
+.comment{background:var(--surface);border:1px solid var(--border);padding:0.75rem}
+.c-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem}
+.c-author{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.08em;color:var(--glow)}
+.c-time{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+.c-text{font-size:0.8rem;color:var(--mid);line-height:1.5}
+.c-acts{display:flex;gap:0.75rem;margin-top:0.35rem}
+.c-vote{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim);background:none;border:none;cursor:pointer;padding:0}
 .c-vote:hover{color:var(--glow)}
-.no-c{font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--dim);letter-spacing:0.1em;text-align:center;padding:1.25rem;border:1px solid var(--border)}
-@media(max-width:900px){.hero-card{grid-template-columns:1fr}.hero-sidebar{border-left:none;border-top:1px solid var(--border)}.cards-grid{grid-template-columns:1fr 1fr}.topics-grid{grid-template-columns:repeat(2,1fr)}.submit-grid{grid-template-columns:1fr}.ft-inner{grid-template-columns:1fr 1fr}.nav-links{display:none}.c-row{grid-template-columns:1fr}.s-row{grid-template-columns:1fr}.arch-item{grid-template-columns:70px 1fr}.arch-cat{display:none}}
-@media(max-width:500px){.cards-grid{grid-template-columns:1fr}.panel-body{padding:1.25rem 1rem}.p-hl{font-size:1.6rem}}
+.no-c{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);text-align:center;padding:1rem;border:1px solid var(--border)}
+
+@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.topics{grid-template-columns:repeat(2,1fr)}.ft-inner{grid-template-columns:1fr 1fr}.nav-links{display:none}.c-row{grid-template-columns:1fr}.arch-row{grid-template-columns:68px 1fr}.arch-cat{display:none}.contact-guide{grid-template-columns:1fr}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.panel-body{padding:1rem}.p-hl{font-size:1.55rem}.contact-email-box{flex-direction:column;width:100%}.contact-email-addr{text-align:center}.copy-btn{width:100%}}
 </style>
 </head>
 <body>
+
 <nav>
-  <div class="nav-logo">UFO&#9679;FINDERS</div>
+  <div class="nav-logo">UFO FINDERS</div>
   <ul class="nav-links">
     <li><a href="#news">News</a></li>
     <li><a href="#topics">Topics</a></li>
     <li><a href="#archive">Archive</a></li>
-    <li><a href="#submit">Submit</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ul>
-  <button class="nav-sub" onclick="openSubPanel()">Join Free</button>
+  <button class="nav-sub" id="nl-open-btn">Join Free</button>
 </nav>
+
 <div class="ticker">
-  <div class="ticker-label">&#11044; LIVE</div>
-  <div class="ticker-track" id="ticker-track">
-    <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
-    <span class="ticker-item">&#9679;</span>
-    <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
+  <div class="ticker-label">LIVE</div>
+  <div class="ticker-inner">
+    <div class="ticker-track" id="ticker-track">
+      <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
+      <span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span>
+      <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
+    </div>
   </div>
 </div>
+
 <div class="page">
-  <div class="hero-card" id="hero-card">
-    <div class="hero-main">
-      <div class="hero-tag">Top Story Today</div>
-      <div class="hero-hl" id="hero-hl"><div class="loading"><div class="spinner"></div><div class="load-txt">Loading today's top story...</div></div></div>
-      <div class="hero-deck" id="hero-deck"></div>
-      <div class="hero-footer">
-        <div class="hero-cat" id="hero-cat"></div>
-        <div class="hero-meta" id="hero-meta"></div>
-        <button class="read-btn" id="hero-read-btn">Read Full Story &#8594;</button>
+
+  <!-- HERO -->
+  <div class="hero" id="hero-wrap">
+    <div class="hero-label">TOP STORY TODAY</div>
+    <div id="hero-content">
+      <div class="loading"><div class="spinner"></div><div class="load-txt">Loading...</div></div>
+    </div>
+  </div>
+
+  <!-- TODAY'S STORIES -->
+  <div id="news">
+    <div class="sec-head">
+      <div class="sec-title">Today's Stories</div>
+      <div class="sec-line"></div>
+      <div class="sec-ct" id="news-ct"></div>
+    </div>
+    <div class="grid" id="cards-grid">
+      <div style="grid-column:span 3;background:var(--bg)">
+        <div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div>
       </div>
     </div>
-    <div class="hero-sidebar">
-      <div class="hs-label">// Also Today</div>
-      <div id="hero-sidebar"></div>
-    </div>
   </div>
-  <div id="news">
-    <div class="sec-head"><div class="sec-title">Today's Stories</div><div class="sec-line"></div><div class="sec-count" id="news-count">Loading...</div></div>
-    <div class="cards-grid" id="cards-grid"><div style="grid-column:span 3;background:var(--bg)"><div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div></div></div>
-  </div>
+
+  <!-- TOPICS -->
   <div id="topics">
     <div class="sec-head"><div class="sec-title">Browse Topics</div><div class="sec-line"></div></div>
-    <div class="topics-grid">
-      <div class="topic" onclick="filterCat('government')"><span class="topic-icon">&#127963;&#65039;</span><div class="topic-name">Gov Disclosure</div><div class="topic-sub">Pentagon · AARO · Congress</div></div>
-      <div class="topic" onclick="filterCat('sighting')"><span class="topic-icon">&#128065;&#65039;</span><div class="topic-name">Sightings</div><div class="topic-sub">Military · Civilian · Global</div></div>
-      <div class="topic" onclick="filterCat('science')"><span class="topic-icon">&#128300;</span><div class="topic-name">Science</div><div class="topic-sub">Analysis · Evidence · Studies</div></div>
-      <div class="topic" onclick="filterCat('technology')"><span class="topic-icon">&#9889;</span><div class="topic-name">UAP Tech</div><div class="topic-sub">Propulsion · Materials</div></div>
-      <div class="topic" onclick="filterCat('whistleblower')"><span class="topic-icon">&#128226;</span><div class="topic-name">Whistleblowers</div><div class="topic-sub">Testimony · Leaks · Insiders</div></div>
-      <div class="topic" onclick="filterCat('global')"><span class="topic-icon">&#127758;</span><div class="topic-name">Global</div><div class="topic-sub">Worldwide Incidents</div></div>
-      <div class="topic" onclick="filterCat('history')"><span class="topic-icon">&#128193;</span><div class="topic-name">Historic Cases</div><div class="topic-sub">Roswell · Phoenix · Rendlesham</div></div>
-      <div class="topic" onclick="filterCat('contact')"><span class="topic-icon">&#128125;</span><div class="topic-name">Contact</div><div class="topic-sub">Encounters · Abductions</div></div>
+    <div class="topics">
+      <div class="topic" data-cat="government"><span class="topic-icon">&#127963;</span><div class="topic-name">Gov Disclosure</div><div class="topic-sub">Pentagon · AARO</div></div>
+      <div class="topic" data-cat="sighting"><span class="topic-icon">&#128065;</span><div class="topic-name">Sightings</div><div class="topic-sub">Military · Civilian</div></div>
+      <div class="topic" data-cat="science"><span class="topic-icon">&#128300;</span><div class="topic-name">Science</div><div class="topic-sub">Analysis · Evidence</div></div>
+      <div class="topic" data-cat="technology"><span class="topic-icon">&#9889;</span><div class="topic-name">UAP Tech</div><div class="topic-sub">Propulsion · Materials</div></div>
+      <div class="topic" data-cat="whistleblower"><span class="topic-icon">&#128226;</span><div class="topic-name">Whistleblowers</div><div class="topic-sub">Testimony · Leaks</div></div>
+      <div class="topic" data-cat="global"><span class="topic-icon">&#127758;</span><div class="topic-name">Global</div><div class="topic-sub">Worldwide Incidents</div></div>
+      <div class="topic" data-cat="history"><span class="topic-icon">&#128193;</span><div class="topic-name">Historic Cases</div><div class="topic-sub">Roswell · Phoenix</div></div>
+      <div class="topic" data-cat="contact"><span class="topic-icon">&#128125;</span><div class="topic-name">Contact</div><div class="topic-sub">Encounters · Reports</div></div>
     </div>
   </div>
+
+  <!-- ARCHIVE -->
   <div id="archive">
-    <div class="sec-head"><div class="sec-title">Full Archive</div><div class="sec-line"></div><div class="sec-count" id="arch-count"></div></div>
+    <div class="sec-head"><div class="sec-title">Full Archive</div><div class="sec-line"></div><div class="sec-ct" id="arch-ct"></div></div>
     <div id="arch-list"></div>
   </div>
-  <div id="submit" class="submit-wrap">
-    <div class="submit-grid">
-      <div>
-        <div class="submit-hl">SEEN <span>SOMETHING?</span><br>TELL THE WORLD.</div>
-        <div class="submit-sub">Every sighting matters. Every photo counts. Submit your experience and our team will review it within 24 hours.</div>
-        <div class="type-btns">
-          <button class="type-btn on" onclick="setType(this)">Sighting</button>
-          <button class="type-btn" onclick="setType(this)">Photo/Video</button>
-          <button class="type-btn" onclick="setType(this)">Encounter</button>
-          <button class="type-btn" onclick="setType(this)">News Tip</button>
-          <button class="type-btn" onclick="setType(this)">Document</button>
-        </div>
-        <div class="guide">
-          <div class="guide-title">// Submission Guidelines</div>
-          <div class="guide-list">
-            <div class="g-row"><span class="g-n">01</span>All submissions reviewed by our team within 24 hours.</div>
-            <div class="g-row"><span class="g-n">02</span>Your identity is protected — anonymous accepted.</div>
-            <div class="g-row"><span class="g-n">03</span>We cross-reference NUFORC, MUFON and AARO databases.</div>
-            <div class="g-row"><span class="g-n">04</span>Photos and video dramatically increase credibility.</div>
-            <div class="g-row"><span class="g-n">05</span>Government employees: consult whistleblower protections first.</div>
-          </div>
-        </div>
+
+  <!-- CONTACT -->
+  <div id="contact" class="contact-section">
+    <div class="contact-hl">GOT SOMETHING <span>FOR US?</span></div>
+    <div class="contact-sub">Spotted something in the sky? Have a news tip, document, or just want to reach the team? Send us an email — we read everything.</div>
+
+    <div class="contact-email-box">
+      <div class="contact-email-addr"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="d8adbeb7beb1b6bcbdaaabf6abadbaab98bfb5b9b1b4f6bbb7b5">[email&#160;protected]</a></div>
+      <button class="copy-btn" id="copy-email-btn">COPY EMAIL</button>
+    </div>
+
+    <div class="contact-types">
+      <span class="ctype">&#128760; UFO Sighting</span>
+      <span class="ctype">&#128247; Photo / Video</span>
+      <span class="ctype">&#128125; Encounter Report</span>
+      <span class="ctype">&#128226; News Tip</span>
+      <span class="ctype">&#128196; Document / Leak</span>
+    </div>
+
+    <div class="contact-guide">
+      <div class="cg-item">
+        <div class="cg-num">01 — INCLUDE DETAILS</div>
+        <div class="cg-text">Date, time, location, duration, shape, color, direction of travel.</div>
       </div>
-      <div class="s-form">
-        <div class="s-row"><input class="s-in" type="text" placeholder="Your name (or Anonymous)" id="s-name"><input class="s-in" type="email" placeholder="Email for follow-up" id="s-email"></div>
-        <div class="s-row"><input class="s-in" type="text" placeholder="Location (City, Country)" id="s-loc"><input class="s-in" type="text" placeholder="Date and time of sighting" id="s-date"></div>
-        <input class="s-in" type="text" placeholder="Title — what did you see?" id="s-title">
-        <textarea class="s-ta" placeholder="Describe what you witnessed in detail — shape, color, movement, duration, any sounds, other witnesses present..." id="s-desc"></textarea>
-        <div class="upload-box" onclick="document.getElementById('s-file').click()"><input type="file" id="s-file" multiple accept="image/*,video/*" style="display:none"><div style="font-size:1.5rem">&#128206;</div><p>Tap to attach photos or video</p></div>
-        <button class="sub-btn" onclick="submitReport()">SUBMIT REPORT</button>
+      <div class="cg-item">
+        <div class="cg-num">02 — ATTACH EVIDENCE</div>
+        <div class="cg-text">Photos, video, screenshots — attach anything you have directly to the email.</div>
+      </div>
+      <div class="cg-item">
+        <div class="cg-num">03 — STAY ANONYMOUS</div>
+        <div class="cg-text">You can remain anonymous. We never share your identity without permission.</div>
       </div>
     </div>
   </div>
+
 </div>
+
+<!-- SUPPORT BAR -->
+<div class="support-bar">
+  <div class="support-inner">
+    <div class="support-label">// Support The Mission</div>
+    <div class="support-hl">KEEP THE SIGNAL ALIVE</div>
+    <div class="support-sub">UFO Finders is run by a small independent team. If this work matters to you, buying us a coffee helps keep it going.</div>
+    <a class="bmc-btn" href="https://buymeacoffee.com/ufofinders" target="_blank" rel="noopener">
+      <span class="bmc-icon">&#9749;</span>
+      BUY THE TEAM A COFFEE
+    </a>
+  </div>
+</div>
+
+<!-- NEWSLETTER BAR -->
 <div class="nl-bar">
   <div class="nl-inner">
     <div class="nl-label">// Free Daily Briefing</div>
     <div class="nl-hl">GET THE INTEL EVERY MORNING</div>
     <div class="nl-sub">Our team delivers the most important UFO and UAP developments straight to your inbox every day.</div>
-    <div class="nl-form"><input type="email" class="nl-in" placeholder="your@email.com" id="nl-email"><button class="nl-btn" onclick="subscribeNL()">SUBSCRIBE FREE</button></div>
+    <div class="nl-form">
+      <input type="email" class="nl-in" id="nl-email" placeholder="your@email.com">
+      <button class="nl-btn" id="nl-btn">SUBSCRIBE FREE</button>
+    </div>
   </div>
 </div>
+
 <footer>
   <div class="ft-inner">
-    <div><div class="ft-brand">UFO FINDERS</div><div class="ft-tag">The world's most complete source for UFO and UAP news, sightings, government disclosures and eyewitness accounts. Brought to you by the UFO Finders team.</div></div>
-    <div><div class="ft-col-title">Navigate</div><ul class="ft-links"><li><a href="#news">Today's News</a></li><li><a href="#topics">Topics</a></li><li><a href="#archive">Archive</a></li><li><a href="#submit">Submit Report</a></li></ul></div>
-    <div><div class="ft-col-title">Topics</div><ul class="ft-links"><li><a href="#topics">Gov Disclosure</a></li><li><a href="#topics">Military Encounters</a></li><li><a href="#topics">Science and Research</a></li><li><a href="#topics">Historic Cases</a></li></ul></div>
-    <div><div class="ft-col-title">Community</div><ul class="ft-links"><li><a href="#submit">Submit a Sighting</a></li><li><a href="#submit">Submit a Tip</a></li><li><a href="#" onclick="openSubPanel()">Newsletter</a></li><li><a href="#">About UFO Finders</a></li></ul></div>
+    <div>
+      <div class="ft-brand">UFO FINDERS</div>
+      <div class="ft-tag">The world's most complete source for UFO and UAP news, sightings, government disclosures and eyewitness accounts. Brought to you by the UFO Finders team.</div>
+    </div>
+    <div>
+      <div class="ft-col-title">Navigate</div>
+      <ul class="ft-links">
+        <li><a href="#news">Today's News</a></li>
+        <li><a href="#topics">Topics</a></li>
+        <li><a href="#archive">Archive</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">Topics</div>
+      <ul class="ft-links">
+        <li><a href="#topics">Gov Disclosure</a></li>
+        <li><a href="#topics">Military Encounters</a></li>
+        <li><a href="#topics">Science</a></li>
+        <li><a href="#topics">Historic Cases</a></li>
+      </ul>
+    </div>
+    <div>
+      <div class="ft-col-title">Support</div>
+      <ul class="ft-links">
+        <li><a href="https://buymeacoffee.com/ufofinders" target="_blank">Buy Us a Coffee</a></li>
+        <li><a href="#contact">Contact the Team</a></li>
+        <li><a href="#" id="nl-open-btn2">Newsletter</a></li>
+        <li><a href="#">About UFO Finders</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="ft-bottom"><span>2026 UFO Finders · ufofinders.com · The UFO Finders Team</span><span>Updated Daily</span></div>
+  <div class="ft-bottom">
+    <span>2026 UFO Finders &middot; ufofinders.com &middot; The UFO Finders Team</span>
+    <span>Updated Daily</span>
+  </div>
 </footer>
-<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+
+<!-- PANEL -->
+<div class="overlay" id="overlay"></div>
 <div class="panel" id="panel">
-  <div class="panel-head">
-    <button class="panel-close" onclick="closePanel()">&#10005; Close</button>
-    <div class="panel-breadcrumb" id="panel-breadcrumb">UFO Finders</div>
+  <div class="panel-nav">
+    <button class="panel-close" id="panel-close">&#10005; Close</button>
+    <div class="panel-bc" id="panel-bc">UFO Finders</div>
   </div>
   <div class="panel-body" id="panel-body"></div>
 </div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
-var FORMSPREE = 'https://formspree.io/f/mqeyknno';
-var supabaseClient = supabase.createClient('https://ocryrrvlrsfrytuajvho.supabase.co','sb_publishable_662hIfz5g0dOQYhvw150sQ_VvYxdvZ1');
-var articles = [], heroArticle = null, currentComments = [];
+(function(){
+  var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
+  var SUPA_KEY = 'sb_publishable_662hIfz5g0dOQYhvw150sQ_VvYxdvZ1';
+  var db, articles = [], heroArt = null, comments = [];
 
-async function init(){
-  try{
-    var res = await supabaseClient.from('articles').select('*').order('published_at',{ascending:false}).limit(60);
-    if(res.error) throw res.error;
-    articles = res.data || [];
-    if(!articles.length){showEmpty();return;}
-    buildTicker();
-    buildHero();
-    buildCards(articles.slice(1,10));
-    buildArchive(articles.slice(10));
-  }catch(e){console.error(e);showEmpty();}
-}
-
-function buildTicker(){
-  var items = articles.slice(0,12).map(function(a){return a.headline;}).join(' * ');
-  var t = document.getElementById('ticker-track');
-  t.innerHTML = '<span class="ticker-item">'+items+'</span><span class="ticker-item"> * </span><span class="ticker-item">'+items+'</span>';
-}
-
-function buildHero(){
-  heroArticle = articles.find(function(a){return a.is_featured;}) || articles[0];
-  var rest = articles.filter(function(a){return a.id !== heroArticle.id;}).slice(0,4);
-  document.getElementById('hero-hl').textContent = heroArticle.headline;
-  document.getElementById('hero-deck').textContent = heroArticle.deck || '';
-  document.getElementById('hero-cat').textContent = cap(heroArticle.category || 'News');
-  document.getElementById('hero-meta').textContent = timeAgo(heroArticle.published_at) + (heroArticle.word_count ? ' · ' + heroArticle.word_count + ' words' : '');
-  var hc = document.getElementById('hero-card');
-  hc.onclick = function(){ openArticle(heroArticle); };
-  document.getElementById('hero-sidebar').innerHTML = rest.map(function(a,i){
-    return '<div class="hs-item" data-id="'+a.id+'"><div class="hs-num">0'+(i+2)+'</div><div class="hs-title">'+escHtml(a.headline)+'</div><div class="hs-cat">'+cap(a.category||'News')+'</div></div>';
-  }).join('');
-  rest.forEach(function(a){
-    var el = document.querySelector('.hs-item[data-id="'+a.id+'"]');
-    if(el) el.addEventListener('click', function(e){ e.stopPropagation(); openArticle(a); });
-  });
-}
-
-function buildCards(list){
-  document.getElementById('news-count').textContent = (list.length+1) + ' stories today';
-  if(!list.length){
-    document.getElementById('cards-grid').innerHTML = '<div class="empty-msg" style="grid-column:span 3">Check back tomorrow for more stories</div>';
-    return;
+  function init(){
+    try { db = supabase.createClient(SUPA_URL, SUPA_KEY); }
+    catch(e){ showEmpty('Could not connect.'); return; }
+    loadArticles();
   }
-  var grid = document.getElementById('cards-grid');
-  grid.innerHTML = list.map(function(a){
-    return '<div class="art-card" data-id="'+a.id+'"><div class="ac-tag '+(a.is_breaking?'breaking':'normal')+'">'+(a.is_breaking?'BREAKING':'// '+cap(a.category||'News'))+'</div><div class="ac-hl">'+escHtml(a.headline)+'</div><div class="ac-deck">'+(a.deck?escHtml(a.deck):'')+'</div><div class="ac-footer"><div class="ac-meta">'+timeAgo(a.published_at)+(a.word_count?' · '+a.word_count+' words':'')+'</div><div class="ac-read">Read &#8594;</div></div></div>';
-  }).join('');
-  list.forEach(function(a){
-    var el = document.querySelector('.art-card[data-id="'+a.id+'"]');
-    if(el) el.addEventListener('click', function(){ openArticle(a); });
-  });
-}
 
-function buildArchive(list){
-  document.getElementById('arch-count').textContent = articles.length + ' total articles';
-  if(!list.length){
-    document.getElementById('arch-list').innerHTML = '<div class="empty-msg">More stories arriving tomorrow at 6am</div>';
-    return;
+  async function loadArticles(){
+    try {
+      var res = await db.from('articles').select('*').order('published_at',{ascending:false}).limit(60);
+      if(res.error){ showEmpty('Database error.'); return; }
+      articles = res.data || [];
+      if(!articles.length){ showEmpty('No articles yet — check back tomorrow.'); return; }
+      buildTicker(); buildHero(); buildCards(articles.slice(1,10)); buildArchive(articles.slice(10));
+    } catch(e){ showEmpty('Failed to load articles.'); }
   }
-  var container = document.getElementById('arch-list');
-  container.innerHTML = list.map(function(a){
-    return '<div class="arch-item" data-id="'+a.id+'"><div class="arch-date">'+new Date(a.published_at).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div><div class="arch-hl">'+escHtml(a.headline)+'</div><div class="arch-cat">'+cap(a.category||'')+'</div></div>';
-  }).join('');
-  list.forEach(function(a){
-    var el = document.querySelector('.arch-item[data-id="'+a.id+'"]');
-    if(el) el.addEventListener('click', function(){ openArticle(a); });
-  });
-}
 
-function filterCat(cat){
-  var filtered = articles.filter(function(a){ return a.category && a.category.toLowerCase().includes(cat); });
-  buildCards(filtered.length ? filtered.slice(0,9) : articles.slice(1,10));
-  document.getElementById('news').scrollIntoView({behavior:'smooth'});
-}
-
-function openArticle(a){
-  currentComments = [];
-  document.getElementById('panel-breadcrumb').textContent = 'UFO Finders · ' + cap(a.category||'News');
-  var body = a.body ? a.body.split('\n').filter(function(p){return p.trim();}).map(function(p){return '<p>'+p+'</p>';}).join('') : '<p>Full article loading...</p>';
-  var kf = '';
-  if(a.key_facts && a.key_facts.length){
-    kf = '<div class="p-keyfacts"><h4>Key Facts</h4><ul>'+a.key_facts.map(function(f){return '<li>'+f+'</li>';}).join('')+'</ul></div>';
+  function buildTicker(){
+    var h = articles.slice(0,10).map(function(a){ return a.headline; }).join('   \u2022   ');
+    var t = document.getElementById('ticker-track');
+    t.innerHTML = '<span class="ticker-item">'+esc(h)+'</span><span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span><span class="ticker-item">'+esc(h)+'</span>';
   }
-  document.getElementById('panel-body').innerHTML =
-    '<div class="p-tag">// '+cap(a.category||'News')+'</div>'+
-    '<div class="p-hl">'+escHtml(a.headline)+'</div>'+
-    '<div class="p-deck">'+(a.deck?escHtml(a.deck):'')+'</div>'+
-    '<div class="p-meta"><span class="p-cat">'+cap(a.category||'News')+'</span><span>'+timeAgo(a.published_at)+'</span><span>'+(a.word_count||'')+' '+(a.word_count?'words':'')+'</span></div>'+
-    '<div class="p-content">'+body+'</div>'+kf+
-    '<div class="comments">'+
-      '<div class="comments-hl">Discussion</div>'+
-      '<div class="c-form">'+
-        '<div class="c-row"><input class="c-in" type="text" placeholder="Your name (or Anonymous)" id="c-name"><input class="c-in" type="text" placeholder="Location (optional)" id="c-loc"></div>'+
-        '<textarea class="c-ta" placeholder="Share your thoughts or additional information..." id="c-text"></textarea>'+
-        '<button class="c-post" onclick="postComment()">POST COMMENT</button>'+
-      '</div>'+
-      '<div class="c-list" id="c-list"><div class="no-c">// No comments yet — be the first</div></div>'+
-    '</div>';
-  openPanel();
-}
 
-function renderComments(){
-  var list = document.getElementById('c-list');
-  if(!list) return;
-  if(!currentComments.length){ list.innerHTML='<div class="no-c">// No comments yet — be the first</div>'; return; }
-  list.innerHTML = currentComments.map(function(c,i){
-    return '<div class="comment"><div class="c-head"><span class="c-author">'+escHtml(c.author)+(c.loc?' · '+escHtml(c.loc):'')+'</span><span class="c-time">'+c.time+'</span></div><div class="c-text">'+escHtml(c.text)+'</div><div class="c-actions"><button class="c-vote" onclick="vote('+i+',1)">&#9650; '+(c.up||0)+'</button><button class="c-vote" onclick="vote('+i+',-1)">&#9660; '+(c.dn||0)+'</button></div></div>';
-  }).join('');
-}
+  function buildHero(){
+    heroArt = null;
+    for(var i=0;i<articles.length;i++){ if(articles[i].is_featured){ heroArt=articles[i]; break; } }
+    if(!heroArt) heroArt = articles[0];
+    document.getElementById('hero-content').innerHTML =
+      '<div class="hero-hl">'+esc(heroArt.headline)+'</div>'+
+      '<div class="hero-deck">'+esc(heroArt.deck||'')+'</div>'+
+      '<div class="hero-foot">'+
+        '<span class="tag">'+esc(cap(heroArt.category||'News'))+'</span>'+
+        '<span class="meta">'+timeAgo(heroArt.published_at)+(heroArt.word_count?' &middot; '+heroArt.word_count+' words':'')+'</span>'+
+        '<button class="read-more">Read Full Story &rarr;</button>'+
+      '</div>';
+    document.getElementById('hero-wrap').addEventListener('click', function(){ openArticle(heroArt); });
+  }
 
-function vote(i,d){
-  if(d===1) currentComments[i].up=(currentComments[i].up||0)+1;
-  else currentComments[i].dn=(currentComments[i].dn||0)+1;
-  renderComments();
-}
-
-function postComment(){
-  var name = (document.getElementById('c-name') && document.getElementById('c-name').value.trim()) || 'Anonymous';
-  var loc = (document.getElementById('c-loc') && document.getElementById('c-loc').value.trim()) || '';
-  var text = document.getElementById('c-text') && document.getElementById('c-text').value.trim();
-  if(!text) return;
-  currentComments.unshift({author:name, loc:loc, text:text, time:'Just now', up:0, dn:0});
-  renderComments();
-  document.getElementById('c-text').value = '';
-}
-
-function openPanel(){ document.getElementById('panel-overlay').classList.add('open'); document.getElementById('panel').classList.add('open'); document.body.style.overflow='hidden'; }
-function closePanel(){ document.getElementById('panel-overlay').classList.remove('open'); document.getElementById('panel').classList.remove('open'); document.body.style.overflow=''; }
-
-function openSubPanel(){
-  document.getElementById('panel-breadcrumb').textContent = 'UFO Finders · Newsletter';
-  document.getElementById('panel-body').innerHTML =
-    '<div class="p-tag">// Free Daily Briefing</div>'+
-    '<div class="p-hl">JOIN THE FINDERS</div>'+
-    '<div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div>'+
-    '<div class="nl-form" style="margin-top:1.25rem"><input type="email" class="nl-in" placeholder="your@email.com" id="nl-email2"><button class="nl-btn" onclick="subscribeNL2()">JOIN FREE</button></div>';
-  openPanel();
-}
-
-function setType(btn){ document.querySelectorAll('.type-btn').forEach(function(b){b.classList.remove('on');}); btn.classList.add('on'); }
-
-async function submitReport(){
-  var title = document.getElementById('s-title') && document.getElementById('s-title').value.trim();
-  var desc = document.getElementById('s-desc') && document.getElementById('s-desc').value.trim();
-  if(!title || !desc){ alert('Please fill in at least a title and description.'); return; }
-  var btn = document.querySelector('.sub-btn');
-  btn.textContent = 'SENDING...';
-  btn.disabled = true;
-  var payload = {
-    name: document.getElementById('s-name').value || 'Anonymous',
-    email: document.getElementById('s-email').value || '',
-    location: document.getElementById('s-loc').value || '',
-    date: document.getElementById('s-date').value || '',
-    title: title,
-    description: desc
-  };
-  try {
-    var response = await fetch(FORMSPREE, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'Accept': 'application/json'},
-      body: JSON.stringify(payload)
+  function buildCards(list){
+    document.getElementById('news-ct').textContent = (list.length+1)+' stories today';
+    var grid = document.getElementById('cards-grid');
+    if(!list.length){ grid.innerHTML='<div class="empty" style="grid-column:span 3">Check back tomorrow.</div>'; return; }
+    grid.innerHTML = '';
+    list.forEach(function(a){
+      var div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML =
+        '<div class="card-cat">'+esc(cap(a.category||'News'))+'</div>'+
+        '<div class="card-hl">'+esc(a.headline)+'</div>'+
+        '<div class="card-deck">'+esc(a.deck||'')+'</div>'+
+        '<div class="card-foot"><span class="card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</span><span class="card-read">Read &rarr;</span></div>';
+      div.addEventListener('click', function(){ openArticle(a); });
+      grid.appendChild(div);
     });
-    if(response.ok){
-      btn.textContent = 'REPORT RECEIVED — THANK YOU';
+  }
+
+  function buildArchive(list){
+    document.getElementById('arch-ct').textContent = articles.length+' total';
+    var container = document.getElementById('arch-list');
+    if(!list.length){ container.innerHTML='<div class="empty">More stories arriving tomorrow.</div>'; return; }
+    container.innerHTML = '';
+    list.forEach(function(a){
+      var div = document.createElement('div');
+      div.className = 'arch-row';
+      var d = new Date(a.published_at);
+      div.innerHTML =
+        '<div class="arch-date">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>'+
+        '<div class="arch-hl">'+esc(a.headline)+'</div>'+
+        '<div class="arch-cat">'+esc(cap(a.category||''))+'</div>';
+      div.addEventListener('click', function(){ openArticle(a); });
+      container.appendChild(div);
+    });
+  }
+
+  // Topics filter
+  document.querySelectorAll('.topic').forEach(function(el){
+    el.addEventListener('click', function(){
+      var cat = el.getAttribute('data-cat');
+      var filtered = articles.filter(function(a){ return a.category && a.category.toLowerCase().indexOf(cat) !== -1; });
+      buildCards(filtered.length ? filtered.slice(0,9) : articles.slice(1,10));
+      document.getElementById('news').scrollIntoView({behavior:'smooth'});
+    });
+  });
+
+  // Copy email
+  document.getElementById('copy-email-btn').addEventListener('click', function(){
+    var btn = this;
+    navigator.clipboard.writeText('ufofinders.subs@gmail.com').then(function(){
+      btn.textContent = 'COPIED!';
       btn.style.background = '#1a3a2a';
       btn.style.color = 'var(--glow)';
-      ['s-name','s-email','s-loc','s-date','s-title','s-desc'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-      setTimeout(function(){ btn.textContent='SUBMIT REPORT'; btn.style.background=''; btn.style.color=''; btn.disabled=false; }, 4000);
-    } else {
-      btn.textContent = 'ERROR — TRY AGAIN';
-      btn.style.background = 'var(--red)';
-      setTimeout(function(){ btn.textContent='SUBMIT REPORT'; btn.style.background=''; btn.disabled=false; }, 3000);
+      setTimeout(function(){ btn.textContent='COPY EMAIL'; btn.style.background=''; btn.style.color=''; }, 2500);
+    }).catch(function(){
+      // fallback
+      var ta = document.createElement('textarea');
+      ta.value = 'ufofinders.subs@gmail.com';
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      btn.textContent = 'COPIED!';
+      setTimeout(function(){ btn.textContent='COPY EMAIL'; }, 2500);
+    });
+  });
+
+  // Newsletter — Beehiiv signup
+  function subscribeEmail(email, btn, resetText){
+    if(!email || !email.includes('@')){
+      btn.textContent = 'ENTER VALID EMAIL';
+      btn.style.background = 'var(--amber)';
+      btn.style.color = 'var(--bg)';
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 2500);
+      return;
     }
-  } catch(e){
-    btn.textContent = 'ERROR — TRY AGAIN';
-    btn.style.background = 'var(--red)';
-    setTimeout(function(){ btn.textContent='SUBMIT REPORT'; btn.style.background=''; btn.disabled=false; }, 3000);
+    btn.textContent = 'SUBSCRIBING...';
+    btn.disabled = true;
+    fetch('https://api.beehiiv.com/v2/publications/pub_2e505ecb-cceb-4479-9dfb-0f3ba2871175/subscriptions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer 2e505ecb-cceb-4479-9dfb-0f3ba2871175'
+      },
+      body: JSON.stringify({
+        email: email,
+        reactivate_existing: false,
+        send_welcome_email: true,
+        utm_source: 'ufofinders.com',
+        utm_medium: 'website'
+      })
+    }).then(function(r){
+      if(r.ok || r.status === 201 || r.status === 200){
+        btn.textContent = 'YOU\'RE IN!';
+        btn.style.background = '#1a3a2a';
+        btn.style.color = 'var(--glow)';
+        btn.disabled = false;
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 4000);
+      } else {
+        btn.textContent = 'TRY AGAIN';
+        btn.style.background = 'var(--red)';
+        btn.disabled = false;
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
+      }
+    }).catch(function(){
+      btn.textContent = 'TRY AGAIN';
+      btn.style.background = 'var(--red)';
+      btn.disabled = false;
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
+    });
   }
-}
 
-function subscribeNL(){ var btn=event.target; btn.textContent='SUBSCRIBED!'; setTimeout(function(){ btn.textContent='SUBSCRIBE FREE'; var el=document.getElementById('nl-email'); if(el) el.value=''; },3000); }
-function subscribeNL2(){ var btn=event.target; btn.textContent='SUBSCRIBED!'; setTimeout(function(){ btn.textContent='JOIN FREE'; },3000); }
+  document.getElementById('nl-btn').addEventListener('click', function(){
+    var email = document.getElementById('nl-email').value.trim();
+    document.getElementById('nl-email').value = '';
+    subscribeEmail(email, this, 'SUBSCRIBE FREE');
+  });
 
-function showEmpty(){
-  document.getElementById('hero-hl').innerHTML='<span style="font-size:1.25rem;font-weight:400">Our team is loading today\'s stories — check back shortly</span>';
-  document.getElementById('cards-grid').innerHTML='<div class="empty-msg" style="grid-column:span 3">No articles yet. Stories publish daily.</div>';
-}
+  // Panel open/close
+  function openPanel(){
+    document.getElementById('overlay').classList.add('on');
+    document.getElementById('panel').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel(){
+    document.getElementById('overlay').classList.remove('on');
+    document.getElementById('panel').classList.remove('on');
+    document.body.style.overflow = '';
+  }
+  document.getElementById('overlay').addEventListener('click', closePanel);
+  document.getElementById('panel-close').addEventListener('click', closePanel);
 
-function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
-function escHtml(s){ return s ? s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') : ''; }
-function timeAgo(d){ var h=Math.floor((Date.now()-new Date(d).getTime())/3600000); if(h<1) return 'Just now'; if(h<24) return h+'h ago'; return Math.floor(h/24)+'d ago'; }
+  // Open article in panel
+  function openArticle(a){
+    comments = [];
+    document.getElementById('panel-bc').textContent = 'UFO Finders \u00b7 '+cap(a.category||'News');
+    var body = '';
+    if(a.body){
+      a.body.split('\n').forEach(function(p){ if(p.trim()) body += '<p>'+esc(p)+'</p>'; });
+    } else { body = '<p>Full article loading...</p>'; }
+    var facts = '';
+    if(a.key_facts && a.key_facts.length){
+      facts = '<div class="p-facts"><h4>Key Facts</h4><ul>';
+      a.key_facts.forEach(function(f){ facts += '<li>'+esc(f)+'</li>'; });
+      facts += '</ul></div>';
+    }
+    document.getElementById('panel-body').innerHTML =
+      '<div class="p-cat">'+esc(cap(a.category||'News'))+'</div>'+
+      '<div class="p-hl">'+esc(a.headline)+'</div>'+
+      '<div class="p-deck">'+esc(a.deck||'')+'</div>'+
+      '<div class="p-meta"><span class="p-ct">'+esc(cap(a.category||'News'))+'</span><span>'+timeAgo(a.published_at)+'</span>'+(a.word_count?'<span>'+a.word_count+' words</span>':'')+'</div>'+
+      '<div class="p-body">'+body+'</div>'+facts+
+      '<div class="comments">'+
+        '<div class="c-hl">Discussion</div>'+
+        '<div class="c-form">'+
+          '<div class="c-row"><input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)"><input class="c-in" id="c-loc" type="text" placeholder="Location (optional)"></div>'+
+          '<textarea class="c-ta" id="c-text" placeholder="Share your thoughts..."></textarea>'+
+          '<button class="c-btn" id="c-post-btn">POST COMMENT</button>'+
+        '</div>'+
+        '<div class="c-list" id="c-list"><div class="no-c">No comments yet — be the first</div></div>'+
+      '</div>';
+    document.getElementById('c-post-btn').addEventListener('click', postComment);
+    openPanel();
+    document.getElementById('panel').scrollTop = 0;
+  }
 
-init();
-</script>
-</body>
-</html>
+  function postComment(){
+    var name = (document.getElementById('c-name').value.trim()) || 'Anonymous';
+    var loc = document.getElementById('c-loc').value.trim();
+    var text = document.getElementById('c-text').value.trim();
+    if(!text) return;
+    comments.unshift({name:name, loc:loc, text:text, time:'Just now', up:0, dn:0});
+    renderComments();
+    document.getElementById('c-text').value = '';
+  }
+
+  function renderComments(){
+    var list = document.getElementById('c-list');
+    if(!list) return;
+    if(!comments.length){ list.innerHTML='<div class="no-c">No comments yet — be the first</div>'; return; }
+    list.innerHTML = '';
+    comments.forEach(function(c,i){
+      var div = document.createElement('div');
+      div.className = 'comment';
+      div.innerHTML =
+        '<div class="c-head"><span class="c-author">'+esc(c.name)+(c.loc?' &middot; '+esc(c.loc):'')+'</span><span class="c-time">'+c.time+'</span></div>'+
+        '<div class="c-text">'+esc(c.text)+'</div>'+
+        '<div class="c-acts"><button class="c-vote" data-i="'+i+'" data-d="1">+ '+(c.up||0)+'</button><button class="c-vote" data-i="'+i+'" data-d="-1">- '+(c.dn||0)+'</button></div>';
+      list.appendChild(div);
+    });
+    list.querySelectorAll('.c-vote').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var i = parseInt(btn.getAttribute('data-i'));
+        var d = parseInt(btn.getAttribute('data-d'));
+        if(d===1) comments[i].up=(comments[i].up||0)+1;
+        else comments[i].dn=(comments[i].dn||0)+1;
+        renderComments();
+      });
+    });
+  }
+
+  // Newsletter panel
+  function openNLPanel(){
+    document.getElementById('panel-bc').textContent = 'UFO Finders \u00b7 Newsletter';
+    document.getElementById('panel-body').innerHTML =
+      '<div class="p-cat">Free Daily Briefing</div>'+
+      '<div class="p-hl">JOIN THE FINDERS</div>'+
+      '<div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div>'+
+      '<div class="nl-form" style="margin-top:1rem;max-width:100%"><input type="email" class="nl-in" id="nl-panel-email" placeholder="your@email.com" style="flex:1"><button class="nl-btn" id="nl-panel-btn">JOIN FREE</button></div>';
+    openPanel();
+    setTimeout(function(){
+      var b = document.getElementById('nl-panel-btn');
+      if(b) b.addEventListener('click', function(){
+        var email = document.getElementById('nl-panel-email').value.trim();
+        document.getElementById('nl-panel-email').value = '';
+        subscribeEmail(email, b, 'JOIN FREE');
+      });
+    }, 100);
+  }
+  document.getElementById('nl-open-btn').addEventListener('click', openNLPanel);
+  document.getElementById('nl-open-btn2').addEventListener('click', function(e){ e.preventDefault(); openNLPanel(); });
+
+  function showEmpty(msg){
+    document.getElementById('hero-content').innerHTML = '<div style="font-size:1rem;color:var(--mid);padding:0.5rem 0">'+(msg||'Stories loading soon...')+'</div>';
+    document.getElementById('cards-grid').innerHTML = '<div class="empty" style="grid-column:span 3">'+(msg||'No articles yet.')+'</div>';
+  }
+
+  function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+  function esc(s){ if(!s) return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace
