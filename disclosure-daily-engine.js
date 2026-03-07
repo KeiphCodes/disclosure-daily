@@ -276,6 +276,16 @@ Return ONLY valid JSON.`,
     if (article) {
       article.publishedAt = new Date().toISOString();
       article.slug = slugify(article.headline);
+
+      // Search for a relevant image for this article
+      console.log(`  🖼️  Finding image for: "${article.headline?.slice(0, 40)}..."`);
+      const imageData = await findArticleImage(article.headline, article.category, story.url);
+      if (imageData) {
+        article.imageUrl = imageData.url;
+        article.imageCaption = imageData.caption;
+        console.log(`  ✅ Image found: ${imageData.url.slice(0, 60)}...`);
+      }
+
       articles.push(article);
     }
 
@@ -343,6 +353,50 @@ Return ONLY valid JSON.`,
 }
 
 // ─── STEP 4: SAVE TO DATABASE ──────────────────────────────
+// ─── IMAGE FINDER ──────────────────────────────────────────
+async function findArticleImage(headline, category, sourceUrl) {
+  try {
+    const response = await anthropic.messages.create({
+      model: CONFIG.model,
+      max_tokens: 500,
+      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      messages: [
+        {
+          role: "user",
+          content: `Search for a publicly available news image related to this UAP/UFO article headline: "${headline}"
+
+Look for images from news sources, government releases, NASA, military, or credible media outlets.
+Prefer images that are:
+- Official government or military releases
+- NASA or scientific imagery  
+- News wire photos (Reuters, AP) from the original article if possible
+- Radar screenshots or sensor data images
+- Press conference or congressional hearing photos
+
+Return ONLY a JSON object with exactly this format (no other text):
+{
+  "url": "https://...",
+  "caption": "Brief factual caption describing the image"
+}
+
+If you cannot find a suitable real image URL, return: {"url": null, "caption": null}
+Return ONLY valid JSON.`,
+        },
+      ],
+    });
+
+    const text = extractText(response);
+    const result = safeParseJSON(text);
+    if (result && result.url && result.url.startsWith('http')) {
+      return result;
+    }
+    return null;
+  } catch (err) {
+    console.log(`  ⚠️  Image search failed: ${err.message}`);
+    return null;
+  }
+}
+
 async function saveToDatabase(articles) {
   let savedCount = 0;
 
@@ -362,6 +416,8 @@ async function saveToDatabase(articles) {
       is_deep_dive: article.isDeepDive || false,
       original_url: article.originalUrl,
       word_count: article.wordCount,
+      image_url: article.imageUrl || null,
+      image_caption: article.imageCaption || null,
       published_at: article.publishedAt,
     });
 
