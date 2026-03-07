@@ -33,7 +33,7 @@ const supabase = createClient(
 
 // ─── CONFIG ────────────────────────────────────────────────
 const CONFIG = {
-  model: "claude-opus-4-5",
+  model: "claude-haiku-4-5-20251001",
   storiesPerDay: 8,         // How many articles to publish each day
   featuredCount: 1,         // How many get "featured" / hero treatment
   deepDiveWeekly: true,     // Generate a longform piece every Friday
