@@ -101,6 +101,37 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .topic-art-deck{font-size:0.78rem;color:var(--mid);line-height:1.45;margin-bottom:0.3rem}
 .topic-art-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
 
+
+.sightings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:0.5rem}
+.sighting-card{background:var(--card);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.2s}
+.sighting-card:hover{border-color:var(--glow)}
+.sighting-media{position:relative;width:100%;height:220px;background:var(--surface);overflow:hidden;flex-shrink:0}
+.sighting-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
+.sighting-card:hover .sighting-img{transform:scale(1.03)}
+.sighting-no-media{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem}
+.sighting-no-media-icon{font-size:2.5rem;opacity:0.3}
+.sighting-no-media-txt{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim)}
+.sighting-vid-badge{position:absolute;top:0.5rem;left:0.5rem;background:var(--red);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.1em;padding:0.2rem 0.5rem;display:flex;align-items:center;gap:0.3rem}
+.sighting-vid-badge::before{content:'▶';font-size:0.5rem}
+.sighting-shape-badge{position:absolute;top:0.5rem;right:0.5rem;background:rgba(3,5,8,0.82);border:1px solid var(--border);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:0.42rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.2rem 0.5rem}
+.sighting-body{padding:1rem;display:flex;flex-direction:column;gap:0.4rem;flex:1}
+.sighting-meta{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+.sighting-date{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--glow)}
+.sighting-loc{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--mid)}
+.sighting-loc::before{content:'📍';font-size:0.5rem;margin-right:0.15rem}
+.sighting-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;line-height:1;color:var(--white);transition:color 0.2s}
+.sighting-card:hover .sighting-title{color:var(--glow)}
+.sighting-desc{font-size:0.78rem;color:var(--mid);line-height:1.55;flex:1}
+.sighting-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.6rem;margin-top:0.25rem;border-top:1px solid var(--border);gap:0.5rem;flex-wrap:wrap}
+.sighting-source{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.sighting-links{display:flex;gap:0.5rem}
+.sighting-link{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.08em;border:1px solid var(--border);color:var(--mid);padding:0.25rem 0.6rem;text-decoration:none;transition:all 0.2s;white-space:nowrap}
+.sighting-link:hover{border-color:var(--glow);color:var(--glow)}
+.sighting-link.primary{border-color:var(--glow);color:var(--glow)}
+.sighting-link.primary:hover{background:var(--glow);color:var(--bg)}
+.sighting-link.video{border-color:var(--red);color:var(--red)}
+.sighting-link.video:hover{background:var(--red);color:#fff}
+
 .contact-section{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--glow);padding:2rem;margin-top:1.5rem;text-align:center}
 .contact-hl{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:0.95;color:var(--white);margin-bottom:0.5rem}
 .contact-hl span{color:var(--glow)}
@@ -198,6 +229,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
 @media(max-width:860px){
   .grid{grid-template-columns:1fr 1fr}
+  .sightings-grid{grid-template-columns:1fr}
   .topics{grid-template-columns:repeat(2,1fr)}
   .ft-inner{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
@@ -222,6 +254,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   <div class="nav-logo">UFO FINDERS</div>
   <ul class="nav-links">
     <li><a href="#news">News</a></li>
+    <li><a href="#sightings">Sightings</a></li>
     <li><a href="#topics">Topics</a></li>
     <li><a href="#archive">Archive</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -259,6 +292,18 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div style="grid-column:span 3;background:var(--bg)">
         <div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div>
       </div>
+    </div>
+  </div>
+
+
+  <div id="sightings">
+    <div class="sec-head">
+      <div class="sec-title">Recent Sightings</div>
+      <div class="sec-line"></div>
+      <div class="sec-ct" id="sightings-ct"></div>
+    </div>
+    <div class="sightings-grid" id="sightings-grid">
+      <div class="loading"><div class="spinner"></div><div class="load-txt">Loading sightings...</div></div>
     </div>
   </div>
 
@@ -335,7 +380,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div class="ft-col-title">Navigate</div>
       <ul class="ft-links">
         <li><a href="#news">Today's News</a></li>
-        <li><a href="#topics">Topics</a></li>
+        <li><a href="#sightings">Sightings</a></li>
+    <li><a href="#topics">Topics</a></li>
         <li><a href="#archive">Archive</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
@@ -838,7 +884,123 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     if (grid) grid.innerHTML = '<div class="empty" style="grid-column:span 3">'+msg+'</div>';
   }
 
+
+  // ── SIGHTINGS ─────────────────────────────────────────────
+  function loadSightings() {
+    supaFetch('/rest/v1/sightings?select=*&order=published_at.desc&limit=2')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        renderSightings(Array.isArray(data) ? data : []);
+      })
+      .catch(function(){
+        var g = document.getElementById('sightings-grid');
+        if(g) g.innerHTML = '<div class="empty" style="grid-column:span 2">Could not load sightings. Check back soon.</div>';
+      });
+  }
+
+  function renderSightings(data) {
+    var grid = document.getElementById('sightings-grid');
+    var ct   = document.getElementById('sightings-ct');
+    if (!grid) return;
+
+    if (!data.length) {
+      grid.innerHTML = '<div class="empty" style="grid-column:span 2">No sightings yet — check back tomorrow.</div>';
+      return;
+    }
+
+    if (ct) ct.textContent = data.length + ' filed today';
+    grid.innerHTML = '';
+
+    data.forEach(function(s) {
+      var card = document.createElement('div');
+      card.className = 'sighting-card';
+
+      // ── Media block ──────────────────────────────────────
+      var mediaHtml = '';
+      if (s.image_url) {
+        mediaHtml =
+          '<div class="sighting-media">' +
+            '<img class="sighting-img" src="'+esc(s.image_url)+'" alt="'+esc(s.title)+'" ' +
+              'onerror="this.parentElement.innerHTML='<div class=\"sighting-no-media\"><div class=\"sighting-no-media-icon\">&#128065;</div><div class=\"sighting-no-media-txt\">No image available</div></div>'">' +
+            (s.video_url ? '<div class="sighting-vid-badge">Video available</div>' : '') +
+            '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
+          '</div>';
+      } else if (s.video_url) {
+        // Video thumbnail from YouTube if possible
+        var ytId = extractYouTubeId(s.video_url);
+        if (ytId) {
+          mediaHtml =
+            '<div class="sighting-media">' +
+              '<img class="sighting-img" src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="'+esc(s.title)+'" ' +
+                'onerror="this.parentElement.innerHTML='<div class=\"sighting-no-media\"><div class=\"sighting-no-media-icon\">&#128249;</div><div class=\"sighting-no-media-txt\">Video available</div></div>'">' +
+              '<div class="sighting-vid-badge">Video</div>' +
+              '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
+            '</div>';
+        } else {
+          mediaHtml =
+            '<div class="sighting-media">' +
+              '<div class="sighting-no-media">' +
+                '<div class="sighting-no-media-icon">&#128249;</div>' +
+                '<div class="sighting-no-media-txt">Video available</div>' +
+              '</div>' +
+              '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
+            '</div>';
+        }
+      } else {
+        mediaHtml =
+          '<div class="sighting-media">' +
+            '<div class="sighting-no-media">' +
+              '<div class="sighting-no-media-icon">&#128065;</div>' +
+              '<div class="sighting-no-media-txt">No media filed</div>' +
+            '</div>' +
+            '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
+          '</div>';
+      }
+
+      // ── Links ────────────────────────────────────────────
+      var linksHtml = '<div class="sighting-links">';
+      if (s.source_url) {
+        linksHtml += '<a class="sighting-link primary" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">Full Report &rarr;</a>';
+      }
+      if (s.video_url) {
+        linksHtml += '<a class="sighting-link video" href="'+esc(s.video_url)+'" target="_blank" rel="noopener">&#9654; Watch</a>';
+      }
+      linksHtml += '</div>';
+
+      // ── Date display ─────────────────────────────────────
+      var dateStr = '';
+      if (s.sighted_date) {
+        var d = new Date(s.sighted_date);
+        dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+      }
+
+      card.innerHTML =
+        mediaHtml +
+        '<div class="sighting-body">' +
+          '<div class="sighting-meta">' +
+            (dateStr ? '<span class="sighting-date">'+dateStr+'</span>' : '') +
+            (s.location ? '<span class="sighting-loc">'+esc(s.location)+'</span>' : '') +
+          '</div>' +
+          '<div class="sighting-title">'+esc(s.title)+'</div>' +
+          '<div class="sighting-desc">'+esc(s.description||'')+'</div>' +
+          '<div class="sighting-footer">' +
+            '<span class="sighting-source">'+(s.source?'Via '+esc(s.source):'')+'</span>' +
+            linksHtml +
+          '</div>' +
+        '</div>';
+
+      grid.appendChild(card);
+    });
+  }
+
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/);
+    return m ? m[1] : null;
+  }
+
   loadArticles();
+  loadSightings();
 })();
 </script>
 </body>
