@@ -291,7 +291,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   </div>
 </div>
 <script>
-(function(){
+document.addEventListener("DOMContentLoaded", function(){
   // ── CONFIG ────────────────────────────────────────────────
   var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
   // Using both keys — try anon JWT first, fall back to publishable
@@ -650,10 +650,7 @@ Add this subscriber to Beehiiv manually or via automation.'
   }
 
   loadArticles();
-  window._ufoLoaded=true;
-})();
-// Backup call in case IIFE failed
-if(!window._ufoLoaded){document.addEventListener("DOMContentLoaded",function(){if(typeof loadArticles==="function")loadArticles();});}
+});
 </script>
 </body>
 </html>
