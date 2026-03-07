@@ -160,6 +160,25 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .c-loading{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);text-align:center;padding:0.75rem}
 @media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.topics{grid-template-columns:repeat(2,1fr)}.ft-inner{grid-template-columns:1fr 1fr}.nav-links{display:none}.c-row{grid-template-columns:1fr}.arch-row{grid-template-columns:68px 1fr}.arch-cat{display:none}.contact-guide{grid-template-columns:1fr}.contact-email-box{flex-direction:column;width:90%}.contact-email-addr{text-align:center;width:100%}.copy-btn{width:100%}}
 @media(max-width:480px){.grid{grid-template-columns:1fr}.panel-body{padding:1rem}.p-hl{font-size:1.55rem}}
+
+.topic-panel{position:fixed;inset:0;z-index:1000;background:var(--deep);overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1)}
+.topic-panel.on{transform:translateY(0)}
+.tp-nav{position:sticky;top:0;background:rgba(6,12,20,0.97);border-bottom:1px solid var(--border);padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;z-index:10}
+.tp-back{background:none;border:1px solid var(--border);color:var(--mid);font-family:'Share Tech Mono',monospace;font-size:0.52rem;cursor:pointer;padding:0.35rem 0.75rem;transition:all 0.2s}
+.tp-back:hover{color:var(--glow);border-color:var(--glow)}
+.tp-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;color:var(--glow)}
+.tp-body{max-width:1000px;margin:0 auto;padding:1.5rem 1rem}
+.tp-desc{font-size:0.82rem;color:var(--mid);margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.tp-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--border)}
+.tp-card{background:var(--bg);padding:1.1rem;cursor:pointer;transition:background 0.2s}
+.tp-card:hover{background:var(--surface)}
+.tp-card:hover .tp-card-hl{color:var(--glow)}
+.tp-card-cat{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--amber);margin-bottom:0.3rem}
+.tp-card-hl{font-weight:700;font-size:1rem;line-height:1.2;color:var(--white);margin-bottom:0.4rem;transition:color 0.2s}
+.tp-card-deck{font-size:0.8rem;color:var(--mid);line-height:1.5;margin-bottom:0.5rem}
+.tp-card-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+.tp-empty{padding:3rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--dim);border:1px solid var(--border)}
+@media(max-width:480px){.tp-body{padding:1rem}}
 </style>
 </head>
 <body>
@@ -390,37 +409,72 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     });
   }
 
-  // ── TOPICS — fixed filtering ──────────────────────────────
+  // ── TOPICS — open full panel ─────────────────────────────
+  var topicMeta = {
+    government:  {label:'Gov Disclosure',    icon:'\u{1F3DB}', desc:'Pentagon briefings, AARO reports, congressional hearings, and official government statements on UAP.'},
+    sighting:    {label:'Sightings',         icon:'\u{1F441}', desc:'Civilian and military UAP sighting reports from around the world.'},
+    science:     {label:'Science',           icon:'\u{1F52C}', desc:'Scientific analysis, research papers, and evidence-based investigations into UAP phenomena.'},
+    technology:  {label:'UAP Tech',          icon:'\u26A1',    desc:'Advanced propulsion, exotic materials, and reverse-engineering reports.'},
+    whistleblower:{label:'Whistleblowers',   icon:'\u{1F4E2}', desc:'Testimony from insiders, leaked documents, and firsthand accounts from military and intelligence personnel.'},
+    global:      {label:'Global',            icon:'\u{1F30E}', desc:'UAP incidents and government disclosures from countries around the world.'},
+    history:     {label:'Historic Cases',    icon:'\u{1F4C1}', desc:'Classic cases including Roswell, Phoenix Lights, and other landmark UAP events.'},
+    contact:     {label:'Contact',           icon:'\u{1F47D}', desc:'Close encounters, abduction reports, and contact experiences from eyewitnesses.'}
+  };
+
+  function matchCat(articleCat, filterCat) {
+    if (!articleCat) return false;
+    var c = articleCat.toLowerCase();
+    var f = filterCat.toLowerCase();
+    if (c === f || c.indexOf(f) !== -1) return true;
+    if (f === 'government' && (c.indexOf('gov') !== -1 || c.indexOf('pentagon') !== -1 || c.indexOf('disclosure') !== -1 || c.indexOf('aaro') !== -1 || c.indexOf('congress') !== -1)) return true;
+    if (f === 'sighting' && (c.indexOf('sight') !== -1 || c.indexOf('uap') !== -1 || c.indexOf('ufo') !== -1 || c.indexOf('encounter') !== -1)) return true;
+    if (f === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('classic') !== -1 || c.indexOf('roswell') !== -1 || c.indexOf('legacy') !== -1)) return true;
+    if (f === 'whistleblower' && (c.indexOf('whistle') !== -1 || c.indexOf('testim') !== -1 || c.indexOf('witness') !== -1 || c.indexOf('leak') !== -1)) return true;
+    if (f === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1 || c.indexOf('material') !== -1)) return true;
+    if (f === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1 || c.indexOf('world') !== -1 || c.indexOf('foreign') !== -1)) return true;
+    if (f === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('abduct') !== -1)) return true;
+    if (f === 'science' && (c.indexOf('sci') !== -1 || c.indexOf('research') !== -1 || c.indexOf('study') !== -1 || c.indexOf('analysis') !== -1)) return true;
+    return false;
+  }
+
+  function openTopicPanel(cat) {
+    var meta = topicMeta[cat] || {label: cap(cat), desc: ''};
+    document.getElementById('tp-title').textContent = meta.label;
+    document.getElementById('tp-desc').textContent = meta.desc;
+    var filtered = articles.filter(function(a){ return matchCat(a.category, cat); });
+    var grid = document.getElementById('tp-grid');
+    grid.innerHTML = '';
+    if (!filtered.length) {
+      grid.innerHTML = '<div class="tp-empty">No stories for this topic yet — check back tomorrow!</div>';
+    } else {
+      filtered.forEach(function(a) {
+        var div = document.createElement('div');
+        div.className = 'tp-card';
+        var d = new Date(a.published_at);
+        div.innerHTML =
+          '<div class="tp-card-cat">'+esc(cap(a.category||'News'))+'</div>'+
+          '<div class="tp-card-hl">'+esc(a.headline)+'</div>'+
+          '<div class="tp-card-deck">'+esc(a.deck||'')+'</div>'+
+          '<div class="tp-card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>';
+        (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
+        grid.appendChild(div);
+      });
+    }
+    document.getElementById('topic-panel').classList.add('on');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('topic-panel').scrollTop = 0;
+  }
+
+  function closeTopicPanel() {
+    document.getElementById('topic-panel').classList.remove('on');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('tp-back').onclick = closeTopicPanel;
+
   document.querySelectorAll('.topic').forEach(function(el) {
     el.onclick = function() {
-      // Remove active from all
-      document.querySelectorAll('.topic').forEach(function(t){ t.classList.remove('active'); });
-      el.classList.add('active');
-      var cat = el.getAttribute('data-cat').toLowerCase();
-      // Match against category field loosely
-      var filtered = articles.filter(function(a) {
-        if (!a.category) return false;
-        var c = a.category.toLowerCase();
-        // exact match or contains
-        if (c === cat) return true;
-        if (c.indexOf(cat) !== -1) return true;
-        // extra mappings
-        if (cat === 'government' && (c.indexOf('gov') !== -1 || c.indexOf('pentagon') !== -1 || c.indexOf('disclosure') !== -1 || c.indexOf('aaro') !== -1)) return true;
-        if (cat === 'sighting' && (c.indexOf('sight') !== -1 || c.indexOf('uap') !== -1 || c.indexOf('ufo') !== -1)) return true;
-        if (cat === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('classic') !== -1 || c.indexOf('roswell') !== -1)) return true;
-        if (cat === 'whistleblower' && (c.indexOf('whistle') !== -1 || c.indexOf('testim') !== -1 || c.indexOf('witness') !== -1)) return true;
-        if (cat === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1)) return true;
-        if (cat === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1 || c.indexOf('world') !== -1)) return true;
-        if (cat === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('encounter') !== -1 || c.indexOf('abduct') !== -1)) return true;
-        return false;
-      });
-      // If no match, show all stories with a note
-      buildCards(filtered.length ? filtered.slice(0,9) : articles.slice(1,10));
-      // Scroll to news section
-      setTimeout(function(){
-        var newsEl = document.getElementById('news');
-        if (newsEl) newsEl.scrollIntoView({behavior:'smooth',block:'start'});
-      }, 50);
+      openTopicPanel(el.getAttribute('data-cat'));
     };
   });
 
@@ -433,8 +487,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     else { var ta=document.createElement('textarea'); ta.value=email; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
   };
 
-  // ── NEWSLETTER via Formspree (reliable fallback) ──────────
-  // Using Formspree since Beehiiv API key needs to be re-verified
+  // ── NEWSLETTER via Beehiiv ───────────────────────────────
+  var BEEHIIV_PUB = 'pub_2e505ecb-cceb-4479-9dfb-0f3ba2871175';
+  var BEEHIIV_KEY = 'FuUhCR9xFxJj76llN5XNygR1zkmdieKTdmp1Pdk7jzGk8FNhgAv5F7tTmrFUmXLX';
+
   function subscribeEmail(email, btn, resetText) {
     if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
       btn.textContent = 'ENTER VALID EMAIL';
@@ -444,25 +500,35 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     }
     btn.textContent = 'SUBSCRIBING...';
     btn.disabled = true;
-    // Submit to Formspree — emails you the subscriber address
-    fetch('https://formspree.io/f/mqeyknno', {
+    fetch('https://api.beehiiv.com/v2/publications/' + BEEHIIV_PUB + '/subscriptions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email: email, _subject: 'New Newsletter Subscriber: ' + email, message: 'New subscriber signup from ufofinders.com' })
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + BEEHIIV_KEY
+      },
+      body: JSON.stringify({
+        email: email,
+        reactivate_existing: false,
+        send_welcome_email: true,
+        utm_source: 'ufofinders.com',
+        utm_medium: 'website'
+      })
     })
     .then(function(r) {
       btn.disabled = false;
-      if (r.ok) {
+      if (r.ok || r.status === 200 || r.status === 201) {
         btn.textContent = "YOU'RE IN!";
         btn.style.background = '#1a3a2a'; btn.style.color = 'var(--glow)';
         setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 4000);
       } else {
+        r.text().then(function(t){ console.log('Beehiiv error:', r.status, t); });
         btn.textContent = 'TRY AGAIN';
         btn.style.background = 'var(--red)';
         setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
       }
     })
-    .catch(function() {
+    .catch(function(e) {
+      console.log('Beehiiv fetch error:', e);
       btn.disabled = false;
       btn.textContent = 'TRY AGAIN';
       btn.style.background = 'var(--red)';
@@ -652,5 +718,16 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   loadArticles();
 })();
 </script>
+
+<div class="topic-panel" id="topic-panel">
+  <div class="tp-nav">
+    <button class="tp-back" id="tp-back">&#8592; Back</button>
+    <div class="tp-title" id="tp-title">Topic</div>
+  </div>
+  <div class="tp-body">
+    <div class="tp-desc" id="tp-desc"></div>
+    <div class="tp-grid" id="tp-grid"></div>
+  </div>
+</div>
 </body>
 </html>
