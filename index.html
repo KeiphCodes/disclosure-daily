@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html><!-- UFO FINDERS v4.1 - BUILD 20260307 -->
 <html lang="en">
 <head>
 <!-- Google tag (gtag.js) -->
@@ -200,11 +200,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   <div id="err-area"></div>
   <div class="hero" id="hero-wrap">
     <div class="hero-label">TOP STORY TODAY</div>
-    <div id="hero-content"><div class="loading"><div class="spinner"></div><div class="load-txt">Loading...</div></div></div>
+    <div id="hero-content"></div>
   </div>
   <div id="news">
     <div class="sec-head"><div class="sec-title">Today's Stories</div><div class="sec-line"></div><div class="sec-ct" id="news-ct"></div></div>
-    <div class="grid" id="cards-grid"><div style="grid-column:span 3;background:var(--bg)"><div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div></div></div>
+    <div class="grid" id="cards-grid"></div>
   </div>
   <div id="topics">
     <div class="sec-head"><div class="sec-title">Browse Topics</div><div class="sec-line"></div></div>
@@ -650,7 +650,10 @@ Add this subscriber to Beehiiv manually or via automation.'
   }
 
   loadArticles();
+  window._ufoLoaded=true;
 })();
+// Backup call in case IIFE failed
+if(!window._ufoLoaded){document.addEventListener("DOMContentLoaded",function(){if(typeof loadArticles==="function")loadArticles();});}
 </script>
 </body>
 </html>
