@@ -16,11 +16,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-:root{
-  --bg:#030508;--deep:#060c14;--surface:#0a1520;--card:#0d1c2e;
-  --border:#112236;--glow:#00ff88;--amber:#ffaa00;--red:#ff3344;
-  --white:#e0f0ff;--mid:#6a9ab8;--dim:#2a4a60;
-}
+:root{--bg:#030508;--deep:#060c14;--surface:#0a1520;--card:#0d1c2e;--border:#112236;--glow:#00ff88;--amber:#ffaa00;--red:#ff3344;--white:#e0f0ff;--mid:#6a9ab8;--dim:#2a4a60}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
 nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem}
@@ -69,7 +65,7 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .arch-cat{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--amber);text-align:right;text-transform:uppercase}
 .topics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem}
 .topic{background:var(--card);border:1px solid var(--border);padding:0.875rem;text-align:center;cursor:pointer;transition:all 0.2s;user-select:none}
-.topic:hover,.topic.active{border-color:var(--glow);background:var(--surface)}
+.topic:hover{border-color:var(--glow);background:var(--surface)}
 .topic-icon{font-size:1.25rem;display:block;margin-bottom:0.3rem}
 .topic-name{font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.1rem}
 .topic-sub{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim)}
@@ -118,6 +114,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
 .empty{padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);border:1px solid var(--border)}
+.err-box{padding:1rem 1.5rem;background:rgba(255,51,68,0.08);border:1px solid var(--red);margin-bottom:1rem;font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--red);text-align:center}
 .overlay{display:none;position:fixed;inset:0;background:rgba(3,5,8,0.85);z-index:800}
 .overlay.on{display:block}
 .panel{position:fixed;top:0;right:0;bottom:0;width:min(660px,100vw);background:var(--deep);border-left:1px solid var(--border);overflow-y:auto;z-index:900;transform:translateX(100%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)}
@@ -149,7 +146,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .c-ta{background:var(--surface);border:1px solid var(--border);color:var(--white);padding:0.55rem 0.7rem;font-family:'Barlow',sans-serif;font-size:0.8rem;outline:none;width:100%;min-height:70px;resize:vertical}
 .c-ta:focus{border-color:var(--glow)}
 .c-btn{background:var(--glow);color:var(--bg);border:none;padding:0.55rem 1.1rem;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.12em;font-weight:700;cursor:pointer;align-self:flex-start}
-.c-btn:disabled{opacity:0.5;cursor:not-allowed}
+.c-btn:disabled{opacity:0.5}
 .c-list{display:flex;flex-direction:column;gap:0.6rem}
 .comment{background:var(--surface);border:1px solid var(--border);padding:0.75rem}
 .c-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.3rem}
@@ -157,18 +154,14 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .c-time{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
 .c-text{font-size:0.8rem;color:var(--mid);line-height:1.5}
 .no-c{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);text-align:center;padding:1rem;border:1px solid var(--border)}
-.c-loading{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);text-align:center;padding:0.75rem}
-@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.topics{grid-template-columns:repeat(2,1fr)}.ft-inner{grid-template-columns:1fr 1fr}.nav-links{display:none}.c-row{grid-template-columns:1fr}.arch-row{grid-template-columns:68px 1fr}.arch-cat{display:none}.contact-guide{grid-template-columns:1fr}.contact-email-box{flex-direction:column;width:90%}.contact-email-addr{text-align:center;width:100%}.copy-btn{width:100%}}
-@media(max-width:480px){.grid{grid-template-columns:1fr}.panel-body{padding:1rem}.p-hl{font-size:1.55rem}}
-
 .topic-panel{position:fixed;inset:0;z-index:1000;background:var(--deep);overflow-y:auto;transform:translateY(100%);transition:transform 0.35s cubic-bezier(0.4,0,0.2,1)}
 .topic-panel.on{transform:translateY(0)}
 .tp-nav{position:sticky;top:0;background:rgba(6,12,20,0.97);border-bottom:1px solid var(--border);padding:0.75rem 1rem;display:flex;align-items:center;gap:0.75rem;z-index:10}
 .tp-back{background:none;border:1px solid var(--border);color:var(--mid);font-family:'Share Tech Mono',monospace;font-size:0.52rem;cursor:pointer;padding:0.35rem 0.75rem;transition:all 0.2s}
 .tp-back:hover{color:var(--glow);border-color:var(--glow)}
 .tp-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;color:var(--glow)}
-.tp-body{max-width:1000px;margin:0 auto;padding:1.5rem 1rem}
-.tp-desc{font-size:0.82rem;color:var(--mid);margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.tp-body{max-width:900px;margin:0 auto;padding:1.5rem 1rem}
+.tp-desc{font-size:0.82rem;color:var(--mid);margin-bottom:1.25rem;padding-bottom:1rem;border-bottom:1px solid var(--border);line-height:1.6}
 .tp-grid{display:grid;grid-template-columns:1fr;gap:1px;background:var(--border)}
 .tp-card{background:var(--bg);padding:1.1rem;cursor:pointer;transition:background 0.2s}
 .tp-card:hover{background:var(--surface)}
@@ -177,12 +170,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .tp-card-hl{font-weight:700;font-size:1rem;line-height:1.2;color:var(--white);margin-bottom:0.4rem;transition:color 0.2s}
 .tp-card-deck{font-size:0.8rem;color:var(--mid);line-height:1.5;margin-bottom:0.5rem}
 .tp-card-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
-.tp-empty{padding:3rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--dim);border:1px solid var(--border)}
-@media(max-width:480px){.tp-body{padding:1rem}}
+.tp-empty{padding:3rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.52rem;color:var(--dim);line-height:1.8}
+@media(max-width:860px){.grid{grid-template-columns:1fr 1fr}.topics{grid-template-columns:repeat(2,1fr)}.ft-inner{grid-template-columns:1fr 1fr}.nav-links{display:none}.c-row{grid-template-columns:1fr}.arch-row{grid-template-columns:68px 1fr}.arch-cat{display:none}.contact-guide{grid-template-columns:1fr}.contact-email-box{flex-direction:column;width:90%}.contact-email-addr{text-align:center;width:100%}.copy-btn{width:100%}}
+@media(max-width:480px){.grid{grid-template-columns:1fr}.panel-body{padding:1rem}.p-hl{font-size:1.55rem}.tp-body{padding:1rem}}
 </style>
 </head>
 <body>
-
 <nav>
   <div class="nav-logo">UFO FINDERS</div>
   <ul class="nav-links">
@@ -193,31 +186,26 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   </ul>
   <button class="nav-sub" id="nl-open-btn">Join Free</button>
 </nav>
-
 <div class="ticker">
   <div class="ticker-label">LIVE</div>
   <div class="ticker-inner">
     <div class="ticker-track" id="ticker-track">
       <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
-      <span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span>
+      <span class="ticker-item">&nbsp;&bull;&nbsp;</span>
       <span class="ticker-item">LATEST UFO &amp; UAP INTELLIGENCE FROM THE UFO FINDERS TEAM</span>
     </div>
   </div>
 </div>
-
 <div class="page">
+  <div id="err-area"></div>
   <div class="hero" id="hero-wrap">
     <div class="hero-label">TOP STORY TODAY</div>
     <div id="hero-content"><div class="loading"><div class="spinner"></div><div class="load-txt">Loading...</div></div></div>
   </div>
-
   <div id="news">
     <div class="sec-head"><div class="sec-title">Today's Stories</div><div class="sec-line"></div><div class="sec-ct" id="news-ct"></div></div>
-    <div class="grid" id="cards-grid">
-      <div style="grid-column:span 3;background:var(--bg)"><div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div></div>
-    </div>
+    <div class="grid" id="cards-grid"><div style="grid-column:span 3;background:var(--bg)"><div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div></div></div>
   </div>
-
   <div id="topics">
     <div class="sec-head"><div class="sec-title">Browse Topics</div><div class="sec-line"></div></div>
     <div class="topics">
@@ -231,15 +219,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div class="topic" data-cat="contact"><span class="topic-icon">&#128125;</span><div class="topic-name">Contact</div><div class="topic-sub">Encounters &middot; Reports</div></div>
     </div>
   </div>
-
   <div id="archive">
     <div class="sec-head"><div class="sec-title">Full Archive</div><div class="sec-line"></div><div class="sec-ct" id="arch-ct"></div></div>
     <div id="arch-list"></div>
   </div>
-
   <div id="contact" class="contact-section">
     <div class="contact-hl">GOT SOMETHING <span>FOR US?</span></div>
-    <div class="contact-sub">Spotted something in the sky? Have a news tip, document, or just want to reach the team? Send us an email — we read everything.</div>
+    <div class="contact-sub">Spotted something in the sky? Have a news tip or just want to reach the team? Send us an email — we read everything.</div>
     <div class="contact-email-box">
       <div class="contact-email-addr">ufofinders.subs@gmail.com</div>
       <button class="copy-btn" id="copy-email-btn">COPY EMAIL</button>
@@ -258,7 +244,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     </div>
   </div>
 </div>
-
 <div class="support-bar">
   <div class="support-inner">
     <div class="support-label">// Support The Mission</div>
@@ -267,7 +252,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     <a class="bmc-btn" href="https://buymeacoffee.com/ufofinders" target="_blank" rel="noopener">BUY THE TEAM A COFFEE</a>
   </div>
 </div>
-
 <div class="nl-bar">
   <div class="nl-inner">
     <div class="nl-label">// Free Daily Briefing</div>
@@ -279,17 +263,15 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     </div>
   </div>
 </div>
-
 <footer>
   <div class="ft-inner">
     <div><div class="ft-brand">UFO FINDERS</div><div class="ft-tag">The world's most complete source for UFO and UAP news, sightings, government disclosures and eyewitness accounts.</div></div>
     <div><div class="ft-col-title">Navigate</div><ul class="ft-links"><li><a href="#news">Today's News</a></li><li><a href="#topics">Topics</a></li><li><a href="#archive">Archive</a></li><li><a href="#contact">Contact</a></li></ul></div>
-    <div><div class="ft-col-title">Topics</div><ul class="ft-links"><li><a href="#topics">Gov Disclosure</a></li><li><a href="#topics">Military Encounters</a></li><li><a href="#topics">Science</a></li><li><a href="#topics">Historic Cases</a></li></ul></div>
-    <div><div class="ft-col-title">Support</div><ul class="ft-links"><li><a href="https://buymeacoffee.com/ufofinders" target="_blank">Buy the Team a Coffee</a></li><li><a href="#contact">Contact the Team</a></li><li><a href="#" id="nl-open-btn2">Newsletter</a></li></ul></div>
+    <div><div class="ft-col-title">Topics</div><ul class="ft-links"><li><a href="#topics">Gov Disclosure</a></li><li><a href="#topics">Sightings</a></li><li><a href="#topics">Science</a></li><li><a href="#topics">Historic Cases</a></li></ul></div>
+    <div><div class="ft-col-title">Support</div><ul class="ft-links"><li><a href="https://buymeacoffee.com/ufofinders" target="_blank">Buy the Team a Coffee</a></li><li><a href="#contact">Contact</a></li><li><a href="#" id="nl-open-btn2">Newsletter</a></li></ul></div>
   </div>
   <div class="ft-bottom"><span>2026 UFO Finders &middot; ufofinders.com</span><span>Updated Daily</span></div>
 </footer>
-
 <div class="overlay" id="overlay"></div>
 <div class="panel" id="panel">
   <div class="panel-nav">
@@ -298,427 +280,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   </div>
   <div class="panel-body" id="panel-body"></div>
 </div>
-
-<script>
-(function() {
-  var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
-  var SUPA_KEY = 'sb_publishable_662hIfz5g0dOQYhvw150sQ_VvYxdvZ1';
-  var articles = [];
-  var currentArticleId = null;
-
-  // ── HELPERS ──────────────────────────────────────────────
-  function clean(s) {
-    return s ? String(s).replace(/<[^>]*>/g, '') : '';
-  }
-  function esc(s) {
-    return clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
-  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
-  function timeAgo(d) {
-    var h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000);
-    if (h < 1) return 'Just now';
-    if (h < 24) return h + 'h ago';
-    return Math.floor(h / 24) + 'd ago';
-  }
-  function supaFetch(path, opts) {
-    return fetch(SUPA_URL + path, Object.assign({
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json',
-        'Accept': 'application/json'
-      }
-    }, opts || {}));
-  }
-
-  // ── LOAD ARTICLES ─────────────────────────────────────────
-  function loadArticles() {
-    supaFetch('/rest/v1/articles?select=*&order=published_at.desc&limit=60')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        articles = data || [];
-        if (!articles.length) { showEmpty('No articles yet — check back tomorrow!'); return; }
-        buildTicker();
-        buildHero();
-        buildCards(articles.slice(1, 10));
-        buildArchive(articles.slice(10));
-      })
-      .catch(function() { showEmpty('Could not load articles. Please refresh.'); });
-  }
-
-  function buildTicker() {
-    var h = articles.slice(0,8).map(function(a){return a.headline||'';}).join('   \u2022   ');
-    var t = document.getElementById('ticker-track');
-    if (t) t.innerHTML = '<span class="ticker-item">'+esc(h)+'</span><span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span><span class="ticker-item">'+esc(h)+'</span>';
-  }
-
-  function buildHero() {
-    var hero = null;
-    for (var i = 0; i < articles.length; i++) { if (articles[i].is_featured) { hero = articles[i]; break; } }
-    if (!hero) hero = articles[0];
-    var hc = document.getElementById('hero-content');
-    if (!hc) return;
-    hc.innerHTML =
-      '<div class="hero-hl">'+esc(hero.headline)+'</div>'+
-      '<div class="hero-deck">'+esc(hero.deck||'')+'</div>'+
-      '<div class="hero-foot">'+
-        '<span class="tag">'+esc(cap(hero.category||'News'))+'</span>'+
-        '<span class="meta">'+timeAgo(hero.published_at)+(hero.word_count?' &middot; '+hero.word_count+' words':'')+'</span>'+
-        '<button class="read-more">Read Full Story &rarr;</button>'+
-      '</div>';
-    document.getElementById('hero-wrap').onclick = function() { openArticle(hero); };
-  }
-
-  function buildCards(list) {
-    var ct = document.getElementById('news-ct');
-    if (ct) ct.textContent = (list.length + 1) + ' stories today';
-    var grid = document.getElementById('cards-grid');
-    if (!grid) return;
-    if (!list.length) { grid.innerHTML = '<div class="empty" style="grid-column:span 3">No stories for this topic yet.</div>'; return; }
-    grid.innerHTML = '';
-    list.forEach(function(a) {
-      var div = document.createElement('div');
-      div.className = 'card';
-      div.innerHTML =
-        '<div class="card-cat">'+esc(cap(a.category||'News'))+'</div>'+
-        '<div class="card-hl">'+esc(a.headline)+'</div>'+
-        '<div class="card-deck">'+esc(a.deck||'')+'</div>'+
-        '<div class="card-foot"><span class="card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</span><span class="card-read">Read &rarr;</span></div>';
-      (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
-      grid.appendChild(div);
-    });
-  }
-
-  function buildArchive(list) {
-    var ct = document.getElementById('arch-ct');
-    if (ct) ct.textContent = articles.length + ' total';
-    var container = document.getElementById('arch-list');
-    if (!container) return;
-    if (!list.length) { container.innerHTML = '<div class="empty">More stories arriving tomorrow.</div>'; return; }
-    container.innerHTML = '';
-    list.forEach(function(a) {
-      var div = document.createElement('div');
-      div.className = 'arch-row';
-      var d = new Date(a.published_at);
-      div.innerHTML =
-        '<div class="arch-date">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>'+
-        '<div class="arch-hl">'+esc(a.headline)+'</div>'+
-        '<div class="arch-cat">'+esc(cap(a.category||''))+'</div>';
-      (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
-      container.appendChild(div);
-    });
-  }
-
-  // ── TOPICS — open full panel ─────────────────────────────
-  var topicMeta = {
-    government:  {label:'Gov Disclosure',    icon:'\u{1F3DB}', desc:'Pentagon briefings, AARO reports, congressional hearings, and official government statements on UAP.'},
-    sighting:    {label:'Sightings',         icon:'\u{1F441}', desc:'Civilian and military UAP sighting reports from around the world.'},
-    science:     {label:'Science',           icon:'\u{1F52C}', desc:'Scientific analysis, research papers, and evidence-based investigations into UAP phenomena.'},
-    technology:  {label:'UAP Tech',          icon:'\u26A1',    desc:'Advanced propulsion, exotic materials, and reverse-engineering reports.'},
-    whistleblower:{label:'Whistleblowers',   icon:'\u{1F4E2}', desc:'Testimony from insiders, leaked documents, and firsthand accounts from military and intelligence personnel.'},
-    global:      {label:'Global',            icon:'\u{1F30E}', desc:'UAP incidents and government disclosures from countries around the world.'},
-    history:     {label:'Historic Cases',    icon:'\u{1F4C1}', desc:'Classic cases including Roswell, Phoenix Lights, and other landmark UAP events.'},
-    contact:     {label:'Contact',           icon:'\u{1F47D}', desc:'Close encounters, abduction reports, and contact experiences from eyewitnesses.'}
-  };
-
-  function matchCat(articleCat, filterCat) {
-    if (!articleCat) return false;
-    var c = articleCat.toLowerCase();
-    var f = filterCat.toLowerCase();
-    if (c === f || c.indexOf(f) !== -1) return true;
-    if (f === 'government' && (c.indexOf('gov') !== -1 || c.indexOf('pentagon') !== -1 || c.indexOf('disclosure') !== -1 || c.indexOf('aaro') !== -1 || c.indexOf('congress') !== -1)) return true;
-    if (f === 'sighting' && (c.indexOf('sight') !== -1 || c.indexOf('uap') !== -1 || c.indexOf('ufo') !== -1 || c.indexOf('encounter') !== -1)) return true;
-    if (f === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('classic') !== -1 || c.indexOf('roswell') !== -1 || c.indexOf('legacy') !== -1)) return true;
-    if (f === 'whistleblower' && (c.indexOf('whistle') !== -1 || c.indexOf('testim') !== -1 || c.indexOf('witness') !== -1 || c.indexOf('leak') !== -1)) return true;
-    if (f === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1 || c.indexOf('material') !== -1)) return true;
-    if (f === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1 || c.indexOf('world') !== -1 || c.indexOf('foreign') !== -1)) return true;
-    if (f === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('abduct') !== -1)) return true;
-    if (f === 'science' && (c.indexOf('sci') !== -1 || c.indexOf('research') !== -1 || c.indexOf('study') !== -1 || c.indexOf('analysis') !== -1)) return true;
-    return false;
-  }
-
-  function openTopicPanel(cat) {
-    var meta = topicMeta[cat] || {label: cap(cat), desc: ''};
-    document.getElementById('tp-title').textContent = meta.label;
-    document.getElementById('tp-desc').textContent = meta.desc;
-    var filtered = articles.filter(function(a){ return matchCat(a.category, cat); });
-    var grid = document.getElementById('tp-grid');
-    grid.innerHTML = '';
-    if (!filtered.length) {
-      grid.innerHTML = '<div class="tp-empty">No stories for this topic yet — check back tomorrow!</div>';
-    } else {
-      filtered.forEach(function(a) {
-        var div = document.createElement('div');
-        div.className = 'tp-card';
-        var d = new Date(a.published_at);
-        div.innerHTML =
-          '<div class="tp-card-cat">'+esc(cap(a.category||'News'))+'</div>'+
-          '<div class="tp-card-hl">'+esc(a.headline)+'</div>'+
-          '<div class="tp-card-deck">'+esc(a.deck||'')+'</div>'+
-          '<div class="tp-card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>';
-        (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
-        grid.appendChild(div);
-      });
-    }
-    document.getElementById('topic-panel').classList.add('on');
-    document.body.style.overflow = 'hidden';
-    document.getElementById('topic-panel').scrollTop = 0;
-  }
-
-  function closeTopicPanel() {
-    document.getElementById('topic-panel').classList.remove('on');
-    document.body.style.overflow = '';
-  }
-
-  document.getElementById('tp-back').onclick = closeTopicPanel;
-
-  document.querySelectorAll('.topic').forEach(function(el) {
-    el.onclick = function() {
-      openTopicPanel(el.getAttribute('data-cat'));
-    };
-  });
-
-  // ── COPY EMAIL ────────────────────────────────────────────
-  document.getElementById('copy-email-btn').onclick = function() {
-    var btn = this;
-    var email = 'ufofinders.subs@gmail.com';
-    function done() { btn.textContent='COPIED!'; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)'; setTimeout(function(){ btn.textContent='COPY EMAIL'; btn.style.background=''; btn.style.color=''; },2500); }
-    if (navigator.clipboard) { navigator.clipboard.writeText(email).then(done).catch(done); }
-    else { var ta=document.createElement('textarea'); ta.value=email; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
-  };
-
-  // ── NEWSLETTER via Beehiiv ───────────────────────────────
-  var BEEHIIV_PUB = 'pub_2e505ecb-cceb-4479-9dfb-0f3ba2871175';
-  var BEEHIIV_KEY = 'FuUhCR9xFxJj76llN5XNygR1zkmdieKTdmp1Pdk7jzGk8FNhgAv5F7tTmrFUmXLX';
-
-  function subscribeEmail(email, btn, resetText) {
-    if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
-      btn.textContent = 'ENTER VALID EMAIL';
-      btn.style.background = 'var(--amber)'; btn.style.color = 'var(--bg)';
-      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 2500);
-      return;
-    }
-    btn.textContent = 'SUBSCRIBING...';
-    btn.disabled = true;
-    fetch('https://api.beehiiv.com/v2/publications/' + BEEHIIV_PUB + '/subscriptions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + BEEHIIV_KEY
-      },
-      body: JSON.stringify({
-        email: email,
-        reactivate_existing: false,
-        send_welcome_email: true,
-        utm_source: 'ufofinders.com',
-        utm_medium: 'website'
-      })
-    })
-    .then(function(r) {
-      btn.disabled = false;
-      if (r.ok || r.status === 200 || r.status === 201) {
-        btn.textContent = "YOU'RE IN!";
-        btn.style.background = '#1a3a2a'; btn.style.color = 'var(--glow)';
-        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 4000);
-      } else {
-        r.text().then(function(t){ console.log('Beehiiv error:', r.status, t); });
-        btn.textContent = 'TRY AGAIN';
-        btn.style.background = 'var(--red)';
-        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
-      }
-    })
-    .catch(function(e) {
-      console.log('Beehiiv fetch error:', e);
-      btn.disabled = false;
-      btn.textContent = 'TRY AGAIN';
-      btn.style.background = 'var(--red)';
-      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
-    });
-  }
-
-  document.getElementById('nl-btn').onclick = function() {
-    var email = document.getElementById('nl-email').value.trim();
-    document.getElementById('nl-email').value = '';
-    subscribeEmail(email, this, 'SUBSCRIBE FREE');
-  };
-
-  // ── PANEL ─────────────────────────────────────────────────
-  function openPanel() {
-    document.getElementById('overlay').classList.add('on');
-    document.getElementById('panel').classList.add('on');
-    document.body.style.overflow = 'hidden';
-  }
-  function closePanel() {
-    document.getElementById('overlay').classList.remove('on');
-    document.getElementById('panel').classList.remove('on');
-    document.body.style.overflow = '';
-    currentArticleId = null;
-  }
-  document.getElementById('overlay').onclick = closePanel;
-  document.getElementById('panel-close').onclick = closePanel;
-
-  // ── OPEN ARTICLE ──────────────────────────────────────────
-  function openArticle(a) {
-    currentArticleId = a.id;
-    var bc = document.getElementById('panel-bc');
-    if (bc) bc.textContent = 'UFO Finders / ' + cap(a.category || 'News');
-
-    var body = '';
-    if (a.body) {
-      a.body.split('\n').forEach(function(p){ if(p.trim()) body += '<p>'+esc(p)+'</p>'; });
-    } else { body = '<p>Full article text coming soon.</p>'; }
-
-    var facts = '';
-    if (a.key_facts && a.key_facts.length) {
-      facts = '<div class="p-facts"><h4>Key Facts</h4><ul>';
-      a.key_facts.forEach(function(f){ facts += '<li>'+esc(f)+'</li>'; });
-      facts += '</ul></div>';
-    }
-
-    var pb = document.getElementById('panel-body');
-    pb.innerHTML =
-      '<div class="p-cat">'+esc(cap(a.category||'News'))+'</div>'+
-      '<div class="p-hl">'+esc(a.headline)+'</div>'+
-      '<div class="p-deck">'+esc(a.deck||'')+'</div>'+
-      '<div class="p-meta"><span class="p-ct">'+esc(cap(a.category||'News'))+'</span><span>'+timeAgo(a.published_at)+'</span>'+(a.word_count?'<span>'+a.word_count+' words</span>':'')+'</div>'+
-      '<div class="p-body">'+body+'</div>'+facts+
-      '<div class="comments">'+
-        '<div class="c-hl">Discussion</div>'+
-        '<div class="c-form">'+
-          '<div class="c-row">'+
-            '<input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)">'+
-            '<input class="c-in" id="c-loc" type="text" placeholder="Location (optional)">'+
-          '</div>'+
-          '<textarea class="c-ta" id="c-text" placeholder="Share your thoughts..."></textarea>'+
-          '<button class="c-btn" id="c-post-btn">POST COMMENT</button>'+
-        '</div>'+
-        '<div class="c-list" id="c-list"><div class="c-loading">Loading comments...</div></div>'+
-      '</div>';
-
-    document.getElementById('c-post-btn').onclick = function(){ postComment(a.id); };
-    openPanel();
-    document.getElementById('panel').scrollTop = 0;
-    loadComments(a.id);
-  }
-
-  // ── COMMENTS — saved to Supabase ─────────────────────────
-  function loadComments(articleId) {
-    var list = document.getElementById('c-list');
-    if (!list) return;
-    supaFetch('/rest/v1/comments?article_id=eq.'+encodeURIComponent(articleId)+'&order=created_at.desc&select=*')
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        if (!list || currentArticleId !== articleId) return;
-        renderComments(Array.isArray(data) ? data : []);
-      })
-      .catch(function(){
-        if (list) list.innerHTML = '<div class="no-c">Comments unavailable right now.</div>';
-      });
-  }
-
-  function postComment(articleId) {
-    var nameEl = document.getElementById('c-name');
-    var locEl = document.getElementById('c-loc');
-    var textEl = document.getElementById('c-text');
-    var btn = document.getElementById('c-post-btn');
-    var name = (nameEl && nameEl.value.trim()) || 'Anonymous';
-    var loc = locEl ? locEl.value.trim() : '';
-    var text = textEl ? textEl.value.trim() : '';
-    if (!text) return;
-
-    btn.textContent = 'POSTING...';
-    btn.disabled = true;
-
-    supaFetch('/rest/v1/comments', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify({
-        article_id: articleId,
-        author_name: name,
-        author_location: loc,
-        body: text
-      })
-    })
-    .then(function(r){
-      btn.disabled = false;
-      btn.textContent = 'POST COMMENT';
-      if (r.ok || r.status === 201) {
-        if (textEl) textEl.value = '';
-        loadComments(articleId);
-      } else {
-        btn.textContent = 'ERROR — TRY AGAIN';
-        setTimeout(function(){ btn.textContent='POST COMMENT'; }, 2500);
-      }
-    })
-    .catch(function(){
-      btn.disabled = false;
-      btn.textContent = 'ERROR — TRY AGAIN';
-      setTimeout(function(){ btn.textContent='POST COMMENT'; }, 2500);
-    });
-  }
-
-  function renderComments(data) {
-    var list = document.getElementById('c-list');
-    if (!list) return;
-    if (!data.length) { list.innerHTML = '<div class="no-c">No comments yet — be the first</div>'; return; }
-    list.innerHTML = '';
-    data.forEach(function(c) {
-      var div = document.createElement('div');
-      div.className = 'comment';
-      var d = new Date(c.created_at);
-      var dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric'}) + ' at ' + d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-      div.innerHTML =
-        '<div class="c-head">'+
-          '<span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span>'+
-          '<span class="c-time">'+dateStr+'</span>'+
-        '</div>'+
-        '<div class="c-text">'+esc(c.body)+'</div>';
-      list.appendChild(div);
-    });
-  }
-
-  // ── NL PANEL ─────────────────────────────────────────────
-  function openNLPanel() {
-    var bc = document.getElementById('panel-bc');
-    if (bc) bc.textContent = 'UFO Finders / Newsletter';
-    var pb = document.getElementById('panel-body');
-    pb.innerHTML =
-      '<div class="p-cat">Free Daily Briefing</div>'+
-      '<div class="p-hl">JOIN THE FINDERS</div>'+
-      '<div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div>'+
-      '<div class="nl-form" style="margin-top:1rem;max-width:100%">'+
-        '<input type="email" class="nl-in" id="nl-panel-email" placeholder="your@email.com" style="flex:1">'+
-        '<button class="nl-btn" id="nl-panel-btn">JOIN FREE</button>'+
-      '</div>';
-    openPanel();
-    setTimeout(function(){
-      var b = document.getElementById('nl-panel-btn');
-      if (b) b.onclick = function(){
-        var email = document.getElementById('nl-panel-email').value.trim();
-        document.getElementById('nl-panel-email').value = '';
-        subscribeEmail(email, b, 'JOIN FREE');
-      };
-    }, 100);
-  }
-  document.getElementById('nl-open-btn').onclick = openNLPanel;
-  document.getElementById('nl-open-btn2').onclick = function(e){ e.preventDefault(); openNLPanel(); };
-
-  function showEmpty(msg) {
-    var hc = document.getElementById('hero-content');
-    if (hc) hc.innerHTML = '<div style="padding:1rem;color:var(--mid);font-size:0.9rem">'+msg+'</div>';
-    var grid = document.getElementById('cards-grid');
-    if (grid) grid.innerHTML = '<div class="empty" style="grid-column:span 3">'+msg+'</div>';
-  }
-
-  loadArticles();
-})();
-</script>
-
 <div class="topic-panel" id="topic-panel">
   <div class="tp-nav">
     <button class="tp-back" id="tp-back">&#8592; Back</button>
@@ -729,5 +290,322 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     <div class="tp-grid" id="tp-grid"></div>
   </div>
 </div>
+<script>
+(function(){
+  // ── CONFIG ────────────────────────────────────────────────
+  var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
+  // Using both keys — try anon JWT first, fall back to publishable
+  var SUPA_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jcnlycnZscnNmcnl0dWFqdmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDA4NzI4MDAsImV4cCI6MjA1NjQ0ODgwMH0.placeholder';
+  var SUPA_PUB  = 'sb_publishable_662hIfz5g0dOQYhvw150sQ_VvYxdvZ1';
+  var BEEHIIV_PUB = 'pub_2e505ecb-cceb-4479-9dfb-0f3ba2871175';
+  var BEEHIIV_KEY = 'FuUhCR9xFxJj76llN5XNygR1zkmdieKTdmp1Pdk7jzGk8FNhgAv5F7tTmrFUmXLX';
+  var articles = [];
+  var currentArticleId = null;
+
+  // ── HELPERS ───────────────────────────────────────────────
+  function clean(s){ return s ? String(s).replace(/<[^>]*>/g,'') : ''; }
+  function esc(s){ return clean(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+  function timeAgo(d){ var h=Math.floor((Date.now()-new Date(d).getTime())/3600000); if(h<1) return 'Just now'; if(h<24) return h+'h ago'; return Math.floor(h/24)+'d ago'; }
+
+  function apiFetch(path, opts){
+    var headers = Object.assign({
+      'apikey': SUPA_PUB,
+      'Authorization': 'Bearer '+SUPA_PUB,
+      'Content-Type': 'application/json',
+      'Accept': 'application/json'
+    }, (opts||{}).headers||{});
+    return fetch(SUPA_URL+path, Object.assign({}, opts||{}, {headers:headers}));
+  }
+
+  function showErr(msg){
+    var el = document.getElementById('err-area');
+    if(el) el.innerHTML = '<div class="err-box">'+msg+'</div>';
+  }
+
+  // ── LOAD ARTICLES ─────────────────────────────────────────
+  function loadArticles(){
+    apiFetch('/rest/v1/articles?select=*&order=published_at.desc&limit=60')
+    .then(function(r){
+      if(!r.ok) throw new Error('HTTP '+r.status);
+      return r.json();
+    })
+    .then(function(data){
+      if(!Array.isArray(data)) throw new Error('Bad data');
+      articles = data;
+      if(!articles.length){
+        showEmpty('No articles yet — the team publishes daily at 6am UTC. Check back soon!');
+        return;
+      }
+      buildTicker(); buildHero(); buildCards(articles.slice(1,10)); buildArchive(articles.slice(10));
+    })
+    .catch(function(e){
+      showEmpty('Articles loading shortly — please refresh in a moment.');
+      showErr('Could not connect to database. Error: '+e.message+'. Please refresh.');
+    });
+  }
+
+  function buildTicker(){
+    var h = articles.slice(0,8).map(function(a){return a.headline||'';}).join('   \u2022   ');
+    var t = document.getElementById('ticker-track');
+    if(t) t.innerHTML='<span class="ticker-item">'+esc(h)+'</span><span class="ticker-item">&nbsp;&bull;&nbsp;</span><span class="ticker-item">'+esc(h)+'</span>';
+  }
+
+  function buildHero(){
+    var hero=null;
+    for(var i=0;i<articles.length;i++){if(articles[i].is_featured){hero=articles[i];break;}}
+    if(!hero) hero=articles[0];
+    var hc=document.getElementById('hero-content');
+    if(!hc) return;
+    hc.innerHTML=
+      '<div class="hero-hl">'+esc(hero.headline)+'</div>'+
+      '<div class="hero-deck">'+esc(hero.deck||'')+'</div>'+
+      '<div class="hero-foot">'+
+        '<span class="tag">'+esc(cap(hero.category||'News'))+'</span>'+
+        '<span class="meta">'+timeAgo(hero.published_at)+(hero.word_count?' &middot; '+hero.word_count+' words':'')+'</span>'+
+        '<button class="read-more">Read Full Story &rarr;</button>'+
+      '</div>';
+    document.getElementById('hero-wrap').onclick=function(){openArticle(hero);};
+  }
+
+  function buildCards(list){
+    var ct=document.getElementById('news-ct');
+    if(ct) ct.textContent=(list.length+1)+' stories today';
+    var grid=document.getElementById('cards-grid');
+    if(!grid) return;
+    if(!list.length){grid.innerHTML='<div class="empty" style="grid-column:span 3">No stories for this filter — showing all stories.</div>';return;}
+    grid.innerHTML='';
+    list.forEach(function(a){
+      var div=document.createElement('div');div.className='card';
+      div.innerHTML='<div class="card-cat">'+esc(cap(a.category||'News'))+'</div><div class="card-hl">'+esc(a.headline)+'</div><div class="card-deck">'+esc(a.deck||'')+'</div><div class="card-foot"><span class="card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</span><span class="card-read">Read &rarr;</span></div>';
+      (function(art){div.onclick=function(){openArticle(art);};})(a);
+      grid.appendChild(div);
+    });
+  }
+
+  function buildArchive(list){
+    var ct=document.getElementById('arch-ct');if(ct) ct.textContent=articles.length+' total';
+    var c=document.getElementById('arch-list');if(!c) return;
+    if(!list.length){c.innerHTML='<div class="empty">More stories arriving tomorrow.</div>';return;}
+    c.innerHTML='';
+    list.forEach(function(a){
+      var div=document.createElement('div');div.className='arch-row';
+      var d=new Date(a.published_at);
+      div.innerHTML='<div class="arch-date">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div><div class="arch-hl">'+esc(a.headline)+'</div><div class="arch-cat">'+esc(cap(a.category||''))+'</div>';
+      (function(art){div.onclick=function(){openArticle(art);};})(a);
+      c.appendChild(div);
+    });
+  }
+
+  // ── TOPICS PANEL ──────────────────────────────────────────
+  var topicMeta={
+    government:{label:'Gov Disclosure',desc:'Pentagon briefings, AARO reports, congressional hearings, and official government statements on UAP.'},
+    sighting:{label:'Sightings',desc:'Civilian and military UAP sighting reports from around the world.'},
+    science:{label:'Science',desc:'Scientific analysis, research papers, and evidence-based investigations into UAP phenomena.'},
+    technology:{label:'UAP Technology',desc:'Advanced propulsion, exotic materials, and reverse-engineering reports.'},
+    whistleblower:{label:'Whistleblowers',desc:'Testimony from insiders, leaked documents, and firsthand accounts from military and intelligence personnel.'},
+    global:{label:'Global Reports',desc:'UAP incidents and government disclosures from countries around the world.'},
+    history:{label:'Historic Cases',desc:'Classic cases including Roswell, Phoenix Lights, and other landmark UAP events.'},
+    contact:{label:'Contact & Encounters',desc:'Close encounters, abduction reports, and contact experiences from eyewitnesses.'}
+  };
+
+  function matchCat(ac,fc){
+    if(!ac) return false;
+    var c=ac.toLowerCase(),f=fc.toLowerCase();
+    if(c===f||c.indexOf(f)!==-1) return true;
+    if(f==='government'&&(c.indexOf('gov')!==-1||c.indexOf('pentagon')!==-1||c.indexOf('disclosure')!==-1||c.indexOf('aaro')!==-1||c.indexOf('congress')!==-1||c.indexOf('militar')!==-1)) return true;
+    if(f==='sighting'&&(c.indexOf('sight')!==-1||c.indexOf('uap')!==-1||c.indexOf('ufo')!==-1||c.indexOf('report')!==-1)) return true;
+    if(f==='history'&&(c.indexOf('histor')!==-1||c.indexOf('classic')!==-1||c.indexOf('roswell')!==-1||c.indexOf('legacy')!==-1||c.indexOf('1947')!==-1)) return true;
+    if(f==='whistleblower'&&(c.indexOf('whistle')!==-1||c.indexOf('testim')!==-1||c.indexOf('witness')!==-1||c.indexOf('leak')!==-1||c.indexOf('insider')!==-1)) return true;
+    if(f==='technology'&&(c.indexOf('tech')!==-1||c.indexOf('propul')!==-1||c.indexOf('material')!==-1||c.indexOf('craft')!==-1)) return true;
+    if(f==='global'&&(c.indexOf('global')!==-1||c.indexOf('intern')!==-1||c.indexOf('world')!==-1||c.indexOf('foreign')!==-1||c.indexOf('china')!==-1||c.indexOf('russia')!==-1)) return true;
+    if(f==='contact'&&(c.indexOf('contact')!==-1||c.indexOf('abduct')!==-1||c.indexOf('encounter')!==-1||c.indexOf('alien')!==-1)) return true;
+    if(f==='science'&&(c.indexOf('sci')!==-1||c.indexOf('research')!==-1||c.indexOf('study')!==-1||c.indexOf('analysis')!==-1||c.indexOf('data')!==-1)) return true;
+    return false;
+  }
+
+  function openTopicPanel(cat){
+    var meta=topicMeta[cat]||{label:cap(cat),desc:''};
+    document.getElementById('tp-title').textContent=meta.label;
+    document.getElementById('tp-desc').textContent=meta.desc;
+    var filtered=articles.filter(function(a){return matchCat(a.category,cat);});
+    var grid=document.getElementById('tp-grid');
+    grid.innerHTML='';
+    if(!filtered.length){
+      // Show all articles with a note if no category match
+      grid.innerHTML='<div class="tp-empty">No stories tagged under this topic yet.<br>The team publishes new content daily — check back tomorrow!<br><br>Showing all recent stories below.</div>';
+      articles.slice(0,10).forEach(function(a){
+        var div=document.createElement('div');div.className='tp-card';
+        div.innerHTML='<div class="tp-card-cat">'+esc(cap(a.category||'News'))+'</div><div class="tp-card-hl">'+esc(a.headline)+'</div><div class="tp-card-deck">'+esc(a.deck||'')+'</div><div class="tp-card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>';
+        (function(art){div.onclick=function(){openArticle(art);};})(a);
+        grid.appendChild(div);
+      });
+    } else {
+      filtered.forEach(function(a){
+        var div=document.createElement('div');div.className='tp-card';
+        div.innerHTML='<div class="tp-card-cat">'+esc(cap(a.category||'News'))+'</div><div class="tp-card-hl">'+esc(a.headline)+'</div><div class="tp-card-deck">'+esc(a.deck||'')+'</div><div class="tp-card-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>';
+        (function(art){div.onclick=function(){openArticle(art);};})(a);
+        grid.appendChild(div);
+      });
+    }
+    document.getElementById('topic-panel').classList.add('on');
+    document.body.style.overflow='hidden';
+    document.getElementById('topic-panel').scrollTop=0;
+  }
+
+  document.getElementById('tp-back').onclick=function(){
+    document.getElementById('topic-panel').classList.remove('on');
+    document.body.style.overflow='';
+  };
+
+  document.querySelectorAll('.topic').forEach(function(el){
+    el.onclick=function(){openTopicPanel(el.getAttribute('data-cat'));};
+  });
+
+  // ── COPY EMAIL ────────────────────────────────────────────
+  document.getElementById('copy-email-btn').onclick=function(){
+    var btn=this,email='ufofinders.subs@gmail.com';
+    function done(){btn.textContent='COPIED!';btn.style.background='#1a3a2a';btn.style.color='var(--glow)';setTimeout(function(){btn.textContent='COPY EMAIL';btn.style.background='';btn.style.color='';},2500);}
+    if(navigator.clipboard){navigator.clipboard.writeText(email).then(done).catch(done);}
+    else{var ta=document.createElement('textarea');ta.value=email;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
+  };
+
+  // ── NEWSLETTER ────────────────────────────────────────────
+  function subscribeEmail(email,btn,resetText){
+    if(!email||email.indexOf('@')===-1||email.indexOf('.')===-1){
+      btn.textContent='ENTER VALID EMAIL';btn.style.background='var(--amber)';btn.style.color='var(--bg)';
+      setTimeout(function(){btn.textContent=resetText;btn.style.background='';btn.style.color='';},2500);return;
+    }
+    btn.textContent='SUBSCRIBING...';btn.disabled=true;
+    fetch('https://api.beehiiv.com/v2/publications/'+BEEHIIV_PUB+'/subscriptions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+BEEHIIV_KEY},
+      body:JSON.stringify({email:email,reactivate_existing:false,send_welcome_email:true,utm_source:'ufofinders.com',utm_medium:'website'})
+    }).then(function(r){
+      btn.disabled=false;
+      if(r.ok||r.status===200||r.status===201){
+        btn.textContent="YOU'RE IN!";btn.style.background='#1a3a2a';btn.style.color='var(--glow)';
+        setTimeout(function(){btn.textContent=resetText;btn.style.background='';btn.style.color='';},4000);
+      } else {
+        btn.textContent='TRY AGAIN';btn.style.background='var(--red)';
+        setTimeout(function(){btn.textContent=resetText;btn.style.background='';},3000);
+      }
+    }).catch(function(){
+      btn.disabled=false;btn.textContent='TRY AGAIN';btn.style.background='var(--red)';
+      setTimeout(function(){btn.textContent=resetText;btn.style.background='';},3000);
+    });
+  }
+
+  document.getElementById('nl-btn').onclick=function(){
+    var email=document.getElementById('nl-email').value.trim();
+    document.getElementById('nl-email').value='';
+    subscribeEmail(email,this,'SUBSCRIBE FREE');
+  };
+
+  // ── PANEL ─────────────────────────────────────────────────
+  function openPanel(){document.getElementById('overlay').classList.add('on');document.getElementById('panel').classList.add('on');document.body.style.overflow='hidden';}
+  function closePanel(){document.getElementById('overlay').classList.remove('on');document.getElementById('panel').classList.remove('on');document.body.style.overflow='';currentArticleId=null;}
+  document.getElementById('overlay').onclick=closePanel;
+  document.getElementById('panel-close').onclick=closePanel;
+
+  // ── ARTICLE PANEL ─────────────────────────────────────────
+  function openArticle(a){
+    currentArticleId=a.id;
+    var bc=document.getElementById('panel-bc');
+    if(bc) bc.textContent='UFO Finders / '+cap(a.category||'News');
+    var body='';
+    if(a.body){a.body.split('\n').forEach(function(p){if(p.trim()) body+='<p>'+esc(p)+'</p>';});}
+    else{body='<p>Full article text coming soon.</p>';}
+    var facts='';
+    if(a.key_facts&&a.key_facts.length){
+      facts='<div class="p-facts"><h4>Key Facts</h4><ul>';
+      a.key_facts.forEach(function(f){facts+='<li>'+esc(f)+'</li>';});
+      facts+='</ul></div>';
+    }
+    var pb=document.getElementById('panel-body');
+    pb.innerHTML=
+      '<div class="p-cat">'+esc(cap(a.category||'News'))+'</div>'+
+      '<div class="p-hl">'+esc(a.headline)+'</div>'+
+      '<div class="p-deck">'+esc(a.deck||'')+'</div>'+
+      '<div class="p-meta"><span class="p-ct">'+esc(cap(a.category||'News'))+'</span><span>'+timeAgo(a.published_at)+'</span>'+(a.word_count?'<span>'+a.word_count+' words</span>':'')+'</div>'+
+      '<div class="p-body">'+body+'</div>'+facts+
+      '<div class="comments"><div class="c-hl">Discussion</div>'+
+      '<div class="c-form"><div class="c-row"><input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)"><input class="c-in" id="c-loc" type="text" placeholder="Location (optional)"></div>'+
+      '<textarea class="c-ta" id="c-text" placeholder="Share your thoughts..."></textarea>'+
+      '<button class="c-btn" id="c-post-btn">POST COMMENT</button></div>'+
+      '<div class="c-list" id="c-list"><div class="no-c">Loading comments...</div></div></div>';
+    document.getElementById('c-post-btn').onclick=function(){postComment(a.id);};
+    openPanel();
+    document.getElementById('panel').scrollTop=0;
+    loadComments(a.id);
+  }
+
+  // ── COMMENTS ──────────────────────────────────────────────
+  function loadComments(articleId){
+    var list=document.getElementById('c-list');if(!list) return;
+    apiFetch('/rest/v1/comments?article_id=eq.'+encodeURIComponent(articleId)+'&order=created_at.desc&select=*')
+    .then(function(r){return r.json();})
+    .then(function(data){
+      if(!list||currentArticleId!==articleId) return;
+      renderComments(Array.isArray(data)?data:[]);
+    })
+    .catch(function(){if(list) list.innerHTML='<div class="no-c">Comments unavailable right now.</div>';});
+  }
+
+  function postComment(articleId){
+    var nameEl=document.getElementById('c-name'),locEl=document.getElementById('c-loc'),textEl=document.getElementById('c-text'),btn=document.getElementById('c-post-btn');
+    var name=(nameEl&&nameEl.value.trim())||'Anonymous';
+    var loc=locEl?locEl.value.trim():'';
+    var text=textEl?textEl.value.trim():'';
+    if(!text) return;
+    btn.textContent='POSTING...';btn.disabled=true;
+    apiFetch('/rest/v1/comments',{
+      method:'POST',
+      headers:{'apikey':SUPA_PUB,'Authorization':'Bearer '+SUPA_PUB,'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({article_id:articleId,author_name:name,author_location:loc,body:text})
+    }).then(function(r){
+      btn.disabled=false;btn.textContent='POST COMMENT';
+      if(r.ok||r.status===201){if(textEl) textEl.value='';loadComments(articleId);}
+      else{btn.textContent='ERROR — TRY AGAIN';setTimeout(function(){btn.textContent='POST COMMENT';},2500);}
+    }).catch(function(){btn.disabled=false;btn.textContent='ERROR — TRY AGAIN';setTimeout(function(){btn.textContent='POST COMMENT';},2500);});
+  }
+
+  function renderComments(data){
+    var list=document.getElementById('c-list');if(!list) return;
+    if(!data.length){list.innerHTML='<div class="no-c">No comments yet — be the first</div>';return;}
+    list.innerHTML='';
+    data.forEach(function(c){
+      var div=document.createElement('div');div.className='comment';
+      var d=new Date(c.created_at);
+      var ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      div.innerHTML='<div class="c-head"><span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span><span class="c-time">'+ds+'</span></div><div class="c-text">'+esc(c.body)+'</div>';
+      list.appendChild(div);
+    });
+  }
+
+  // ── NL PANEL ──────────────────────────────────────────────
+  function openNLPanel(){
+    var bc=document.getElementById('panel-bc');if(bc) bc.textContent='UFO Finders / Newsletter';
+    var pb=document.getElementById('panel-body');
+    pb.innerHTML='<div class="p-cat">Free Daily Briefing</div><div class="p-hl">JOIN THE FINDERS</div><div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div><div class="nl-form" style="margin-top:1rem;max-width:100%"><input type="email" class="nl-in" id="nl-panel-email" placeholder="your@email.com" style="flex:1"><button class="nl-btn" id="nl-panel-btn">JOIN FREE</button></div>';
+    openPanel();
+    setTimeout(function(){
+      var b=document.getElementById('nl-panel-btn');
+      if(b) b.onclick=function(){var email=document.getElementById('nl-panel-email').value.trim();document.getElementById('nl-panel-email').value='';subscribeEmail(email,b,'JOIN FREE');};
+    },100);
+  }
+  document.getElementById('nl-open-btn').onclick=openNLPanel;
+  document.getElementById('nl-open-btn2').onclick=function(e){e.preventDefault();openNLPanel();};
+
+  function showEmpty(msg){
+    var hc=document.getElementById('hero-content');
+    if(hc) hc.innerHTML='<div style="padding:1rem 0;color:var(--mid);font-size:0.9rem;line-height:1.6">'+msg+'</div>';
+    var grid=document.getElementById('cards-grid');
+    if(grid) grid.innerHTML='<div class="empty" style="grid-column:span 3">'+msg+'</div>';
+  }
+
+  loadArticles();
+})();
+</script>
 </body>
 </html>
