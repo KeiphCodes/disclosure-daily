@@ -104,6 +104,10 @@ async function runDailyPipeline() {
     console.log("\n[4/5] Saving to database...");
     const saved = await saveToDatabase(articles);
 
+    // 5b. Find and save today's 2 recent sightings
+    console.log("\n[4b/5] Finding recent sightings...");
+    await findAndSaveSightings();
+
     // 6. Trigger newsletter
     console.log("\n[5/5] Building newsletter digest...");
     await buildNewsletter(articles);
@@ -353,6 +357,97 @@ Return ONLY valid JSON.`,
 }
 
 // ─── STEP 4: SAVE TO DATABASE ──────────────────────────────
+
+// ─── RECENT SIGHTINGS ──────────────────────────────────────
+async function findAndSaveSightings() {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+
+    // Check if we already saved sightings today
+    const { data: existing } = await supabase
+      .from("sightings")
+      .select("id")
+      .gte("sighted_date", today)
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      console.log("  Sightings already saved for today, skipping.");
+      return;
+    }
+
+    const response = await anthropic.messages.create({
+      model: CONFIG.model,
+      max_tokens: 2000,
+      tools: [{ type: "web_search_20250305", name: "web_search" }],
+      messages: [
+        {
+          role: "user",
+          content: `Search for the 2 most recent and credible UFO or UAP sightings reported in the last 7 days. Look for real, sourced reports from news sites, MUFON, NUFORC, military sources, or credible media.
+
+For each sighting find:
+- A real image URL if one exists (from the news article, MUFON report, or official release)
+- OR a real YouTube/video URL if video exists
+- The direct link to the full report or article
+
+Return ONLY a JSON array of exactly 2 objects:
+[
+  {
+    "title": "Short punchy title describing the sighting",
+    "date": "YYYY-MM-DD (date of the actual sighting)",
+    "location": "City, State/Country",
+    "description": "2-3 sentence factual description of what was seen, by whom, and any notable details",
+    "shape": "orb|triangle|cylinder|disc|light|chevron|unknown|other",
+    "source": "Name of publication or database (e.g. MUFON, Reuters, BBC)",
+    "source_url": "https://... (direct link to the full report)",
+    "image_url": "https://... or null if no image found",
+    "video_url": "https://youtube.com/... or null if no video found",
+    "has_media": true or false
+  }
+]
+
+Prioritise sightings that have real photos or video. Return ONLY valid JSON.`,
+        },
+      ],
+    });
+
+    const text = extractText(response);
+    const sightings = safeParseJSON(text);
+
+    if (!sightings || !Array.isArray(sightings)) {
+      console.log("  ⚠️  No sightings data returned");
+      return;
+    }
+
+    let saved = 0;
+    for (const s of sightings.slice(0, 2)) {
+      const { error } = await supabase.from("sightings").insert({
+        title: s.title,
+        sighted_date: s.date || today,
+        location: s.location,
+        description: s.description,
+        shape: s.shape || "unknown",
+        source: s.source,
+        source_url: s.source_url || null,
+        image_url: s.image_url || null,
+        video_url: s.video_url || null,
+        has_media: s.has_media || false,
+        published_at: new Date().toISOString(),
+      });
+
+      if (error) {
+        console.error("  ❌ Sighting save failed:", error.message);
+      } else {
+        saved++;
+        console.log(`  ✅ Sighting saved: ${s.title?.slice(0, 50)}`);
+      }
+    }
+
+    console.log(`  Saved ${saved} sightings`);
+  } catch (err) {
+    console.error("  ❌ Sightings step failed:", err.message);
+  }
+}
+
 // ─── IMAGE FINDER ──────────────────────────────────────────
 async function findArticleImage(headline, category, sourceUrl) {
   try {
