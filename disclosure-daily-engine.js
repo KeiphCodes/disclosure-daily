@@ -216,11 +216,9 @@ async function writeArticles(curatedStories) {
   for (const story of curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
 
-    const wordCount = story.isFeatured ? 500 : 250;
-
     const response = await anthropic.messages.create({
       model: CONFIG.model,
-      max_tokens: 1500,
+      max_tokens: 2000,
       system: EDITORIAL_SYSTEM_PROMPT,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [
@@ -237,11 +235,21 @@ Editorial note: ${story.editorialNote}
 
 Search the web for any additional context or corroborating sources before writing.
 
-Write a ${wordCount}-word article with:
+Write a thorough, complete article — as long as the story warrants. Do not limit yourself to a word count. Cover the story fully. Include:
 1. A compelling, accurate headline (can differ from original title)
-2. A one-sentence "deck" (subheadline) 
+2. A one-sentence "deck" (subheadline)
 3. The full article body in inverted pyramid style
 4. A "Key Facts" box (3-5 bullet points)
+
+CRITICAL WRITING RULES — READ CAREFULLY:
+- Write COMPLETE, SELF-CONTAINED sentences only. Every sentence must start with a capital letter and make full sense on its own.
+- NEVER start any sentence or paragraph with a comma, period, semicolon, or lowercase conjunction like ", according to" or ". to replace" or ", establishing".
+- NEVER use citation tags, XML tags, HTML tags, brackets, or any markup of any kind in the article body.
+- Source attribution ALWAYS goes at the START of a sentence: Write "According to the Pentagon, ..." NOT "...according to the Pentagon."
+- Each paragraph must be 2-4 complete sentences. No orphan fragments. No dangling clauses.
+- The body field must be clean plain text paragraphs separated by newlines — nothing else.
+- If a sentence doesn't start with a capital letter, rewrite it so it does.
+- Read your output before returning it. If any paragraph starts with punctuation or a lowercase word, fix it.
 
 Format your response as JSON:
 {
