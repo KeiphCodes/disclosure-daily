@@ -469,20 +469,28 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     else{var ta=document.createElement('textarea');ta.value=email;document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);done();}
   };
 
-  // ── NEWSLETTER ────────────────────────────────────────────
+  // ── NEWSLETTER via Formspree (Beehiiv blocked by CORS) ───
   function subscribeEmail(email,btn,resetText){
     if(!email||email.indexOf('@')===-1||email.indexOf('.')===-1){
       btn.textContent='ENTER VALID EMAIL';btn.style.background='var(--amber)';btn.style.color='var(--bg)';
       setTimeout(function(){btn.textContent=resetText;btn.style.background='';btn.style.color='';},2500);return;
     }
     btn.textContent='SUBSCRIBING...';btn.disabled=true;
-    fetch('https://api.beehiiv.com/v2/publications/'+BEEHIIV_PUB+'/subscriptions',{
+    fetch('https://formspree.io/f/mqeyknno',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+BEEHIIV_KEY},
-      body:JSON.stringify({email:email,reactivate_existing:false,send_welcome_email:true,utm_source:'ufofinders.com',utm_medium:'website'})
+      headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({
+        email:email,
+        _subject:'New UFO Finders Subscriber: '+email,
+        message:'New newsletter subscriber from ufofinders.com
+
+Email: '+email+'
+
+Add this subscriber to Beehiiv manually or via automation.'
+      })
     }).then(function(r){
       btn.disabled=false;
-      if(r.ok||r.status===200||r.status===201){
+      if(r.ok){
         btn.textContent="YOU'RE IN!";btn.style.background='#1a3a2a';btn.style.color='var(--glow)';
         setTimeout(function(){btn.textContent=resetText;btn.style.background='';btn.style.color='';},4000);
       } else {
