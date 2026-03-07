@@ -33,7 +33,7 @@ const supabase = createClient(
 
 // ─── CONFIG ────────────────────────────────────────────────
 const CONFIG = {
-  model: "claude-haiku-4-5-20251001",
+  model: "claude-opus-4-5",
   storiesPerDay: 8,         // How many articles to publish each day
   featuredCount: 1,         // How many get "featured" / hero treatment
   deepDiveWeekly: true,     // Generate a longform piece every Friday
@@ -68,7 +68,7 @@ Your editorial standards:
 - EVIDENCE-BASED. Only report on verifiable claims. Distinguish clearly between confirmed facts, credible allegations, and speculation.
 - FAIR and ACCURATE. Present multiple perspectives. Note when claims are disputed or unverified.
 - NEVER sensationalize. No "Bombshell!" or "EXCLUSIVE PROOF!" — let the facts speak.
-- CITE sources clearly (publication name, date, author when known).
+- CREDIT sources inline using plain text only (e.g. 'according to Reuters', 'per the Pentagon report'). Never use HTML tags, XML tags, markdown, or any special formatting in article text.
 - USE HEDGING LANGUAGE appropriately: "according to," "alleged," "claimed," "reportedly."
 - COVER the full spectrum: government documents, scientific research, credible sighting reports, congressional activity, international developments.
 
