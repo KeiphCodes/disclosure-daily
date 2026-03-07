@@ -15,9 +15,8 @@ jobs:
         with:
           node-version: '20'
       - run: npm install
-      - name: Run engine
-        run: node disclosure-daily-engine.js
+      - run: node disclosure-daily-engine.js
         env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+          ANTHROPIC_API_KEY: ${{secrets.ANTHROPIC_API_KEY}}
+          SUPABASE_URL: ${{secrets.SUPABASE_URL}}
+          SUPABASE_KEY: ${{secrets.SUPABASE_KEY}}
