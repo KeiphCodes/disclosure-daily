@@ -330,7 +330,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     <div class="contact-hl">GOT SOMETHING <span>FOR US?</span></div>
     <div class="contact-sub">Spotted something in the sky? Have a news tip, document, or just want to reach the team? Send us an email — we read everything.</div>
     <div class="contact-email-box">
-      <div class="contact-email-addr">ufofinders.subs@gmail.com</div>
+      <div class="contact-email-addr"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4530232a232c2b212037366b36302736052228242c296b262a28">[email&#160;protected]</a></div>
       <button class="copy-btn" id="copy-email-btn">COPY EMAIL</button>
     </div>
     <div class="contact-types">
@@ -420,6 +420,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 </div>
 
 <script>
+
 (function() {
   var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
   var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jcnlycnZscnNmcnl0dWFqdmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MzM1ODAsImV4cCI6MjA4ODQwOTU4MH0.Cyr695cGFGQWujvForCHF8sTEuUhmSPYspfP6K7ysuI';
@@ -427,32 +428,24 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   var currentArticleId = null;
 
   // ── HELPERS ──────────────────────────────────────────────
-
   function cleanText(s) {
     if (!s) return '';
-    // Strip <cite> tags but keep inner text
     var t = String(s).replace(/<cite[^>]*>([\s\S]*?)<\/cite>/gi, '$1');
-    // Strip all remaining HTML/XML tags
     t = t.replace(/<[^>]*>/g, '');
-    // Remove leading punctuation/whitespace (citation remnants)
     t = t.replace(/^[\s,;:.!\-\u2013\u2014]+/, '');
     return t.trim();
   }
-
   function esc(s) {
     var t = cleanText(s);
     return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
-
   function timeAgo(d) {
     var h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000);
     if (h < 1) return 'Just now';
     if (h < 24) return h + 'h ago';
     return Math.floor(h / 24) + 'd ago';
   }
-
   function supaFetch(path, opts) {
     return fetch(SUPA_URL + path, Object.assign({
       headers: {
@@ -464,8 +457,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     }, opts || {}));
   }
 
-  // ── ARTICLE BODY BUILDER ─────────────────────────────────
-  // Filters citation fragments from articles already stored in the DB
+  // ── ARTICLE BODY CLEANER ─────────────────────────────────
   function buildBody(bodyText) {
     if (!bodyText) return '<p>Full article text coming soon.</p>';
     var out = '';
@@ -473,11 +465,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     for (var i = 0; i < lines.length; i++) {
       var t = cleanText(lines[i]);
       if (!t || t.length < 12) continue;
-      // Skip punctuation-only lines (lone "." etc)
       if (/^[\s.,;:!?\-\u2013\u2014]+$/.test(t)) continue;
-      // Skip lines starting with punctuation (", according to...")
       if (/^[,;:.!\-\u2013\u2014]/.test(t)) continue;
-      // Skip lines starting with lowercase (broken mid-sentence fragment)
       if (/^[a-z]/.test(t)) continue;
       out += '<p>' + esc(t) + '</p>';
     }
@@ -564,14 +553,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
   // ── TOPICS ───────────────────────────────────────────────
   var TOPIC_LABELS = {
-    government: 'Gov Disclosure',
-    sighting: 'Sightings',
-    science: 'Science',
-    technology: 'UAP Tech',
-    whistleblower: 'Whistleblowers',
-    global: 'Global',
-    history: 'Historic Cases',
-    contact: 'Contact'
+    government:'Gov Disclosure', sighting:'Sightings', science:'Science',
+    technology:'UAP Tech', whistleblower:'Whistleblowers', global:'Global',
+    history:'Historic Cases', contact:'Contact'
   };
 
   function matchesTopic(a, cat) {
@@ -580,11 +564,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     if (c === cat || c.indexOf(cat) !== -1) return true;
     if (cat === 'government' && (c.indexOf('gov') !== -1 || c.indexOf('pentagon') !== -1 || c.indexOf('disclosure') !== -1 || c.indexOf('aaro') !== -1)) return true;
     if (cat === 'sighting' && (c.indexOf('sight') !== -1 || c.indexOf('uap') !== -1 || c.indexOf('ufo') !== -1)) return true;
-    if (cat === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('roswell') !== -1 || c.indexOf('classic') !== -1)) return true;
+    if (cat === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('roswell') !== -1)) return true;
     if (cat === 'whistleblower' && (c.indexOf('whistle') !== -1 || c.indexOf('testim') !== -1 || c.indexOf('witness') !== -1)) return true;
-    if (cat === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1 || c.indexOf('material') !== -1)) return true;
-    if (cat === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1 || c.indexOf('world') !== -1)) return true;
-    if (cat === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('encounter') !== -1 || c.indexOf('abduct') !== -1)) return true;
+    if (cat === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1)) return true;
+    if (cat === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1)) return true;
+    if (cat === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('encounter') !== -1)) return true;
     return false;
   }
 
@@ -592,26 +576,19 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     var filtered = articles.filter(function(a) { return matchesTopic(a, cat); });
     var bc = document.getElementById('panel-bc');
     if (bc) bc.textContent = 'UFO Finders / ' + label;
-
     var pb = document.getElementById('panel-body');
-
     if (!filtered.length) {
       pb.innerHTML =
         '<div class="p-cat">'+esc(label)+'</div>'+
         '<div class="p-hl">NO STORIES YET</div>'+
-        '<div class="p-deck">No articles filed under this topic yet. Check back tomorrow — our team covers this daily.</div>'+
-        '<div style="margin-top:1.5rem;display:flex;flex-direction:column;gap:0.6rem">'+
-          '<div class="empty">New stories for this topic are published every morning.</div>'+
-        '</div>';
+        '<div class="p-deck">No articles filed under this topic yet. Check back tomorrow.</div>'+
+        '<div class="empty">New stories for this topic are published every morning.</div>';
       openPanel();
       document.getElementById('panel').scrollTop = 0;
       return;
     }
-
-    // Build topic page: big first article + list of the rest
     var first = filtered[0];
-    var rest = filtered.slice(1);
-
+    var rest  = filtered.slice(1);
     var restHtml = '';
     rest.forEach(function(a) {
       restHtml +=
@@ -622,11 +599,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
           '<div class="topic-art-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>'+
         '</div>';
     });
-
     pb.innerHTML =
       '<div class="p-cat">'+esc(label)+' &mdash; '+filtered.length+' ARTICLE'+(filtered.length!==1?'S':'')+' TODAY</div>'+
-
-      // Featured first article
       '<div class="topic-featured" data-id="'+first.id+'">'+
         '<div class="topic-feat-label">TOP STORY</div>'+
         '<div class="topic-feat-hl">'+esc(first.headline)+'</div>'+
@@ -634,20 +608,15 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
         '<div class="topic-feat-meta">'+timeAgo(first.published_at)+(first.word_count?' &middot; '+first.word_count+' words':'')+'</div>'+
         '<button class="topic-feat-btn">Read Full Story &rarr;</button>'+
       '</div>'+
-
-      // Rest as list
       (rest.length ? '<div class="topic-art-list">'+restHtml+'</div>' : '');
 
-    // Wire up click handlers
-    var featEl = pb.querySelector('.topic-featured');
-    if (featEl) featEl.onclick = function() { openArticle(first); };
-
+    pb.querySelector('.topic-featured').onclick = function() { openArticle(first); };
     pb.querySelectorAll('.topic-art-row').forEach(function(row) {
       var id = row.getAttribute('data-id');
-      var art = articles.find(function(a){ return String(a.id) === String(id); });
+      var art = null;
+      for (var i=0;i<articles.length;i++) { if (String(articles[i].id)===String(id)) { art=articles[i]; break; } }
       if (art) row.onclick = function() { openArticle(art); };
     });
-
     openPanel();
     document.getElementById('panel').scrollTop = 0;
   }
@@ -655,8 +624,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   document.querySelectorAll('.topic').forEach(function(el) {
     el.onclick = function() {
       var cat = el.getAttribute('data-cat').toLowerCase();
-      var label = TOPIC_LABELS[cat] || cap(cat);
-      openTopicPage(cat, label);
+      openTopicPage(cat, TOPIC_LABELS[cat] || cap(cat));
     };
   });
 
@@ -671,35 +639,22 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
   // ── NEWSLETTER ───────────────────────────────────────────
   function subscribeEmail(email, btn, resetText) {
-    if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
-      btn.textContent = 'ENTER VALID EMAIL';
-      btn.style.background = 'var(--amber)'; btn.style.color = 'var(--bg)';
-      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 2500);
-      return;
+    if (!email || email.indexOf('@')===-1 || email.indexOf('.')===-1) {
+      btn.textContent='ENTER VALID EMAIL'; btn.style.background='var(--amber)'; btn.style.color='var(--bg)';
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },2500); return;
     }
-    btn.textContent = 'SUBSCRIBING...';
-    btn.disabled = true;
-    fetch('https://formspree.io/f/mqeyknno', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify({ email: email, _subject: 'New Subscriber: ' + email, message: 'New signup from ufofinders.com' })
-    })
-    .then(function(r) {
-      btn.disabled = false;
-      if (r.ok) {
-        btn.textContent = "YOU'RE IN!";
-        btn.style.background = '#1a3a2a'; btn.style.color = 'var(--glow)';
-        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; }, 4000);
-      } else {
-        btn.textContent = 'TRY AGAIN'; btn.style.background = 'var(--red)';
-        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
-      }
-    })
-    .catch(function() {
-      btn.disabled = false;
-      btn.textContent = 'TRY AGAIN'; btn.style.background = 'var(--red)';
-      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; }, 3000);
-    });
+    btn.textContent='SUBSCRIBING...'; btn.disabled=true;
+    fetch('https://formspree.io/f/mqeyknno',{
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:email,_subject:'New Subscriber: '+email,message:'New signup from ufofinders.com'})
+    }).then(function(r){
+      btn.disabled=false;
+      if(r.ok){ btn.textContent="YOU'RE IN!"; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)';
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },4000);
+      } else { btn.textContent='TRY AGAIN'; btn.style.background='var(--red)';
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); }
+    }).catch(function(){ btn.disabled=false; btn.textContent='TRY AGAIN'; btn.style.background='var(--red)';
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); });
   }
 
   document.getElementById('nl-btn').onclick = function() {
@@ -733,7 +688,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     if (a.image_url) {
       imageHtml =
         '<img class="p-image" src="'+esc(a.image_url)+'" alt="'+esc(a.headline)+'" '+
-          'onerror="this.style.display=\'none\';var cap=document.getElementById(\'p-img-cap\');if(cap)cap.style.display=\'none\'">'+
+          'onerror="this.style.display=\'none\';var c=document.getElementById(\'p-img-cap\');if(c)c.style.display=\'none\'">'+
         (a.image_caption ? '<div class="p-image-caption" id="p-img-cap">'+esc(a.image_caption)+'</div>' : '');
     }
 
@@ -752,7 +707,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       '<div class="p-meta">'+
         '<span class="p-ct">'+esc(cap(a.category||'News'))+'</span>'+
         '<span>'+timeAgo(a.published_at)+'</span>'+
-        (a.word_count ? '<span>'+a.word_count+' words</span>' : '')+
+        (a.word_count?'<span>'+a.word_count+' words</span>':'')+
       '</div>'+
       imageHtml+
       '<div class="p-body">'+buildBody(a.body)+'</div>'+
@@ -786,76 +741,45 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
         if (!list || currentArticleId !== articleId) return;
         renderComments(Array.isArray(data) ? data : []);
       })
-      .catch(function(){
-        if (list) list.innerHTML = '<div class="no-c">Comments unavailable right now.</div>';
-      });
+      .catch(function(){ if(list) list.innerHTML='<div class="no-c">Comments unavailable right now.</div>'; });
   }
 
   function postComment(articleId) {
-    var nameEl = document.getElementById('c-name');
-    var locEl = document.getElementById('c-loc');
-    var textEl = document.getElementById('c-text');
-    var btn = document.getElementById('c-post-btn');
-    var name = (nameEl && nameEl.value.trim()) || 'Anonymous';
-    var loc = locEl ? locEl.value.trim() : '';
-    var text = textEl ? textEl.value.trim() : '';
+    var nameEl=document.getElementById('c-name'), locEl=document.getElementById('c-loc'),
+        textEl=document.getElementById('c-text'), btn=document.getElementById('c-post-btn');
+    var name=(nameEl&&nameEl.value.trim())||'Anonymous', loc=locEl?locEl.value.trim():'', text=textEl?textEl.value.trim():'';
     if (!text) return;
-    btn.textContent = 'POSTING...';
-    btn.disabled = true;
-    supaFetch('/rest/v1/comments', {
-      method: 'POST',
-      headers: {
-        'apikey': SUPA_KEY,
-        'Authorization': 'Bearer ' + SUPA_KEY,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation'
-      },
-      body: JSON.stringify({ article_id: articleId, author_name: name, author_location: loc, body: text })
-    })
-    .then(function(r){
-      btn.disabled = false;
-      btn.textContent = 'POST COMMENT';
-      if (r.ok || r.status === 201) {
-        if (textEl) textEl.value = '';
-        loadComments(articleId);
-      } else {
-        btn.textContent = 'ERROR — TRY AGAIN';
-        setTimeout(function(){ btn.textContent='POST COMMENT'; }, 2500);
-      }
-    })
-    .catch(function(){
-      btn.disabled = false;
-      btn.textContent = 'ERROR — TRY AGAIN';
-      setTimeout(function(){ btn.textContent='POST COMMENT'; }, 2500);
-    });
+    btn.textContent='POSTING...'; btn.disabled=true;
+    supaFetch('/rest/v1/comments',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({article_id:articleId,author_name:name,author_location:loc,body:text})
+    }).then(function(r){
+      btn.disabled=false; btn.textContent='POST COMMENT';
+      if(r.ok||r.status===201){ if(textEl)textEl.value=''; loadComments(articleId); }
+      else { btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); }
+    }).catch(function(){ btn.disabled=false; btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); });
   }
 
   function renderComments(data) {
     var list = document.getElementById('c-list');
     if (!list) return;
-    if (!data.length) { list.innerHTML = '<div class="no-c">No comments yet — be the first</div>'; return; }
-    list.innerHTML = '';
-    data.forEach(function(c) {
-      var div = document.createElement('div');
-      div.className = 'comment';
-      var d = new Date(c.created_at);
-      var dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-      div.innerHTML =
-        '<div class="c-head">'+
-          '<span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span>'+
-          '<span class="c-time">'+dateStr+'</span>'+
-        '</div>'+
-        '<div class="c-text">'+esc(c.body)+'</div>';
+    if (!data.length) { list.innerHTML='<div class="no-c">No comments yet — be the first</div>'; return; }
+    list.innerHTML='';
+    data.forEach(function(c){
+      var div=document.createElement('div'); div.className='comment';
+      var d=new Date(c.created_at);
+      var ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      div.innerHTML='<div class="c-head"><span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span><span class="c-time">'+ds+'</span></div><div class="c-text">'+esc(c.body)+'</div>';
       list.appendChild(div);
     });
   }
 
   // ── NEWSLETTER PANEL ─────────────────────────────────────
   function openNLPanel() {
-    var bc = document.getElementById('panel-bc');
-    if (bc) bc.textContent = 'UFO Finders / Newsletter';
-    var pb = document.getElementById('panel-body');
-    pb.innerHTML =
+    var bc=document.getElementById('panel-bc'); if(bc) bc.textContent='UFO Finders / Newsletter';
+    var pb=document.getElementById('panel-body');
+    pb.innerHTML=
       '<div class="p-cat">Free Daily Briefing</div>'+
       '<div class="p-hl">JOIN THE FINDERS</div>'+
       '<div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div>'+
@@ -865,142 +789,95 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       '</div>';
     openPanel();
     setTimeout(function(){
-      var b = document.getElementById('nl-panel-btn');
-      if (b) b.onclick = function(){
-        var email = document.getElementById('nl-panel-email').value.trim();
-        document.getElementById('nl-panel-email').value = '';
-        subscribeEmail(email, b, 'JOIN FREE');
-      };
-    }, 100);
+      var b=document.getElementById('nl-panel-btn');
+      if(b) b.onclick=function(){ var e=document.getElementById('nl-panel-email').value.trim(); document.getElementById('nl-panel-email').value=''; subscribeEmail(e,b,'JOIN FREE'); };
+    },100);
   }
-
   document.getElementById('nl-open-btn').onclick = openNLPanel;
   document.getElementById('nl-open-btn2').onclick = function(e){ e.preventDefault(); openNLPanel(); };
-
-  function showEmpty(msg) {
-    var hc = document.getElementById('hero-content');
-    if (hc) hc.innerHTML = '<div style="padding:1rem;color:var(--mid);font-size:0.9rem">'+msg+'</div>';
-    var grid = document.getElementById('cards-grid');
-    if (grid) grid.innerHTML = '<div class="empty" style="grid-column:span 3">'+msg+'</div>';
-  }
-
 
   // ── SIGHTINGS ─────────────────────────────────────────────
   function loadSightings() {
     supaFetch('/rest/v1/sightings?select=*&order=published_at.desc&limit=2')
       .then(function(r){ return r.json(); })
-      .then(function(data){
-        renderSightings(Array.isArray(data) ? data : []);
-      })
+      .then(function(data){ renderSightings(Array.isArray(data) ? data : []); })
       .catch(function(){
-        var g = document.getElementById('sightings-grid');
-        if(g) g.innerHTML = '<div class="empty" style="grid-column:span 2">Could not load sightings. Check back soon.</div>';
+        var g=document.getElementById('sightings-grid');
+        if(g) g.innerHTML='<div class="empty" style="grid-column:span 2">Could not load sightings. Check back soon.</div>';
       });
-  }
-
-  function renderSightings(data) {
-    var grid = document.getElementById('sightings-grid');
-    var ct   = document.getElementById('sightings-ct');
-    if (!grid) return;
-
-    if (!data.length) {
-      grid.innerHTML = '<div class="empty" style="grid-column:span 2">No sightings yet — check back tomorrow.</div>';
-      return;
-    }
-
-    if (ct) ct.textContent = data.length + ' filed today';
-    grid.innerHTML = '';
-
-    data.forEach(function(s) {
-      var card = document.createElement('div');
-      card.className = 'sighting-card';
-
-      // ── Media block ──────────────────────────────────────
-      var mediaHtml = '';
-      if (s.image_url) {
-        mediaHtml =
-          '<div class="sighting-media">' +
-            '<img class="sighting-img" src="'+esc(s.image_url)+'" alt="'+esc(s.title)+'" ' +
-              'onerror="this.parentElement.innerHTML='<div class=\"sighting-no-media\"><div class=\"sighting-no-media-icon\">&#128065;</div><div class=\"sighting-no-media-txt\">No image available</div></div>'">' +
-            (s.video_url ? '<div class="sighting-vid-badge">Video available</div>' : '') +
-            '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
-          '</div>';
-      } else if (s.video_url) {
-        // Video thumbnail from YouTube if possible
-        var ytId = extractYouTubeId(s.video_url);
-        if (ytId) {
-          mediaHtml =
-            '<div class="sighting-media">' +
-              '<img class="sighting-img" src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="'+esc(s.title)+'" ' +
-                'onerror="this.parentElement.innerHTML='<div class=\"sighting-no-media\"><div class=\"sighting-no-media-icon\">&#128249;</div><div class=\"sighting-no-media-txt\">Video available</div></div>'">' +
-              '<div class="sighting-vid-badge">Video</div>' +
-              '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
-            '</div>';
-        } else {
-          mediaHtml =
-            '<div class="sighting-media">' +
-              '<div class="sighting-no-media">' +
-                '<div class="sighting-no-media-icon">&#128249;</div>' +
-                '<div class="sighting-no-media-txt">Video available</div>' +
-              '</div>' +
-              '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
-            '</div>';
-        }
-      } else {
-        mediaHtml =
-          '<div class="sighting-media">' +
-            '<div class="sighting-no-media">' +
-              '<div class="sighting-no-media-icon">&#128065;</div>' +
-              '<div class="sighting-no-media-txt">No media filed</div>' +
-            '</div>' +
-            '<div class="sighting-shape-badge">' + esc((s.shape||'unknown').toUpperCase()) + '</div>' +
-          '</div>';
-      }
-
-      // ── Links ────────────────────────────────────────────
-      var linksHtml = '<div class="sighting-links">';
-      if (s.source_url) {
-        linksHtml += '<a class="sighting-link primary" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">Full Report &rarr;</a>';
-      }
-      if (s.video_url) {
-        linksHtml += '<a class="sighting-link video" href="'+esc(s.video_url)+'" target="_blank" rel="noopener">&#9654; Watch</a>';
-      }
-      linksHtml += '</div>';
-
-      // ── Date display ─────────────────────────────────────
-      var dateStr = '';
-      if (s.sighted_date) {
-        var d = new Date(s.sighted_date);
-        dateStr = d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-      }
-
-      card.innerHTML =
-        mediaHtml +
-        '<div class="sighting-body">' +
-          '<div class="sighting-meta">' +
-            (dateStr ? '<span class="sighting-date">'+dateStr+'</span>' : '') +
-            (s.location ? '<span class="sighting-loc">'+esc(s.location)+'</span>' : '') +
-          '</div>' +
-          '<div class="sighting-title">'+esc(s.title)+'</div>' +
-          '<div class="sighting-desc">'+esc(s.description||'')+'</div>' +
-          '<div class="sighting-footer">' +
-            '<span class="sighting-source">'+(s.source?'Via '+esc(s.source):'')+'</span>' +
-            linksHtml +
-          '</div>' +
-        '</div>';
-
-      grid.appendChild(card);
-    });
   }
 
   function extractYouTubeId(url) {
     if (!url) return null;
-    var m = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/);
+    var m=url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([^&?#]+)/);
     return m ? m[1] : null;
   }
 
+  function renderSightings(data) {
+    var grid=document.getElementById('sightings-grid');
+    var ct=document.getElementById('sightings-ct');
+    if (!grid) return;
+    if (!data.length) {
+      grid.innerHTML='<div class="empty" style="grid-column:span 2">No sightings yet — check back tomorrow.</div>';
+      return;
+    }
+    if (ct) ct.textContent=data.length+' filed today';
+    grid.innerHTML='';
+    data.forEach(function(s){
+      var card=document.createElement('div'); card.className='sighting-card';
+      var mediaHtml='';
+      if (s.image_url) {
+        mediaHtml='<div class="sighting-media">'+
+          '<img class="sighting-img" src="'+esc(s.image_url)+'" alt="'+esc(s.title)+'" onerror="this.parentElement.innerHTML=\'<div class=sighting-no-media><div class=sighting-no-media-icon>&#128065;</div><div class=sighting-no-media-txt>No image</div></div>\'">'+
+          (s.video_url?'<div class="sighting-vid-badge">Video available</div>':'')+
+          '<div class="sighting-shape-badge">'+esc((s.shape||'unknown').toUpperCase())+'</div>'+
+          '</div>';
+      } else if (s.video_url) {
+        var ytId=extractYouTubeId(s.video_url);
+        if (ytId) {
+          mediaHtml='<div class="sighting-media">'+
+            '<img class="sighting-img" src="https://img.youtube.com/vi/'+ytId+'/hqdefault.jpg" alt="'+esc(s.title)+'" onerror="this.parentElement.innerHTML=\'<div class=sighting-no-media><div class=sighting-no-media-icon>&#128249;</div><div class=sighting-no-media-txt>Video available</div></div>\'">'+
+            '<div class="sighting-vid-badge">Video</div>'+
+            '<div class="sighting-shape-badge">'+esc((s.shape||'unknown').toUpperCase())+'</div>'+
+            '</div>';
+        } else {
+          mediaHtml='<div class="sighting-media"><div class="sighting-no-media"><div class="sighting-no-media-icon">&#128249;</div><div class="sighting-no-media-txt">Video available</div></div><div class="sighting-shape-badge">'+esc((s.shape||'unknown').toUpperCase())+'</div></div>';
+        }
+      } else {
+        mediaHtml='<div class="sighting-media"><div class="sighting-no-media"><div class="sighting-no-media-icon">&#128065;</div><div class="sighting-no-media-txt">No media filed</div></div><div class="sighting-shape-badge">'+esc((s.shape||'unknown').toUpperCase())+'</div></div>';
+      }
+      var linksHtml='<div class="sighting-links">';
+      if (s.source_url) linksHtml+='<a class="sighting-link primary" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">Full Report &rarr;</a>';
+      if (s.video_url)  linksHtml+='<a class="sighting-link video" href="'+esc(s.video_url)+'" target="_blank" rel="noopener">&#9654; Watch</a>';
+      linksHtml+='</div>';
+      var dateStr='';
+      if (s.sighted_date) { var d=new Date(s.sighted_date); dateStr=d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}); }
+      card.innerHTML=
+        mediaHtml+
+        '<div class="sighting-body">'+
+          '<div class="sighting-meta">'+
+            (dateStr?'<span class="sighting-date">'+dateStr+'</span>':'')+
+            (s.location?'<span class="sighting-loc">'+esc(s.location)+'</span>':'')+
+          '</div>'+
+          '<div class="sighting-title">'+esc(s.title)+'</div>'+
+          '<div class="sighting-desc">'+esc(s.description||'')+'</div>'+
+          '<div class="sighting-footer"><span class="sighting-source">'+(s.source?'Via '+esc(s.source):'')+'</span>'+linksHtml+'</div>'+
+        '</div>';
+      grid.appendChild(card);
+    });
+  }
+
+  function showEmpty(msg) {
+    var hc=document.getElementById('hero-content');
+    if(hc) hc.innerHTML='<div style="padding:1rem;color:var(--mid);font-size:0.9rem">'+msg+'</div>';
+    var grid=document.getElementById('cards-grid');
+    if(grid) grid.innerHTML='<div class="empty" style="grid-column:span 3">'+msg+'</div>';
+  }
+
+  // ── INIT ─────────────────────────────────────────────────
   loadArticles();
   loadSightings();
+
 })();
 </script>
 </body>
