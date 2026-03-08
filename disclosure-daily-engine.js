@@ -25,6 +25,7 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 // ─── CLIENTS ───────────────────────────────────────────────
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -129,9 +130,6 @@ async function runDailyPipeline() {
     throw err;
   }
 }
-
-// ─── RATE LIMIT HELPER ─────────────────────────────────────
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ─── STEP 1: SEARCH FOR NEWS ───────────────────────────────
 async function searchForNews() {
