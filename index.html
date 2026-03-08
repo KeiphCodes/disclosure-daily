@@ -12,7 +12,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UFO Finders — Daily News, Sightings & Community</title>
-<meta name="description" content="The #1 source for UFO and UAP news, daily sightings, eyewitness reports and government disclosures.">
+<meta name="description" content="UFO Finders — daily UFO and UAP news, government disclosures, military sightings, whistleblower testimony and eyewitness reports. Updated every morning.">
+
+<!-- Open Graph / Facebook / Reddit previews -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://ufofinders.com/">
+<meta property="og:title" content="UFO Finders — Daily UAP & UFO News">
+<meta property="og:description" content="Daily UFO and UAP news powered by AI. Government disclosures, military sightings, whistleblower testimony — updated every morning at 6am.">
+<meta property="og:image" content="https://ufofinders.com/og-image.jpg">
+<meta property="og:site_name" content="UFO Finders">
+
+<!-- Twitter / X card -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@ufofinders">
+<meta name="twitter:title" content="UFO Finders — Daily UAP & UFO News">
+<meta name="twitter:description" content="Daily UFO and UAP news powered by AI. Government disclosures, military sightings, whistleblower testimony — updated every morning.">
+<meta name="twitter:image" content="https://ufofinders.com/og-image.jpg">
+
+<!-- SEO -->
+<meta name="keywords" content="UFO news, UAP news, UFO sightings 2025, government disclosure, Pentagon UFO, AARO, UAP hearings, alien disclosure, military UFO, UFO today">
+<meta name="robots" content="index, follow">
+<meta name="author" content="UFO Finders">
+<link rel="canonical" href="https://ufofinders.com/">
+
+<!-- Schema.org structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "NewsMediaOrganization",
+  "name": "UFO Finders",
+  "url": "https://ufofinders.com",
+  "description": "Daily UFO and UAP news, government disclosures, military sightings and eyewitness reports.",
+  "sameAs": [
+    "https://x.com/ufofinders",
+    "https://reddit.com/r/ufofinders"
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
@@ -253,8 +289,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 <nav>
   <div class="nav-logo">UFO FINDERS</div>
   <ul class="nav-links">
-    <li><a href="#news">News</a></li>
     <li><a href="#sightings">Sightings</a></li>
+    <li><a href="#news">News</a></li>
     <li><a href="#topics">Topics</a></li>
     <li><a href="#archive">Archive</a></li>
     <li><a href="#contact">Contact</a></li>
@@ -275,6 +311,17 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
 <div class="page">
 
+  <div id="sightings">
+    <div class="sec-head">
+      <div class="sec-title">Recent Sightings</div>
+      <div class="sec-line"></div>
+      <div class="sec-ct" id="sightings-ct"></div>
+    </div>
+    <div class="sightings-grid" id="sightings-grid">
+      <div class="loading"><div class="spinner"></div><div class="load-txt">Loading sightings...</div></div>
+    </div>
+  </div>
+
   <div class="hero" id="hero-wrap">
     <div class="hero-label">TOP STORY TODAY</div>
     <div id="hero-content">
@@ -292,18 +339,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div style="grid-column:span 3;background:var(--bg)">
         <div class="loading"><div class="spinner"></div><div class="load-txt">Fetching articles...</div></div>
       </div>
-    </div>
-  </div>
-
-
-  <div id="sightings">
-    <div class="sec-head">
-      <div class="sec-title">Recent Sightings</div>
-      <div class="sec-line"></div>
-      <div class="sec-ct" id="sightings-ct"></div>
-    </div>
-    <div class="sightings-grid" id="sightings-grid">
-      <div class="loading"><div class="spinner"></div><div class="load-txt">Loading sightings...</div></div>
     </div>
   </div>
 
