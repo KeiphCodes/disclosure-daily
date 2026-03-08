@@ -740,10 +740,7 @@ ${newsletter.topStorySummary}
 
 ALSO TODAY
 ─────────────────
-${(newsletter.alsoTodayItems || []).map((item, i) => `${i + 1}. ${item.headline}
-   ${item.summary}`).join("
-
-")}
+${(newsletter.alsoTodayItems || []).map((item, i) => (i+1) + ". " + item.headline + " — " + item.summary).join("\n\n")}
 
 ${"─".repeat(50)}
 ${newsletter.closing}
