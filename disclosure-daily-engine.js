@@ -34,7 +34,7 @@ const supabase = createClient(
 // ─── CONFIG ────────────────────────────────────────────────
 const CONFIG = {
   model: "claude-opus-4-5",
-  storiesPerDay: 8,         // How many articles to publish each day
+  storiesPerDay: 5,         // How many articles to publish each day (kept low to avoid API rate limits)
   featuredCount: 1,         // How many get "featured" / hero treatment
   deepDiveWeekly: true,     // Generate a longform piece every Friday
   timezone: "America/New_York",
@@ -86,10 +86,12 @@ async function runDailyPipeline() {
 
     // 2. Curate and rank the stories
     console.log("\n[2/5] Curating and ranking stories...");
+    await sleep(15000);
     const curatedStories = await curateStories(rawNews);
 
     // 3. Write full articles for each story
     console.log("\n[3/5] Writing articles...");
+    await sleep(15000);
     const articles = await writeArticles(curatedStories);
 
     // 4. Generate deep dive (Fridays only)
@@ -106,11 +108,17 @@ async function runDailyPipeline() {
 
     // 5b. Find and save today's 2 recent sightings
     console.log("\n[4b/5] Finding recent sightings...");
+    await sleep(15000);
     await findAndSaveSightings();
 
     // 6. Trigger newsletter
     console.log("\n[5/5] Building newsletter digest...");
+    await sleep(12000);
     await buildNewsletter(articles);
+
+    // 7. Post to social media
+    console.log("\n[6/6] Posting to social media...");
+    await postToSocial(articles);
 
     console.log(`\n✅ Pipeline complete. ${saved} articles published.`);
     console.log("─".repeat(60));
@@ -121,6 +129,9 @@ async function runDailyPipeline() {
     throw err;
   }
 }
+
+// ─── RATE LIMIT HELPER ─────────────────────────────────────
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 // ─── STEP 1: SEARCH FOR NEWS ───────────────────────────────
 async function searchForNews() {
@@ -219,6 +230,7 @@ async function writeArticles(curatedStories) {
 
   for (const story of curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
+    await sleep(20000); // 20s between articles to stay under rate limit
 
     const response = await anthropic.messages.create({
       model: CONFIG.model,
@@ -448,6 +460,155 @@ Prioritise sightings that have real photos or video. Return ONLY valid JSON.`,
   }
 }
 
+
+// ─── SOCIAL MEDIA AUTO-POSTING ─────────────────────────────
+async function postToSocial(articles) {
+  const featured = articles.find(a => a?.isFeatured) || articles[0];
+  if (!featured) return;
+
+  const siteUrl = 'https://ufofinders.com';
+
+  // ── GENERATE SOCIAL COPY ──────────────────────────────────
+  let socialCopy;
+  try {
+    const response = await anthropic.messages.create({
+      model: CONFIG.model,
+      max_tokens: 600,
+      messages: [{
+        role: 'user',
+        content: `Write social media posts for this UFO/UAP news article.
+
+Headline: ${featured.headline}
+Summary: ${featured.deck}
+Category: ${featured.category}
+
+Write 3 versions. Return ONLY valid JSON:
+{
+  "twitter": "Tweet under 270 chars. Hook first. No hashtag spam — max 2 relevant tags like #UAP #UFO. End with: ${siteUrl}",
+  "reddit_title": "Reddit post title under 200 chars. No clickbait. Factual and intriguing.",
+  "reddit_body": "2-3 sentence Reddit post body. Factual tone. Invite discussion. End with: Full story + today's other UAP news: ${siteUrl}",
+  "hashtags": ["#UAP", "#UFO", "2-3 more relevant tags as array"]
+}`
+      }]
+    });
+
+    const text = extractText(response);
+    socialCopy = safeParseJSON(text);
+  } catch(err) {
+    console.log('  ⚠️  Social copy generation failed:', err.message);
+    return;
+  }
+
+  if (!socialCopy) { console.log('  ⚠️  No social copy generated'); return; }
+
+  // ── POST TO X (TWITTER) ───────────────────────────────────
+  if (process.env.X_API_KEY && process.env.X_API_SECRET &&
+      process.env.X_ACCESS_TOKEN && process.env.X_ACCESS_SECRET) {
+    try {
+      // Twitter API v2 with OAuth 1.0a
+      const crypto = await import('crypto');
+      const tweet  = socialCopy.twitter;
+
+      const oauthParams = {
+        oauth_consumer_key:     process.env.X_API_KEY,
+        oauth_nonce:            crypto.randomBytes(16).toString('hex'),
+        oauth_signature_method: 'HMAC-SHA1',
+        oauth_timestamp:        Math.floor(Date.now()/1000).toString(),
+        oauth_token:            process.env.X_ACCESS_TOKEN,
+        oauth_version:          '1.0',
+      };
+
+      const baseParams = { ...oauthParams, text: tweet };
+      const paramStr = Object.keys(baseParams).sort()
+        .map(k => encodeURIComponent(k)+'='+encodeURIComponent(baseParams[k]))
+        .join('&');
+      const baseStr = 'POST&'+encodeURIComponent('https://api.twitter.com/2/tweets')+'&'+encodeURIComponent(paramStr);
+      const sigKey  = encodeURIComponent(process.env.X_API_SECRET)+'&'+encodeURIComponent(process.env.X_ACCESS_SECRET);
+      oauthParams.oauth_signature = crypto.createHmac('sha1', sigKey).update(baseStr).digest('base64');
+
+      const authHeader = 'OAuth ' + Object.keys(oauthParams).sort()
+        .map(k => `${encodeURIComponent(k)}="${encodeURIComponent(oauthParams[k])}"`)
+        .join(', ');
+
+      const xRes = await fetch('https://api.twitter.com/2/tweets', {
+        method: 'POST',
+        headers: { 'Authorization': authHeader, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: tweet })
+      });
+
+      const xData = await xRes.json();
+      if (xRes.ok) {
+        console.log('  ✅ X post published:', tweet.slice(0,60)+'...');
+      } else {
+        console.log('  ⚠️  X post failed:', JSON.stringify(xData));
+      }
+    } catch(err) {
+      console.log('  ⚠️  X posting error:', err.message);
+    }
+  } else {
+    console.log('  ℹ️  X credentials not set — skipping (add X_API_KEY, X_API_SECRET, X_ACCESS_TOKEN, X_ACCESS_SECRET to GitHub Secrets)');
+  }
+
+  // ── POST TO REDDIT ────────────────────────────────────────
+  if (process.env.REDDIT_CLIENT_ID && process.env.REDDIT_CLIENT_SECRET &&
+      process.env.REDDIT_USERNAME   && process.env.REDDIT_PASSWORD) {
+    try {
+      // Get Reddit access token
+      const authStr = Buffer.from(`${process.env.REDDIT_CLIENT_ID}:${process.env.REDDIT_CLIENT_SECRET}`).toString('base64');
+      const tokenRes = await fetch('https://www.reddit.com/api/v1/access_token', {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Basic ' + authStr,
+          'Content-Type':  'application/x-www-form-urlencoded',
+          'User-Agent':    'UFOFinders/1.0 by ' + process.env.REDDIT_USERNAME
+        },
+        body: `grant_type=password&username=${encodeURIComponent(process.env.REDDIT_USERNAME)}&password=${encodeURIComponent(process.env.REDDIT_PASSWORD)}`
+      });
+
+      const tokenData = await tokenRes.json();
+      if (!tokenData.access_token) throw new Error('No Reddit token: ' + JSON.stringify(tokenData));
+
+      // Post to r/UFOs (most active UFO sub)
+      const subreddits = ['UFOs', 'ufo'];
+      for (const sub of subreddits) {
+        await sleep(2000);
+        const postRes = await fetch('https://oauth.reddit.com/api/submit', {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + tokenData.access_token,
+            'Content-Type':  'application/x-www-form-urlencoded',
+            'User-Agent':    'UFOFinders/1.0 by ' + process.env.REDDIT_USERNAME
+          },
+          body: new URLSearchParams({
+            kind:     'link',
+            sr:       sub,
+            title:    socialCopy.reddit_title,
+            url:      siteUrl,
+            nsfw:     'false',
+            spoiler:  'false',
+            resubmit: 'true',
+          }).toString()
+        });
+        const postData = await postRes.json();
+        if (postRes.ok && !postData.json?.errors?.length) {
+          console.log(`  ✅ Reddit post submitted to r/${sub}`);
+        } else {
+          console.log(`  ⚠️  Reddit r/${sub} failed:`, JSON.stringify(postData.json?.errors || postData));
+        }
+      }
+    } catch(err) {
+      console.log('  ⚠️  Reddit posting error:', err.message);
+    }
+  } else {
+    console.log('  ℹ️  Reddit credentials not set — skipping (add REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD to GitHub Secrets)');
+  }
+
+  // Log the generated copy regardless
+  console.log('\n  📣 Social copy generated:');
+  console.log('  X:', socialCopy.twitter?.slice(0,80)+'...');
+  console.log('  Reddit title:', socialCopy.reddit_title?.slice(0,80));
+}
+
 // ─── IMAGE FINDER ──────────────────────────────────────────
 async function findArticleImage(headline, category, sourceUrl) {
   try {
@@ -527,6 +688,83 @@ async function saveToDatabase(articles) {
 }
 
 // ─── STEP 5: BUILD NEWSLETTER ──────────────────────────────
+
+// ─── EMAIL NEWSLETTER TO OWNER ─────────────────────────────
+async function emailNewsletterToOwner(newsletter) {
+  // Uses Gmail SMTP via nodemailer — free, no third party service needed
+  // Requires GMAIL_USER and GMAIL_APP_PASSWORD in GitHub Secrets
+  if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
+    console.log("  ℹ️  Gmail not configured — skipping owner email (add GMAIL_USER + GMAIL_APP_PASSWORD to GitHub Secrets)");
+    return;
+  }
+
+  try {
+    const nodemailer = await import("nodemailer");
+    const transporter = nodemailer.default.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.GMAIL_USER,
+        pass: process.env.GMAIL_APP_PASSWORD, // Gmail App Password (not your real password)
+      },
+    });
+
+    const today = new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
+
+    const emailBody = `
+UFO FINDERS — NEWSLETTER READY TO SEND
+${today}
+${"=".repeat(50)}
+
+SUBJECT LINE (copy this into Beehiiv):
+${newsletter.subject}
+
+PREVIEW TEXT:
+${newsletter.preheader}
+
+${"=".repeat(50)}
+STEPS TO SEND:
+1. Go to app.beehiiv.com → Posts → New Post
+2. Paste the subject line above
+3. Copy the content below into the editor
+4. Hit Send
+
+${"=".repeat(50)}
+NEWSLETTER CONTENT:
+${"─".repeat(50)}
+
+${newsletter.openingGraph}
+
+TODAY'S TOP STORY
+─────────────────
+${newsletter.topStorySummary}
+
+ALSO TODAY
+─────────────────
+${(newsletter.alsoTodayItems || []).map((item, i) => `${i + 1}. ${item.headline}
+   ${item.summary}`).join("
+
+")}
+
+${"─".repeat(50)}
+${newsletter.closing}
+
+Read everything at ufofinders.com
+${"=".repeat(50)}
+    `;
+
+    await transporter.sendMail({
+      from: `"UFO Finders Engine" <${process.env.GMAIL_USER}>`,
+      to: process.env.GMAIL_USER,
+      subject: `📧 Newsletter Ready: ${newsletter.subject}`,
+      text: emailBody,
+    });
+
+    console.log("  ✅ Newsletter emailed to owner — check your inbox!");
+  } catch (err) {
+    console.log("  ⚠️  Owner email failed:", err.message);
+  }
+}
+
 async function buildNewsletter(articles) {
   const featured = articles.find((a) => a?.isFeatured);
   const supporting = articles.filter((a) => a && !a.isFeatured && !a.isDeepDive).slice(0, 5);
@@ -580,6 +818,9 @@ Return ONLY valid JSON.`,
   });
 
   console.log(`  📧 Newsletter ready: "${newsletter.subject}"`);
+
+  // Email the newsletter to the owner for easy Beehiiv copy-paste
+  await emailNewsletterToOwner(newsletter);
 
   // Send via Beehiiv (if configured)
   if (process.env.BEEHIIV_API_KEY && process.env.BEEHIIV_PUBLICATION_ID) {
