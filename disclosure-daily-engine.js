@@ -26,18 +26,23 @@ dotenv.config();
 
 // ─── CLIENTS ───────────────────────────────────────────────
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-// Retry wrapper for Anthropic API calls — handles 529 overloaded errors
-async function withRetry(fn, retries = 5, baseDelay = 10000) {
+// Retry wrapper — handles 529 overloaded AND 429 rate limit errors
+async function withRetry(fn, retries = 6, baseDelay = 15000) {
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
       return await fn();
     } catch (err) {
-      const isOverloaded =
-        err?.status === 529 ||
-        (err?.message && err.message.includes("overloaded"));
-      if (isOverloaded && attempt < retries) {
-        const delay = baseDelay * attempt;
-        console.log(`  ⏳ Anthropic overloaded — retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`);
+      const status = err?.status;
+      const isOverloaded = status === 529 || (err?.message && err.message.includes("overloaded"));
+      const isRateLimit = status === 429 || (err?.message && err.message.includes("rate_limit"));
+
+      if ((isOverloaded || isRateLimit) && attempt < retries) {
+        // Honor retry-after header if present, otherwise use escalating backoff
+        const retryAfterHeader = err?.headers?.["retry-after"];
+        const retryAfterSec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : null;
+        const delay = retryAfterSec ? (retryAfterSec + 5) * 1000 : baseDelay * attempt;
+        const reason = isRateLimit ? "rate limited" : "overloaded";
+        console.log(`  ⏳ Anthropic ${reason} — retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`);
         await sleep(delay);
       } else {
         throw err;
@@ -182,8 +187,8 @@ async function searchForNews() {
       allResults.push(...results.filter((r) => r.relevance !== "low"));
     }
 
-    // Rate limit buffer
-    await sleep(1000);
+    // Rate limit buffer — 15s between searches to stay under 30k TPM
+    await sleep(15000);
   }
 
   console.log(`  Found ${allResults.length} raw news items`);
