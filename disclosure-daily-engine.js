@@ -261,7 +261,7 @@ async function writeArticles(curatedStories) {
 
     const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
-      max_tokens: 800,
+      max_tokens: 1200,
       system: EDITORIAL_SYSTEM_PROMPT,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [
@@ -316,7 +316,7 @@ Return ONLY valid JSON.`,
     const text = extractText(response);
     const article = safeParseJSON(text);
 
-    if (article) {
+    if (article && article.headline) {
       article.publishedAt = new Date().toISOString();
       article.slug = slugify(article.headline);
 
@@ -327,9 +327,13 @@ Return ONLY valid JSON.`,
         article.imageUrl = imageData.url;
         article.imageCaption = imageData.caption;
         console.log(`  ✅ Image found: ${imageData.url.slice(0, 60)}...`);
+      } else {
+        console.log(`  ⚠️  No image found, article will publish without one`);
       }
 
       articles.push(article);
+    } else {
+      console.log(`  ⚠️  Skipping malformed article (missing headline) — response may have been truncated`);
     }
 
     await sleep(1500); // Respect rate limits
@@ -416,7 +420,7 @@ async function findAndSaveSightings() {
 
     const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
-      max_tokens: 2000,
+      max_tokens: 1000,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [
         {
@@ -639,40 +643,46 @@ Write 3 versions. Return ONLY valid JSON:
 // ─── IMAGE FINDER ──────────────────────────────────────────
 async function findArticleImage(headline, category, sourceUrl) {
   try {
-    // Build a search query from headline + category
-    const categoryKeywords = {
-      government: "pentagon military UFO",
-      science: "space telescope NASA",
-      sighting: "UFO sky phenomenon",
-      testimony: "congress hearing witness",
-      international: "UFO globe aircraft",
-      investigation: "classified document government",
+    // Use NASA's free image API — perfect for UAP/space content, no key needed
+    const nasaKeywords = {
+      government: "satellite",
+      science: "nebula",
+      sighting: "atmosphere",
+      testimony: "earth",
+      international: "planet",
+      investigation: "moon",
     };
-    const extra = categoryKeywords[category] || "UFO UAP aerial phenomenon";
-    const query = encodeURIComponent(`${headline} ${extra}`);
-
-    // Unsplash Source API — free, no key needed, returns a real image
-    const unsplashUrl = `https://source.unsplash.com/800x450/?${query}`;
-
-    // Verify it resolves (Unsplash redirects to a real image)
-    const testRes = await fetch(unsplashUrl, { method: "HEAD", redirect: "follow" });
-    if (testRes.ok && testRes.url.includes("images.unsplash.com")) {
-      return {
-        url: testRes.url,
-        caption: `Image related to: ${headline}`,
-      };
+    const keyword = nasaKeywords[category] || "sky";
+    const nasaRes = await fetch(
+      `https://images-api.nasa.gov/search?q=${encodeURIComponent(keyword)}&media_type=image&page_size=10`
+    );
+    if (nasaRes.ok) {
+      const nasaData = await nasaRes.json();
+      const items = nasaData?.collection?.items;
+      if (items && items.length > 0) {
+        // Pick a random item from first 10 results for variety
+        const pick = items[Math.floor(Math.random() * items.length)];
+        const imgUrl = pick?.links?.[0]?.href;
+        const caption = pick?.data?.[0]?.title || `NASA image — ${headline}`;
+        if (imgUrl && imgUrl.startsWith("http")) {
+          return { url: imgUrl, caption };
+        }
+      }
     }
 
-    // Fallback: generic UAP image
-    const fallback = await fetch("https://source.unsplash.com/800x450/?UFO,sky,aircraft", { method: "HEAD", redirect: "follow" });
-    if (fallback.ok) {
-      return { url: fallback.url, caption: "UAP / UFO related imagery" };
-    }
-
-    return null;
+    // Fallback: Picsum — always returns a real image, seeded by headline for consistency
+    const seed = headline.length + headline.charCodeAt(0);
+    return {
+      url: `https://picsum.photos/seed/${seed}/800/450`,
+      caption: `Image related to: ${headline}`,
+    };
   } catch (err) {
     console.log(`  ⚠️  Image lookup failed: ${err.message}`);
-    return null;
+    // Last resort fallback
+    return {
+      url: `https://picsum.photos/800/450`,
+      caption: "UAP / UFO related imagery",
+    };
   }
 }
 
