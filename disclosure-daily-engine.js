@@ -261,7 +261,7 @@ async function writeArticles(curatedStories) {
 
     const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
-      max_tokens: 2000,
+      max_tokens: 800,
       system: EDITORIAL_SYSTEM_PROMPT,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
       messages: [
@@ -278,7 +278,7 @@ Editorial note: ${story.editorialNote}
 
 Search the web for any additional context or corroborating sources before writing.
 
-Write a thorough, complete article — as long as the story warrants. Do not limit yourself to a word count. Cover the story fully. Include:
+Write a tight, punchy news article of NO MORE THAN 500 words. Be concise and direct. Include:
 1. A compelling, accurate headline (can differ from original title)
 2. A one-sentence "deck" (subheadline)
 3. The full article body in inverted pyramid style
@@ -639,43 +639,39 @@ Write 3 versions. Return ONLY valid JSON:
 // ─── IMAGE FINDER ──────────────────────────────────────────
 async function findArticleImage(headline, category, sourceUrl) {
   try {
-    const response = await withRetry(() => anthropic.messages.create({
-      model: CONFIG.model,
-      max_tokens: 500,
-      tools: [{ type: "web_search_20250305", name: "web_search" }],
-      messages: [
-        {
-          role: "user",
-          content: `Search for a publicly available news image related to this UAP/UFO article headline: "${headline}"
+    // Build a search query from headline + category
+    const categoryKeywords = {
+      government: "pentagon military UFO",
+      science: "space telescope NASA",
+      sighting: "UFO sky phenomenon",
+      testimony: "congress hearing witness",
+      international: "UFO globe aircraft",
+      investigation: "classified document government",
+    };
+    const extra = categoryKeywords[category] || "UFO UAP aerial phenomenon";
+    const query = encodeURIComponent(`${headline} ${extra}`);
 
-Look for images from news sources, government releases, NASA, military, or credible media outlets.
-Prefer images that are:
-- Official government or military releases
-- NASA or scientific imagery  
-- News wire photos (Reuters, AP) from the original article if possible
-- Radar screenshots or sensor data images
-- Press conference or congressional hearing photos
+    // Unsplash Source API — free, no key needed, returns a real image
+    const unsplashUrl = `https://source.unsplash.com/800x450/?${query}`;
 
-Return ONLY a JSON object with exactly this format (no other text):
-{
-  "url": "https://...",
-  "caption": "Brief factual caption describing the image"
-}
-
-If you cannot find a suitable real image URL, return: {"url": null, "caption": null}
-Return ONLY valid JSON.`,
-        },
-      ],
-    }));
-
-    const text = extractText(response);
-    const result = safeParseJSON(text);
-    if (result && result.url && result.url.startsWith('http')) {
-      return result;
+    // Verify it resolves (Unsplash redirects to a real image)
+    const testRes = await fetch(unsplashUrl, { method: "HEAD", redirect: "follow" });
+    if (testRes.ok && testRes.url.includes("images.unsplash.com")) {
+      return {
+        url: testRes.url,
+        caption: `Image related to: ${headline}`,
+      };
     }
+
+    // Fallback: generic UAP image
+    const fallback = await fetch("https://source.unsplash.com/800x450/?UFO,sky,aircraft", { method: "HEAD", redirect: "follow" });
+    if (fallback.ok) {
+      return { url: fallback.url, caption: "UAP / UFO related imagery" };
+    }
+
     return null;
   } catch (err) {
-    console.log(`  ⚠️  Image search failed: ${err.message}`);
+    console.log(`  ⚠️  Image lookup failed: ${err.message}`);
     return null;
   }
 }
