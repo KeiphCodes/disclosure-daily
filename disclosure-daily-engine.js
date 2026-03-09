@@ -26,6 +26,26 @@ dotenv.config();
 
 // ─── CLIENTS ───────────────────────────────────────────────
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+// Retry wrapper for Anthropic API calls — handles 529 overloaded errors
+async function withRetry(fn, retries = 5, baseDelay = 10000) {
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      const isOverloaded =
+        err?.status === 529 ||
+        (err?.message && err.message.includes("overloaded"));
+      if (isOverloaded && attempt < retries) {
+        const delay = baseDelay * attempt;
+        console.log(`  ⏳ Anthropic overloaded — retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`);
+        await sleep(delay);
+      } else {
+        throw err;
+      }
+    }
+  }
+}
+
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 const supabase = createClient(
   process.env.SUPABASE_URL,
@@ -140,7 +160,7 @@ async function searchForNews() {
   for (const topic of todaysTopics) {
     console.log(`  🔍 Searching: "${topic}"`);
 
-    const response = await anthropic.messages.create({
+    const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
       max_tokens: 2000,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
@@ -154,7 +174,7 @@ async function searchForNews() {
           Return ONLY valid JSON, nothing else.`,
         },
       ],
-    });
+    }));
 
     const text = extractText(response);
     const results = safeParseJSON(text);
@@ -177,7 +197,7 @@ async function curateStories(rawNews) {
     return await getFallbackStories();
   }
 
-  const response = await anthropic.messages.create({
+  const response = await withRetry(() => anthropic.messages.create({
     model: CONFIG.model,
     max_tokens: 2000,
     system: EDITORIAL_SYSTEM_PROMPT,
@@ -214,7 +234,7 @@ Return a JSON array of selected stories, each with:
 Return ONLY valid JSON array.`,
       },
     ],
-  });
+  }));
 
   const text = extractText(response);
   const curated = safeParseJSON(text);
@@ -230,7 +250,7 @@ async function writeArticles(curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
     await sleep(20000); // 20s between articles to stay under rate limit
 
-    const response = await anthropic.messages.create({
+    const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
       max_tokens: 2000,
       system: EDITORIAL_SYSTEM_PROMPT,
@@ -282,7 +302,7 @@ Format your response as JSON:
 Return ONLY valid JSON.`,
         },
       ],
-    });
+    }));
 
     const text = extractText(response);
     const article = safeParseJSON(text);
@@ -317,7 +337,7 @@ async function generateDeepDive(curatedStories) {
   // Pick the most significant story this week as the deep dive topic
   const topStory = curatedStories[0];
 
-  const response = await anthropic.messages.create({
+  const response = await withRetry(() => anthropic.messages.create({
     model: CONFIG.model,
     max_tokens: 4000,
     system: EDITORIAL_SYSTEM_PROMPT,
@@ -354,7 +374,7 @@ Format as JSON:
 Return ONLY valid JSON.`,
       },
     ],
-  });
+  }));
 
   const text = extractText(response);
   const deepDive = safeParseJSON(text);
@@ -385,7 +405,7 @@ async function findAndSaveSightings() {
       return;
     }
 
-    const response = await anthropic.messages.create({
+    const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
       max_tokens: 2000,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
@@ -418,7 +438,7 @@ Return ONLY a JSON array of exactly 2 objects:
 Prioritise sightings that have real photos or video. Return ONLY valid JSON.`,
         },
       ],
-    });
+    }));
 
     const text = extractText(response);
     const sightings = safeParseJSON(text);
@@ -469,7 +489,7 @@ async function postToSocial(articles) {
   // ── GENERATE SOCIAL COPY ──────────────────────────────────
   let socialCopy;
   try {
-    const response = await anthropic.messages.create({
+    const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
       max_tokens: 600,
       messages: [{
@@ -488,7 +508,7 @@ Write 3 versions. Return ONLY valid JSON:
   "hashtags": ["#UAP", "#UFO", "2-3 more relevant tags as array"]
 }`
       }]
-    });
+    }));
 
     const text = extractText(response);
     socialCopy = safeParseJSON(text);
@@ -610,7 +630,7 @@ Write 3 versions. Return ONLY valid JSON:
 // ─── IMAGE FINDER ──────────────────────────────────────────
 async function findArticleImage(headline, category, sourceUrl) {
   try {
-    const response = await anthropic.messages.create({
+    const response = await withRetry(() => anthropic.messages.create({
       model: CONFIG.model,
       max_tokens: 500,
       tools: [{ type: "web_search_20250305", name: "web_search" }],
@@ -637,7 +657,7 @@ If you cannot find a suitable real image URL, return: {"url": null, "caption": n
 Return ONLY valid JSON.`,
         },
       ],
-    });
+    }));
 
     const text = extractText(response);
     const result = safeParseJSON(text);
@@ -766,7 +786,7 @@ async function buildNewsletter(articles) {
   const deepDive = articles.find((a) => a?.isDeepDive);
   const today = new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" });
 
-  const response = await anthropic.messages.create({
+  const response = await withRetry(() => anthropic.messages.create({
     model: CONFIG.model,
     max_tokens: 2000,
     system: EDITORIAL_SYSTEM_PROMPT,
@@ -793,7 +813,7 @@ Return as JSON: { "subject": string, "preheader": string, "openingGraph": string
 Return ONLY valid JSON.`,
       },
     ],
-  });
+  }));
 
   const text = extractText(response);
   const newsletter = safeParseJSON(text);
@@ -920,7 +940,7 @@ function buildNewsletterHTML(newsletter, articles) {
 // Used when web search returns nothing (rare)
 async function getFallbackStories() {
   console.log("  Using AI to generate fallback story topics...");
-  const response = await anthropic.messages.create({
+  const response = await withRetry(() => anthropic.messages.create({
     model: CONFIG.model,
     max_tokens: 1000,
     tools: [{ type: "web_search_20250305", name: "web_search" }],
@@ -930,7 +950,7 @@ async function getFallbackStories() {
         content: `Search for the most recent UAP, UFO, or alien-related news from any credible source. Return a JSON array of 5 stories with { title, summary, source, url, date, relevance: "high" }. Return ONLY valid JSON.`,
       },
     ],
-  });
+  }));
   const text = extractText(response);
   return safeParseJSON(text) || [];
 }
