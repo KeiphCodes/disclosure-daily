@@ -975,10 +975,6 @@ function shuffleArray(arr) {
   return [...arr].sort(() => Math.random() - 0.5);
 }
 
-function sleep(ms) {
-  return new Promise((r) => setTimeout(r, ms));
-}
-
 // ─── ENTRY POINT ───────────────────────────────────────────
 runDailyPipeline()
   .then((result) => {
