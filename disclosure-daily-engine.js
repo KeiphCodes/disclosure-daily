@@ -59,8 +59,8 @@ const supabase = createClient(
 
 // ─── CONFIG ────────────────────────────────────────────────
 const CONFIG = {
-  model: "claude-opus-4-5",
-  storiesPerDay: 5,         // How many articles to publish each day (kept low to avoid API rate limits)
+  model: "claude-haiku-4-5",
+  storiesPerDay: 3,         // Kept at 3 to minimize API costs
   featuredCount: 1,         // How many get "featured" / hero treatment
   deepDiveWeekly: true,     // Generate a longform piece every Friday
   timezone: "America/New_York",
@@ -159,7 +159,7 @@ async function runDailyPipeline() {
 // ─── STEP 1: SEARCH FOR NEWS ───────────────────────────────
 async function searchForNews() {
   // Pick 5 random topics to search today (keeps coverage fresh)
-  const todaysTopics = shuffleArray(SEARCH_TOPICS).slice(0, 5);
+  const todaysTopics = shuffleArray(SEARCH_TOPICS).slice(0, 3); // 3 topics to stay under rate limits
   const allResults = [];
 
   for (const topic of todaysTopics) {
@@ -344,7 +344,7 @@ async function generateDeepDive(curatedStories) {
 
   const response = await withRetry(() => anthropic.messages.create({
     model: CONFIG.model,
-    max_tokens: 4000,
+    max_tokens: 2000,
     system: EDITORIAL_SYSTEM_PROMPT,
     tools: [{ type: "web_search_20250305", name: "web_search" }],
     messages: [
