@@ -40,7 +40,7 @@ async function withRetry(fn, retries = 6, baseDelay = 15000) {
         // Honor retry-after header if present, otherwise use escalating backoff
         const retryAfterHeader = err?.headers?.["retry-after"];
         const retryAfterSec = retryAfterHeader ? parseInt(retryAfterHeader, 10) : null;
-        const delay = retryAfterSec ? (retryAfterSec + 5) * 1000 : baseDelay * attempt;
+        const delay = retryAfterSec ? Math.min(retryAfterSec + 5, 60) * 1000 : baseDelay * attempt; // cap at 60s max wait
         const reason = isRateLimit ? "rate limited" : "overloaded";
         console.log(`  ⏳ Anthropic ${reason} — retrying in ${delay / 1000}s (attempt ${attempt}/${retries})...`);
         await sleep(delay);
@@ -106,44 +106,48 @@ async function runDailyPipeline() {
   console.log("─".repeat(60));
 
   try {
-    // 1. Search for today's news
-    console.log("\n[1/5] Searching for today's UAP news...");
+    // 1. Find recent sightings FIRST while token bucket is full
+    try {
+      console.log("\n[1/5] Finding recent sightings...");
+      await findAndSaveSightings();
+      await sleep(15000);
+    } catch (err) {
+      console.log("  ⚠️  Sightings step skipped (rate limit or error) — continuing pipeline.");
+    }
+
+    // 2. Search for today's news
+    console.log("\n[2/5] Searching for today's UAP news...");
     const rawNews = await searchForNews();
 
-    // 2. Curate and rank the stories
-    console.log("\n[2/5] Curating and ranking stories...");
+    // 3. Curate and rank the stories
+    console.log("\n[3/5] Curating and ranking stories...");
     await sleep(15000);
     const curatedStories = await curateStories(rawNews);
 
-    // 3. Write full articles for each story
-    console.log("\n[3/5] Writing articles...");
+    // 4. Write full articles for each story
+    console.log("\n[4/5] Writing articles...");
     await sleep(15000);
     const articles = await writeArticles(curatedStories);
 
-    // 4. Generate deep dive (Fridays only)
+    // 4b. Generate deep dive (Fridays only)
     const today = new Date();
     if (CONFIG.deepDiveWeekly && today.getDay() === 5) {
-      console.log("\n[3b] It's Friday — generating weekly deep dive...");
+      console.log("\n[4b] It's Friday — generating weekly deep dive...");
       const deepDive = await generateDeepDive(curatedStories);
       articles.push(deepDive);
     }
 
     // 5. Save everything to Supabase
-    console.log("\n[4/5] Saving to database...");
+    console.log("\n[5/5] Saving to database...");
     const saved = await saveToDatabase(articles);
 
-    // 5b. Find and save today's 2 recent sightings
-    console.log("\n[4b/5] Finding recent sightings...");
-    await sleep(15000);
-    await findAndSaveSightings();
-
     // 6. Trigger newsletter
-    console.log("\n[5/5] Building newsletter digest...");
+    console.log("\n[6/6] Building newsletter digest...");
     await sleep(12000);
     await buildNewsletter(articles);
 
     // 7. Post to social media
-    console.log("\n[6/6] Posting to social media...");
+    console.log("\n[7/7] Posting to social media...");
     await postToSocial(articles);
 
     console.log(`\n✅ Pipeline complete. ${saved} articles published.`);
