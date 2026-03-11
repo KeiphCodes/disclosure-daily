@@ -882,7 +882,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
         mediaHtml='<div class="sighting-media"><div class="sighting-no-media"><div class="sighting-no-media-icon">&#128065;</div><div class="sighting-no-media-txt">No media filed</div></div><div class="sighting-shape-badge">'+esc((s.shape||'unknown').toUpperCase())+'</div></div>';
       }
       var linksHtml='<div class="sighting-links">';
-      if (s.source_url) linksHtml+='<a class="sighting-link primary" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">Full Report &rarr;</a>';
+      if (s.source_url) linksHtml+='<a class="sighting-link primary" href="'+esc(s.source_url)+'" target="_blank" rel="noopener">View Evidence &rarr;</a>';
       if (s.video_url)  linksHtml+='<a class="sighting-link video" href="'+esc(s.video_url)+'" target="_blank" rel="noopener">&#9654; Watch</a>';
       linksHtml+='</div>';
       var dateStr='';
