@@ -799,24 +799,42 @@ function buildNewsletterHTML(newsletter, featured, supporting, deepDive) {
 
 async function emailNewsletterToOwner(newsletter) {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log("  ⚠️  Gmail not configured — skipping email");
+    console.log("  ⚠️  Gmail not configured — GMAIL_USER or GMAIL_APP_PASSWORD secret missing");
     return;
   }
 
+  console.log(`  📧 Sending email to ${process.env.GMAIL_USER}...`);
+
   const transporter = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.gmail.com",
+    port: 465,
+    secure: true,
     auth: {
       user: process.env.GMAIL_USER,
       pass: process.env.GMAIL_APP_PASSWORD,
     },
   });
 
-  await transporter.sendMail({
-    from: `"Disclosure Daily" <${process.env.GMAIL_USER}>`,
-    to: process.env.GMAIL_USER,
-    subject: newsletter.subject,
-    html: newsletter.html,
-  });
+  try {
+    await transporter.verify();
+    console.log("  ✅ Gmail connection verified");
+  } catch (verifyErr) {
+    console.error("  ❌ Gmail verification failed:", verifyErr.message);
+    console.error("  → Check GMAIL_USER and GMAIL_APP_PASSWORD secrets in GitHub");
+    return;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"Disclosure Daily" <${process.env.GMAIL_USER}>`,
+      to: process.env.GMAIL_USER,
+      subject: newsletter.subject,
+      html: newsletter.html,
+    });
+    console.log("  ✅ Email sent! Message ID:", info.messageId);
+  } catch (sendErr) {
+    console.error("  ❌ Email send failed:", sendErr.message);
+  }
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
