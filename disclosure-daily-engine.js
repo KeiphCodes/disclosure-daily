@@ -48,7 +48,7 @@ const CONFIG = {
   storiesPerDay: 3,
   featuredCount: 1,
   deepDiveWeekly: true,
-  timezone: "America/New_York",
+  timezone: "America/Chicago",
 };
 
 // ─── SEARCH TOPICS ───────────────────────────────────────────────────────────
@@ -236,24 +236,12 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 1: FIND TODAY'S BEST SIGHTING
+// STEP 1: FIND TODAY'S BEST SIGHTING (MEDIA ONLY)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function findAndSaveSightings() {
   try {
-    const today = new Date().toISOString().split("T")[0];
-
-    const { data: existing } = await supabase
-      .from("sightings")
-      .select("id")
-      .gte("sighted_date", today)
-      .limit(1);
-
-    if (existing && existing.length > 0) {
-      console.log("  Sighting already saved for today, skipping.");
-      return;
-    }
-
+    // Only replace the current sighting if we find one with better evidence
     const response = await withRetry(() =>
       anthropic.messages.create({
         model: CONFIG.model,
@@ -264,14 +252,16 @@ async function findAndSaveSightings() {
             role: "user",
             content: `Search for the single most recent AND most credible UFO or UAP sighting reported in the last 14 days.
 
-Credibility criteria (in order of priority):
-1. Has real photo or video evidence
-2. Multiple witnesses
-3. Sourced from NUFORC, MUFON, credible news outlet, or military source
-4. Not already debunked (avoid balloon sightings, Chinese lanterns, Starlink, obvious CGI)
+STRICT REQUIREMENTS — only return a result if ALL of these are true:
+1. Has a REAL photo or video URL (not just "photos were taken" — must have an actual link)
+2. Multiple witnesses OR official source (NUFORC, MUFON, military, credible news outlet)
+3. NOT already debunked (no balloons, Chinese lanterns, Starlink, obvious CGI)
 
-Return ONLY a JSON object for the single best sighting:
+If no sighting meets ALL these criteria, return: { "skip": true }
+
+Otherwise return ONLY a JSON object:
 {
+  "skip": false,
   "title": "Short punchy title",
   "date": "YYYY-MM-DD",
   "location": "City, State/Country",
@@ -279,14 +269,14 @@ Return ONLY a JSON object for the single best sighting:
   "shape": "orb|triangle|cylinder|disc|light|chevron|unknown|other",
   "source": "Name of source (e.g. NUFORC, MUFON, BBC)",
   "source_url": "https://...",
-  "image_url": "https://... or null",
+  "image_url": "https://... (REQUIRED — must be a real working image URL)",
   "video_url": "https://youtube.com/... or null",
-  "has_media": true or false,
+  "has_media": true,
   "witness_count": number or null,
   "credibility_notes": "Brief note on why this is credible"
 }
 
-Prioritise sightings with real photos or video. Return ONLY valid JSON.`,
+Return ONLY valid JSON.`,
           },
         ],
       })
@@ -295,12 +285,23 @@ Prioritise sightings with real photos or video. Return ONLY valid JSON.`,
     const text = extractText(response);
     const parsed = safeParseJSON(text);
 
-    if (!parsed || !parsed.title) {
-      console.log("  ⚠️  No sightings data returned");
+    // If AI found nothing worthy, skip — don't replace existing sighting
+    if (!parsed || parsed.skip === true || !parsed.title) {
+      console.log("  ℹ️  No high-quality sighting with media found today — keeping existing.");
       return;
     }
 
-    const s = Array.isArray(parsed) ? parsed[0] : parsed;
+    // Must have actual media
+    if (!parsed.image_url && !parsed.video_url) {
+      console.log("  ℹ️  Sighting has no verified media URL — skipping to preserve quality.");
+      return;
+    }
+
+    const s = parsed;
+    const today = new Date().toISOString().split("T")[0];
+
+    // Delete old sightings and replace with the new high-quality one
+    await supabase.from("sightings").delete().neq("id", "00000000-0000-0000-0000-000000000000");
 
     const { error } = await supabase.from("sightings").insert({
       title: s.title,
@@ -312,15 +313,16 @@ Prioritise sightings with real photos or video. Return ONLY valid JSON.`,
       source_url: s.source_url,
       image_url: s.image_url || null,
       video_url: s.video_url || null,
-      has_media: s.has_media || false,
+      has_media: true,
       witness_count: s.witness_count || null,
       credibility_notes: s.credibility_notes || null,
+      published_at: new Date().toISOString(),
     });
 
     if (error) {
       console.error("  ❌ Failed to save sighting:", error.message);
     } else {
-      console.log(`  ✅ Sighting saved: "${s.title}" — ${s.location}`);
+      console.log(`  ✅ Sighting updated: "${s.title}" — ${s.location}`);
     }
   } catch (err) {
     console.error("  ❌ findAndSaveSightings error:", err.message);
@@ -371,13 +373,23 @@ Return ONLY valid JSON, nothing else.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 3: CURATE STORIES
+// STEP 3: CURATE STORIES (NO DUPLICATES)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function curateStories(rawNews) {
+  // Fetch recent headlines from database to avoid duplicates
+  const { data: recentArticles } = await supabase
+    .from("articles")
+    .select("headline, original_url")
+    .order("published_at", { ascending: false })
+    .limit(60);
+
+  const recentHeadlines = (recentArticles || []).map((a) => a.headline?.toLowerCase() || "");
+  const recentUrls = (recentArticles || []).map((a) => a.original_url || "");
+
   if (rawNews.length === 0) {
     console.log("  ⚠️  No raw news found — using fallback sources");
-    return await getFallbackStories();
+    return await getFallbackStories(recentHeadlines, recentUrls);
   }
 
   const response = await withRetry(() =>
@@ -394,11 +406,19 @@ async function curateStories(rawNews) {
 Here are the raw stories found:
 ${JSON.stringify(rawNews, null, 2)}
 
+ALREADY PUBLISHED — do NOT select stories that cover the same event or topic as these recent headlines:
+${recentHeadlines.slice(0, 20).join("\n")}
+
+ALREADY PUBLISHED URLs — do NOT select stories from these URLs:
+${recentUrls.slice(0, 20).join("\n")}
+
+Only include a story about a previously covered topic if there is significant NEW information or development.
+
 Criteria:
 - Newsworthiness and significance to UAP/disclosure community
 - Source credibility
 - Variety (mix government, science, sightings, international)
-- Avoid duplicates or very similar stories
+- Avoid duplicates or very similar stories to what's already been published
 
 Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
 [
@@ -411,7 +431,7 @@ Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
     "category": "government|science|sighting|testimony|international|investigation",
     "isFeatured": boolean (true for #1 story only),
     "isBreaking": boolean,
-    "editorialNote": "Why this story matters"
+    "editorialNote": "Why this story matters and why it is NOT a duplicate"
   }
 ]
 
@@ -426,7 +446,7 @@ Return ONLY valid JSON.`,
 
   if (!curated || !Array.isArray(curated) || curated.length === 0) {
     console.log("  ⚠️  Curation failed — using fallback");
-    return await getFallbackStories();
+    return await getFallbackStories(recentHeadlines, recentUrls);
   }
 
   console.log(`  Curated ${curated.length} stories`);
@@ -444,6 +464,10 @@ async function writeArticles(curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
     await sleep(20000);
 
+    const publishDate = new Date().toLocaleDateString("en-US", {
+      weekday: "long", year: "numeric", month: "long", day: "numeric"
+    });
+
     const response = await withRetry(() =>
       anthropic.messages.create({
         model: CONFIG.model,
@@ -459,6 +483,7 @@ Title: ${story.title}
 Summary: ${story.summary}
 Source: ${story.source}
 Date: ${story.date}
+Published: ${publishDate}
 Category: ${story.category}
 Editorial note: ${story.editorialNote}
 
@@ -467,10 +492,11 @@ Search the web for any additional context or corroborating sources before writin
 Write a tight, punchy news article of NO MORE THAN 500 words. Be concise and direct. Include:
 1. A compelling, accurate headline (can differ from original title)
 2. A one-sentence "deck" (subheadline)
-3. The full article body in inverted pyramid style
-4. A "Key Facts" box (3-5 bullet points)
+3. The full article body in inverted pyramid style — the FIRST sentence of the article must include the date and location of the event (e.g. "On March 12, 2026, Pentagon officials announced...")
+4. A "Key Facts" box (3-5 bullet points, each including relevant dates where applicable)
 
 CRITICAL WRITING RULES:
+- Always include the specific date the event occurred in the opening sentence
 - Write COMPLETE, SELF-CONTAINED sentences only. Every sentence must start with a capital letter.
 - NEVER start any sentence or paragraph with a comma, period, semicolon, or lowercase word.
 - NEVER use citation tags, XML tags, HTML tags, brackets, or any markup in the article body.
@@ -539,11 +565,12 @@ async function generateDeepDive(curatedStories) {
 Base topic: ${topStory?.title || "This week's most significant UAP development"}
 
 Research this topic thoroughly using web search. Then write a comprehensive, deeply reported piece that:
-- Provides full historical context
+- Opens with the specific date and context of the central event or development
+- Provides full historical context with dates for all key events
 - Explains why this matters for the broader disclosure narrative
 - Cites multiple experts or sources
 - Explains the evidence and its limitations honestly
-- Connects to other recent developments
+- Connects to other recent developments (with their dates)
 - Ends with clear implications and what to watch for next
 
 Format as JSON:
@@ -580,14 +607,34 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 5: SAVE TO DATABASE
+// STEP 5: SAVE TO DATABASE (NO DUPLICATES)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function saveToDatabase(articles) {
   let savedCount = 0;
 
+  // Get existing slugs and headlines to prevent duplicates
+  const { data: existing } = await supabase
+    .from("articles")
+    .select("slug, headline")
+    .order("published_at", { ascending: false })
+    .limit(100);
+
+  const existingSlugs = new Set((existing || []).map((a) => a.slug));
+  const existingHeadlines = new Set((existing || []).map((a) => a.headline?.toLowerCase()));
+
   for (const article of articles) {
     if (!article || !article.headline) continue;
+
+    // Skip if same slug or very similar headline already exists
+    if (existingSlugs.has(article.slug)) {
+      console.log(`  ⏭  Skipping duplicate slug: "${article.headline?.slice(0, 40)}"`);
+      continue;
+    }
+    if (existingHeadlines.has(article.headline?.toLowerCase())) {
+      console.log(`  ⏭  Skipping duplicate headline: "${article.headline?.slice(0, 40)}"`);
+      continue;
+    }
 
     const { error } = await supabase.from("articles").insert({
       slug: article.slug,
@@ -609,6 +656,8 @@ async function saveToDatabase(articles) {
       console.error(`  ❌ Failed to save: ${article.headline?.slice(0, 40)}`, error.message);
     } else {
       savedCount++;
+      existingSlugs.add(article.slug);
+      existingHeadlines.add(article.headline?.toLowerCase());
       console.log(`  ✅ Saved: "${article.headline?.slice(0, 50)}"`);
     }
   }
@@ -816,7 +865,7 @@ Return ONLY valid JSON.`,
 // FALLBACK STORIES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-async function getFallbackStories() {
+async function getFallbackStories(recentHeadlines = [], recentUrls = []) {
   const response = await withRetry(() =>
     anthropic.messages.create({
       model: CONFIG.model,
@@ -826,6 +875,9 @@ async function getFallbackStories() {
         {
           role: "user",
           content: `Search for the most significant recent UAP/UFO news from the past week. Find ${CONFIG.storiesPerDay} credible stories.
+
+Do NOT include stories similar to these already published headlines:
+${recentHeadlines.slice(0, 15).join("\n")}
 
 Return a JSON array:
 [
