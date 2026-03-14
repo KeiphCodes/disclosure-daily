@@ -476,10 +476,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   }
   function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
   function timeAgo(d) {
-    var h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000);
-    if (h < 1) return 'Just now';
-    if (h < 24) return h + 'h ago';
-    return Math.floor(h / 24) + 'd ago';
+    if (!d) return '';
+    var date = new Date(d);
+    var h = Math.floor((Date.now() - date.getTime()) / 3600000);
+    var dateStr = date.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+    if (h < 1) return 'Just now · ' + dateStr;
+    if (h < 24) return h + 'h ago · ' + dateStr;
+    return Math.floor(h / 24) + 'd ago · ' + dateStr;
   }
   function supaFetch(path, opts) {
     return fetch(SUPA_URL + path, Object.assign({
