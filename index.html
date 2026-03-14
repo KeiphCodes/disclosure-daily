@@ -211,6 +211,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .ft-links a{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--mid);text-decoration:none;transition:color 0.2s}
 .ft-links a:hover{color:var(--glow)}
 .ft-bottom{max-width:1200px;margin:1rem auto 0;padding-top:0.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+.ft-disclaimer{max-width:1200px;margin:1rem auto 0;padding-top:0.75rem;border-top:1px solid var(--border)}
+.ft-disclaimer p{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);line-height:1.7;margin-bottom:0.4rem;letter-spacing:0.02em}
 
 .loading{display:flex;align-items:center;justify-content:center;min-height:180px;flex-direction:column;gap:0.75rem}
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--glow);border-radius:50%;animation:spin 0.9s linear infinite}
@@ -243,6 +245,18 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .p-facts ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem}
 .p-facts li{font-size:0.76rem;color:var(--mid);padding-left:0.75rem;position:relative;line-height:1.45}
 .p-facts li::before{content:'>';position:absolute;left:0;color:var(--glow)}
+
+.p-sources{margin:1.25rem 0;padding:1rem;background:var(--surface);border-left:2px solid var(--amber)}
+.p-sources-title{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);margin-bottom:0.55rem}
+.p-sources ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem}
+.p-sources li{font-size:0.72rem;color:var(--mid);padding-left:0.75rem;position:relative;line-height:1.45;word-break:break-all}
+.p-sources li::before{content:'→';position:absolute;left:0;color:var(--amber)}
+.p-sources a{color:var(--glow);text-decoration:none}
+.p-sources a:hover{text-decoration:underline}
+
+.p-disclaimer{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);line-height:1.6;padding:0.75rem;border:1px solid var(--border);margin:1.25rem 0;letter-spacing:0.04em}
+
+.c-policy{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim);line-height:1.6;padding:0.5rem 0.75rem;border-left:2px solid var(--border);margin-bottom:0.875rem}
 
 .comments{margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border)}
 .c-hl{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.875rem}
@@ -442,6 +456,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   <div class="ft-bottom">
     <span>2026 UFO Finders &middot; ufofinders.com</span>
     <span>Updated Daily</span>
+  </div>
+  <div class="ft-disclaimer">
+    <p>UFO Finders is an independent news publication. Articles are produced with AI assistance and are based on publicly available sources. We make no claims beyond what cited evidence supports. UFO Finders is not responsible for the accuracy of third-party sources.</p>
+    <p>Comments on this site represent the views of individual users and not UFO Finders. UFO Finders is not liable for user-submitted content under Section 230 of the Communications Decency Act.</p>
+    <p>UFO Finders has no affiliation with any government agency, military branch, or intelligence organization.</p>
   </div>
 </footer>
 
@@ -737,6 +756,20 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       facts += '</ul></div>';
     }
 
+    var sources = '';
+    if (a.sources_used && a.sources_used.length) {
+      sources = '<div class="p-sources"><div class="p-sources-title">Sources</div><ul>';
+      a.sources_used.forEach(function(s){
+        var isUrl = s && (s.indexOf('http://') === 0 || s.indexOf('https://') === 0);
+        sources += '<li>'+(isUrl ? '<a href="'+esc(s)+'" target="_blank" rel="noopener noreferrer">'+esc(s)+'</a>' : esc(s))+'</li>';
+      });
+      sources += '</ul></div>';
+    } else if (a.original_url) {
+      sources = '<div class="p-sources"><div class="p-sources-title">Sources</div><ul>'+
+        '<li><a href="'+esc(a.original_url)+'" target="_blank" rel="noopener noreferrer">'+esc(a.original_url)+'</a></li>'+
+        '</ul></div>';
+    }
+
     var pb = document.getElementById('panel-body');
     pb.innerHTML =
       '<div class="p-cat">'+esc(cap(a.category||'News'))+'</div>'+
@@ -750,8 +783,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       imageHtml+
       '<div class="p-body">'+buildBody(a.body)+'</div>'+
       facts+
+      sources+
+      '<div class="p-disclaimer">This article was produced with AI assistance. All claims are based on cited sources. UFO Finders makes no assertions beyond what the cited evidence supports.</div>'+
       '<div class="comments">'+
         '<div class="c-hl">Discussion</div>'+
+        '<div class="c-policy">Comments represent the views of individual users, not UFO Finders. Keep it respectful — no harassment, threats, or spam.</div>'+
         '<div class="c-form">'+
           '<div class="c-row">'+
             '<input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)">'+
