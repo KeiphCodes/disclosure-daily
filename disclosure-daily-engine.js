@@ -48,7 +48,7 @@ const CONFIG = {
   storiesPerDay: 3,
   featuredCount: 1,
   deepDiveWeekly: true,
-  timezone: "America/Chicago",
+  timezone: "America/New_York",
 };
 
 // ─── SEARCH TOPICS ───────────────────────────────────────────────────────────
@@ -84,48 +84,57 @@ async function runDailyPipeline() {
   console.log("─".repeat(60));
 
   try {
-    // 1. Generate today's conspiracy deep-dive (never repeats)
-    console.log("\n[1/7] Generating daily conspiracy...");
+    // 1. Scrape NUFORC recent sightings for the map
+    try {
+      console.log("\n[1/8] Scraping NUFORC recent sightings for map...");
+      await scrapeNUFORCForMap();
+      await sleep(15000);
+    } catch (err) {
+      console.log("  ⚠️  NUFORC map scrape skipped:", err.message);
+    }
+
+    // 2. Generate today's conspiracy deep-dive (never repeats)
+    console.log("\n[2/8] Generating daily conspiracy...");
     await generateDailyConspiracy();
     await sleep(15000);
 
-    // 2. Find today's best credible sighting with media
+    // 3. Find today's best credible sighting
     try {
-      console.log("\n[2/7] Finding today's best sighting...");
+      console.log("\n[3/8] Finding today's best sighting...");
       await findAndSaveSightings();
       await sleep(15000);
     } catch (err) {
       console.log("  ⚠️  Sighting step skipped — continuing pipeline.");
     }
 
-    // 3. Search for today's UAP news
-    console.log("\n[3/7] Searching for today's UAP news...");
+    // 4. Search for today's UAP news
+    console.log("\n[4/8] Searching for today's UAP news...");
     const rawNews = await searchForNews();
 
-    // 4. Curate and rank the stories
-    console.log("\n[4/7] Curating and ranking stories...");
+    // 5. Curate and rank the stories
+    console.log("\n[5/8] Curating and ranking stories...");
     await sleep(15000);
     const curatedStories = await curateStories(rawNews);
 
-    // 5. Write full articles
-    console.log("\n[5/7] Writing articles...");
+    // 6. Write full articles
+    console.log("\n[6/8] Writing articles...");
     await sleep(15000);
     const articles = await writeArticles(curatedStories);
 
-    // 5b. Friday deep dive
+    // 6b. Friday deep dive
     const today = new Date();
     if (CONFIG.deepDiveWeekly && today.getDay() === 5) {
-      console.log("\n[5b] It's Friday — generating weekly deep dive...");
+      console.log("\n[6b] It's Friday — generating weekly deep dive...");
       const deepDive = await generateDeepDive(curatedStories);
       if (deepDive) articles.push(deepDive);
     }
 
-    // 6. Save articles to Supabase
-    console.log("\n[6/7] Saving to database...");
+    // 7. Save articles to Supabase
+    console.log("\n[7/8] Saving to database...");
     const saved = await saveToDatabase(articles);
 
-    // 7. Newsletter + social
-    console.log("\n[7/7] Building newsletter and posting to social...");
+    // 8. Newsletter + social
+    console.log("\n[8/8] Building newsletter and posting to social...");
     await sleep(12000);
     await buildNewsletter(articles);
     await postToSocial(articles);
@@ -140,7 +149,125 @@ async function runDailyPipeline() {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 0: DAILY CONSPIRACY
+// STEP 0: SCRAPE NUFORC FOR MAP
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+async function scrapeNUFORCForMap() {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+      .toISOString().split("T")[0];
+
+    console.log(`  🗺️  Fetching NUFORC reports from last 30 days...`);
+
+    const response = await withRetry(() =>
+      anthropic.messages.create({
+        model: CONFIG.model,
+        max_tokens: 2000,
+        tools: [{ type: "web_search_20250305", name: "web_search" }],
+        messages: [
+          {
+            role: "user",
+            content: `Search the NUFORC website (nuforc.org/databank) for UFO sighting reports from the last 30 days.
+
+Also search for any other recent credible UFO sightings reported in the last 30 days from news sources.
+
+For each sighting you find, I need:
+- The city and state/country where it occurred
+- The approximate GPS coordinates (latitude and longitude) for that city
+- The date of the sighting
+- A short title/description
+- The shape reported
+- Whether it seems credible (multiple witnesses, media coverage, military involvement, clear video)
+- The source URL if available
+
+Return ONLY a JSON array of up to 20 sightings:
+[
+  {
+    "title": "Short description",
+    "description": "1-2 sentence factual summary",
+    "city": "City name",
+    "state": "State or country",
+    "country": "USA or country name",
+    "lat": 37.7749,
+    "lng": -122.4194,
+    "shape": "orb|triangle|disc|light|cylinder|chevron|unknown",
+    "sighted_date": "YYYY-MM-DD",
+    "source": "NUFORC or news outlet name",
+    "source_url": "https://... or null",
+    "is_credible": false,
+    "nuforc_id": "unique id or null"
+  }
+]
+
+Credible = true only if: multiple witnesses, video/photo evidence, military/pilot witness, or major news coverage.
+Return ONLY valid JSON array.`,
+          },
+        ],
+      })
+    );
+
+    const text = extractText(response);
+    const sightings = safeParseJSON(text);
+
+    if (!sightings || !Array.isArray(sightings) || sightings.length === 0) {
+      console.log("  ⚠️  No map sightings data returned");
+      return;
+    }
+
+    console.log(`  Found ${sightings.length} recent sightings to map`);
+
+    let saved = 0;
+    for (const s of sightings) {
+      if (!s.lat || !s.lng || !s.title) continue;
+
+      // Color logic:
+      // orange = credible (any age, no time limit)
+      // green  = last 7 days (not credible)
+      // red    = 8-30 days old (not credible)
+      const sightedMs = s.sighted_date ? new Date(s.sighted_date).getTime() : Date.now();
+      const daysOld = (Date.now() - sightedMs) / (1000 * 60 * 60 * 24);
+      const dotColor = s.is_credible ? "orange"
+                     : daysOld <= 7  ? "green"
+                     : "red";
+      const nuforcId = s.nuforc_id || `${s.city}-${s.sighted_date}-${Date.now()}`.replace(/\s/g, "-");
+
+      const { error } = await supabase.from("map_sightings").upsert({
+        nuforc_id: nuforcId,
+        title: s.title,
+        description: s.description,
+        city: s.city,
+        state: s.state,
+        country: s.country || "USA",
+        lat: parseFloat(s.lat),
+        lng: parseFloat(s.lng),
+        shape: s.shape || "unknown",
+        sighted_date: s.sighted_date,
+        source: s.source || "NUFORC",
+        source_url: s.source_url || null,
+        is_credible: s.is_credible || false,
+        dot_color: dotColor,
+      }, { onConflict: "nuforc_id" });
+
+      if (!error) saved++;
+    }
+
+    // Clean up sightings older than 30 days that aren't credible
+    await supabase
+      .from("map_sightings")
+      .delete()
+      .lt("sighted_date", thirtyDaysAgo)
+      .eq("is_credible", false);
+
+    console.log(`  ✅ Saved ${saved} sightings to map`);
+  } catch (err) {
+    console.error("  ❌ scrapeNUFORCForMap error:", err.message);
+    throw err;
+  }
+}
+
+// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// STEP 1: DAILY CONSPIRACY
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function generateDailyConspiracy() {
@@ -236,12 +363,24 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 1: FIND TODAY'S BEST SIGHTING (MEDIA ONLY)
+// STEP 2: FIND TODAY'S BEST SIGHTING
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function findAndSaveSightings() {
   try {
-    // Only replace the current sighting if we find one with better evidence
+    const today = new Date().toISOString().split("T")[0];
+
+    const { data: existing } = await supabase
+      .from("sightings")
+      .select("id")
+      .gte("sighted_date", today)
+      .limit(1);
+
+    if (existing && existing.length > 0) {
+      console.log("  Sighting already saved for today, skipping.");
+      return;
+    }
+
     const response = await withRetry(() =>
       anthropic.messages.create({
         model: CONFIG.model,
@@ -252,16 +391,14 @@ async function findAndSaveSightings() {
             role: "user",
             content: `Search for the single most recent AND most credible UFO or UAP sighting reported in the last 14 days.
 
-STRICT REQUIREMENTS — only return a result if ALL of these are true:
-1. Has a REAL photo or video URL (not just "photos were taken" — must have an actual link)
-2. Multiple witnesses OR official source (NUFORC, MUFON, military, credible news outlet)
-3. NOT already debunked (no balloons, Chinese lanterns, Starlink, obvious CGI)
+Credibility criteria (in order of priority):
+1. Has real photo or video evidence
+2. Multiple witnesses
+3. Sourced from NUFORC, MUFON, credible news outlet, or military source
+4. Not already debunked (avoid balloon sightings, Chinese lanterns, Starlink, obvious CGI)
 
-If no sighting meets ALL these criteria, return: { "skip": true }
-
-Otherwise return ONLY a JSON object:
+Return ONLY a JSON object for the single best sighting:
 {
-  "skip": false,
   "title": "Short punchy title",
   "date": "YYYY-MM-DD",
   "location": "City, State/Country",
@@ -269,14 +406,14 @@ Otherwise return ONLY a JSON object:
   "shape": "orb|triangle|cylinder|disc|light|chevron|unknown|other",
   "source": "Name of source (e.g. NUFORC, MUFON, BBC)",
   "source_url": "https://...",
-  "image_url": "https://... (REQUIRED — must be a real working image URL)",
+  "image_url": "https://... or null",
   "video_url": "https://youtube.com/... or null",
-  "has_media": true,
+  "has_media": true or false,
   "witness_count": number or null,
   "credibility_notes": "Brief note on why this is credible"
 }
 
-Return ONLY valid JSON.`,
+Prioritise sightings with real photos or video. Return ONLY valid JSON.`,
           },
         ],
       })
@@ -285,23 +422,12 @@ Return ONLY valid JSON.`,
     const text = extractText(response);
     const parsed = safeParseJSON(text);
 
-    // If AI found nothing worthy, skip — don't replace existing sighting
-    if (!parsed || parsed.skip === true || !parsed.title) {
-      console.log("  ℹ️  No high-quality sighting with media found today — keeping existing.");
+    if (!parsed || !parsed.title) {
+      console.log("  ⚠️  No sightings data returned");
       return;
     }
 
-    // Must have actual media
-    if (!parsed.image_url && !parsed.video_url) {
-      console.log("  ℹ️  Sighting has no verified media URL — skipping to preserve quality.");
-      return;
-    }
-
-    const s = parsed;
-    const today = new Date().toISOString().split("T")[0];
-
-    // Delete old sightings and replace with the new high-quality one
-    await supabase.from("sightings").delete().neq("id", "00000000-0000-0000-0000-000000000000");
+    const s = Array.isArray(parsed) ? parsed[0] : parsed;
 
     const { error } = await supabase.from("sightings").insert({
       title: s.title,
@@ -313,16 +439,15 @@ Return ONLY valid JSON.`,
       source_url: s.source_url,
       image_url: s.image_url || null,
       video_url: s.video_url || null,
-      has_media: true,
+      has_media: s.has_media || false,
       witness_count: s.witness_count || null,
       credibility_notes: s.credibility_notes || null,
-      published_at: new Date().toISOString(),
     });
 
     if (error) {
       console.error("  ❌ Failed to save sighting:", error.message);
     } else {
-      console.log(`  ✅ Sighting updated: "${s.title}" — ${s.location}`);
+      console.log(`  ✅ Sighting saved: "${s.title}" — ${s.location}`);
     }
   } catch (err) {
     console.error("  ❌ findAndSaveSightings error:", err.message);
@@ -331,7 +456,7 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 2: SEARCH FOR NEWS
+// STEP 3: SEARCH FOR NEWS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function searchForNews() {
@@ -373,23 +498,13 @@ Return ONLY valid JSON, nothing else.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 3: CURATE STORIES (NO DUPLICATES)
+// STEP 4: CURATE STORIES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function curateStories(rawNews) {
-  // Fetch recent headlines from database to avoid duplicates
-  const { data: recentArticles } = await supabase
-    .from("articles")
-    .select("headline, original_url")
-    .order("published_at", { ascending: false })
-    .limit(60);
-
-  const recentHeadlines = (recentArticles || []).map((a) => a.headline?.toLowerCase() || "");
-  const recentUrls = (recentArticles || []).map((a) => a.original_url || "");
-
   if (rawNews.length === 0) {
     console.log("  ⚠️  No raw news found — using fallback sources");
-    return await getFallbackStories(recentHeadlines, recentUrls);
+    return await getFallbackStories();
   }
 
   const response = await withRetry(() =>
@@ -406,19 +521,11 @@ async function curateStories(rawNews) {
 Here are the raw stories found:
 ${JSON.stringify(rawNews, null, 2)}
 
-ALREADY PUBLISHED — do NOT select stories that cover the same event or topic as these recent headlines:
-${recentHeadlines.slice(0, 20).join("\n")}
-
-ALREADY PUBLISHED URLs — do NOT select stories from these URLs:
-${recentUrls.slice(0, 20).join("\n")}
-
-Only include a story about a previously covered topic if there is significant NEW information or development.
-
 Criteria:
 - Newsworthiness and significance to UAP/disclosure community
 - Source credibility
 - Variety (mix government, science, sightings, international)
-- Avoid duplicates or very similar stories to what's already been published
+- Avoid duplicates or very similar stories
 
 Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
 [
@@ -431,7 +538,7 @@ Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
     "category": "government|science|sighting|testimony|international|investigation",
     "isFeatured": boolean (true for #1 story only),
     "isBreaking": boolean,
-    "editorialNote": "Why this story matters and why it is NOT a duplicate"
+    "editorialNote": "Why this story matters"
   }
 ]
 
@@ -446,7 +553,7 @@ Return ONLY valid JSON.`,
 
   if (!curated || !Array.isArray(curated) || curated.length === 0) {
     console.log("  ⚠️  Curation failed — using fallback");
-    return await getFallbackStories(recentHeadlines, recentUrls);
+    return await getFallbackStories();
   }
 
   console.log(`  Curated ${curated.length} stories`);
@@ -454,7 +561,7 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 4: WRITE ARTICLES
+// STEP 5: WRITE ARTICLES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function writeArticles(curatedStories) {
@@ -463,10 +570,6 @@ async function writeArticles(curatedStories) {
   for (const story of curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
     await sleep(20000);
-
-    const publishDate = new Date().toLocaleDateString("en-US", {
-      weekday: "long", year: "numeric", month: "long", day: "numeric"
-    });
 
     const response = await withRetry(() =>
       anthropic.messages.create({
@@ -483,7 +586,6 @@ Title: ${story.title}
 Summary: ${story.summary}
 Source: ${story.source}
 Date: ${story.date}
-Published: ${publishDate}
 Category: ${story.category}
 Editorial note: ${story.editorialNote}
 
@@ -492,11 +594,10 @@ Search the web for any additional context or corroborating sources before writin
 Write a tight, punchy news article of NO MORE THAN 500 words. Be concise and direct. Include:
 1. A compelling, accurate headline (can differ from original title)
 2. A one-sentence "deck" (subheadline)
-3. The full article body in inverted pyramid style — the FIRST sentence of the article must include the date and location of the event (e.g. "On March 12, 2026, Pentagon officials announced...")
-4. A "Key Facts" box (3-5 bullet points, each including relevant dates where applicable)
+3. The full article body in inverted pyramid style
+4. A "Key Facts" box (3-5 bullet points)
 
 CRITICAL WRITING RULES:
-- Always include the specific date the event occurred in the opening sentence
 - Write COMPLETE, SELF-CONTAINED sentences only. Every sentence must start with a capital letter.
 - NEVER start any sentence or paragraph with a comma, period, semicolon, or lowercase word.
 - NEVER use citation tags, XML tags, HTML tags, brackets, or any markup in the article body.
@@ -533,7 +634,7 @@ Return ONLY valid JSON.`,
       articles.push(article);
       console.log(`  ✅ Written: "${article.headline?.slice(0, 50)}"`);
     } else {
-      console.log(`  ⚠️  Skipping malformed article — response may have been truncated`);
+      console.log(`  ⚠️  Skipping malformed article`);
     }
 
     await sleep(1500);
@@ -544,7 +645,7 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 4b: WEEKLY DEEP DIVE (Fridays only)
+// STEP 5b: WEEKLY DEEP DIVE (Fridays only)
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function generateDeepDive(curatedStories) {
@@ -565,12 +666,11 @@ async function generateDeepDive(curatedStories) {
 Base topic: ${topStory?.title || "This week's most significant UAP development"}
 
 Research this topic thoroughly using web search. Then write a comprehensive, deeply reported piece that:
-- Opens with the specific date and context of the central event or development
-- Provides full historical context with dates for all key events
+- Provides full historical context
 - Explains why this matters for the broader disclosure narrative
 - Cites multiple experts or sources
 - Explains the evidence and its limitations honestly
-- Connects to other recent developments (with their dates)
+- Connects to other recent developments
 - Ends with clear implications and what to watch for next
 
 Format as JSON:
@@ -607,34 +707,14 @@ Return ONLY valid JSON.`,
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 5: SAVE TO DATABASE (NO DUPLICATES)
+// STEP 6: SAVE TO DATABASE
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function saveToDatabase(articles) {
   let savedCount = 0;
 
-  // Get existing slugs and headlines to prevent duplicates
-  const { data: existing } = await supabase
-    .from("articles")
-    .select("slug, headline")
-    .order("published_at", { ascending: false })
-    .limit(100);
-
-  const existingSlugs = new Set((existing || []).map((a) => a.slug));
-  const existingHeadlines = new Set((existing || []).map((a) => a.headline?.toLowerCase()));
-
   for (const article of articles) {
     if (!article || !article.headline) continue;
-
-    // Skip if same slug or very similar headline already exists
-    if (existingSlugs.has(article.slug)) {
-      console.log(`  ⏭  Skipping duplicate slug: "${article.headline?.slice(0, 40)}"`);
-      continue;
-    }
-    if (existingHeadlines.has(article.headline?.toLowerCase())) {
-      console.log(`  ⏭  Skipping duplicate headline: "${article.headline?.slice(0, 40)}"`);
-      continue;
-    }
 
     const { error } = await supabase.from("articles").insert({
       slug: article.slug,
@@ -656,8 +736,6 @@ async function saveToDatabase(articles) {
       console.error(`  ❌ Failed to save: ${article.headline?.slice(0, 40)}`, error.message);
     } else {
       savedCount++;
-      existingSlugs.add(article.slug);
-      existingHeadlines.add(article.headline?.toLowerCase());
       console.log(`  ✅ Saved: "${article.headline?.slice(0, 50)}"`);
     }
   }
@@ -666,14 +744,11 @@ async function saveToDatabase(articles) {
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 6: BUILD NEWSLETTER
+// STEP 7: BUILD NEWSLETTER
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function buildNewsletter(articles) {
-  if (!articles || articles.length === 0) {
-    console.log("  ⚠️  No articles to build newsletter from");
-    return;
-  }
+  if (!articles || articles.length === 0) return;
 
   const featured = articles.find((a) => a.isFeatured) || articles[0];
   const supporting = articles.filter((a) => !a.isFeatured && !a.isDeepDive);
@@ -693,14 +768,6 @@ Featured story: ${featured?.headline} — ${featured?.deck}
 Supporting stories: ${supporting.map((s) => `• ${s.headline}`).join("\n")}
 ${deepDive ? `Deep dive: ${deepDive.headline}` : ""}
 
-Write a compelling newsletter with:
-- A punchy subject line
-- A short preheader (preview text)
-- An opening paragraph (2-3 sentences, engaging hook)
-- A top story summary (3-4 sentences)
-- Also today items (headline + 1 sentence each)
-- A closing line
-
 Return as JSON: { "subject": string, "preheader": string, "openingGraph": string, "topStorySummary": string, "alsoTodayItems": [{headline, summary}], "closing": string }
 Return ONLY valid JSON.`,
         },
@@ -710,11 +777,7 @@ Return ONLY valid JSON.`,
 
   const text = extractText(response);
   const newsletter = safeParseJSON(text);
-
-  if (!newsletter) {
-    console.log("  ⚠️  Newsletter generation failed");
-    return;
-  }
+  if (!newsletter) return;
 
   const html = buildNewsletterHTML(newsletter, featured, supporting, deepDive);
   await emailNewsletterToOwner({ ...newsletter, html });
@@ -722,123 +785,36 @@ Return ONLY valid JSON.`,
 }
 
 function buildNewsletterHTML(newsletter, featured, supporting, deepDive) {
-  return `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${newsletter.subject}</title>
-<style>
-  body { font-family: Georgia, serif; background: #0a0a0f; color: #e0e0e0; margin: 0; padding: 0; }
-  .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-  .header { background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px; text-align: center; border-bottom: 2px solid #00d4ff; }
-  .header h1 { color: #00d4ff; font-size: 28px; margin: 0; letter-spacing: 2px; }
-  .header p { color: #8888aa; font-size: 12px; margin: 5px 0 0; }
-  .section { padding: 25px; border-bottom: 1px solid #2a2a3e; }
-  .featured-headline { font-size: 22px; font-weight: bold; line-height: 1.3; margin-bottom: 10px; }
-  .featured-headline a { color: #00d4ff; text-decoration: none; }
-  .deck { color: #aaaacc; font-style: italic; margin-bottom: 15px; }
-  .body-text { line-height: 1.7; color: #ccccdd; }
-  .also-today h3 { color: #00d4ff; font-size: 14px; letter-spacing: 1px; text-transform: uppercase; }
-  .story-item { padding: 10px 0; border-bottom: 1px solid #1a1a2e; }
-  .story-item a { color: #e0e0e0; font-weight: bold; text-decoration: none; }
-  .story-summary { color: #aaaacc; font-size: 14px; margin: 3px 0 0; }
-  .footer { padding: 20px; text-align: center; color: #555577; font-size: 12px; }
-  .footer a { color: #00d4ff; }
-  .tag { display: inline-block; background: #00d4ff22; color: #00d4ff; font-size: 11px; padding: 2px 8px; border-radius: 10px; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px; }
-</style>
-</head>
-<body>
-<div class="container">
-  <div class="header">
-    <h1>🛸 DISCLOSURE DAILY</h1>
-    <p>${new Date().toLocaleDateString("en-US", { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-  </div>
-  <div class="section">
-    <p class="body-text">${newsletter.openingGraph}</p>
-  </div>
-  <div class="section">
-    <div class="tag">Top Story</div>
-    <div class="featured-headline">
-      <a href="${featured?.originalUrl || "https://ufofinders.com"}">${featured?.headline}</a>
-    </div>
-    <div class="deck">${featured?.deck}</div>
-    <div class="body-text">${newsletter.topStorySummary}</div>
-  </div>
-  ${supporting.length > 0 ? `
-  <div class="section also-today">
-    <h3>Also Today</h3>
-    ${(newsletter.alsoTodayItems || []).map((item, i) => `
-    <div class="story-item">
-      <a href="${supporting[i]?.originalUrl || "https://ufofinders.com"}">${item.headline}</a>
-      <div class="story-summary">${item.summary}</div>
-    </div>`).join("")}
-  </div>` : ""}
-  ${deepDive ? `
-  <div class="section">
-    <div class="tag">Deep Dive</div>
-    <div class="featured-headline">
-      <a href="https://ufofinders.com">${deepDive.headline}</a>
-    </div>
-    <div class="deck">${deepDive.deck}</div>
-  </div>` : ""}
-  <div class="section">
-    <p class="body-text">${newsletter.closing}</p>
-    <p class="body-text" style="text-align:center; margin-top: 20px;">
-      <a href="https://ufofinders.com" style="background:#00d4ff; color:#000; padding:12px 24px; border-radius:5px; text-decoration:none; font-weight:bold;">Read Full Stories →</a>
-    </p>
-  </div>
-  <div class="footer">
-    <p>You're receiving this because you subscribed to Disclosure Daily.</p>
-    <p><a href="https://ufofinders.com">ufofinders.com</a></p>
-  </div>
-</div>
-</body>
-</html>`;
+  return `<!DOCTYPE html><html><head><meta charset="utf-8"><title>${newsletter.subject}</title>
+<style>body{font-family:Georgia,serif;background:#0a0a0f;color:#e0e0e0;margin:0;padding:0}.container{max-width:600px;margin:0 auto;padding:20px}.header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:30px;text-align:center;border-bottom:2px solid #00d4ff}.header h1{color:#00d4ff;font-size:28px;margin:0;letter-spacing:2px}.section{padding:25px;border-bottom:1px solid #2a2a3e}.featured-headline{font-size:22px;font-weight:bold;line-height:1.3;margin-bottom:10px}.featured-headline a{color:#00d4ff;text-decoration:none}.deck{color:#aaaacc;font-style:italic;margin-bottom:15px}.body-text{line-height:1.7;color:#ccccdd}.footer{padding:20px;text-align:center;color:#555577;font-size:12px}.footer a{color:#00d4ff}.tag{display:inline-block;background:#00d4ff22;color:#00d4ff;font-size:11px;padding:2px 8px;border-radius:10px;margin-bottom:10px;text-transform:uppercase;letter-spacing:1px}</style>
+</head><body><div class="container">
+<div class="header"><h1>🛸 DISCLOSURE DAILY</h1><p>${new Date().toLocaleDateString("en-US",{weekday:"long",year:"numeric",month:"long",day:"numeric"})}</p></div>
+<div class="section"><p class="body-text">${newsletter.openingGraph}</p></div>
+<div class="section"><div class="tag">Top Story</div><div class="featured-headline"><a href="${featured?.originalUrl||"https://ufofinders.com"}">${featured?.headline}</a></div><div class="deck">${featured?.deck}</div><div class="body-text">${newsletter.topStorySummary}</div></div>
+<div class="section"><p class="body-text">${newsletter.closing}</p><p style="text-align:center;margin-top:20px"><a href="https://ufofinders.com" style="background:#00d4ff;color:#000;padding:12px 24px;border-radius:5px;text-decoration:none;font-weight:bold">Read Full Stories →</a></p></div>
+<div class="footer"><p><a href="https://ufofinders.com">ufofinders.com</a></p></div>
+</div></body></html>`;
 }
 
 async function emailNewsletterToOwner(newsletter) {
   if (!process.env.GMAIL_USER || !process.env.GMAIL_APP_PASSWORD) {
-    console.log("  ⚠️  Gmail not configured — GMAIL_USER or GMAIL_APP_PASSWORD secret missing");
+    console.log("  ⚠️  Gmail not configured — skipping email");
     return;
   }
-
-  console.log(`  📧 Sending email to ${process.env.GMAIL_USER}...`);
-
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
+    service: "gmail",
+    auth: { user: process.env.GMAIL_USER, pass: process.env.GMAIL_APP_PASSWORD },
   });
-
-  try {
-    await transporter.verify();
-    console.log("  ✅ Gmail connection verified");
-  } catch (verifyErr) {
-    console.error("  ❌ Gmail verification failed:", verifyErr.message);
-    console.error("  → Check GMAIL_USER and GMAIL_APP_PASSWORD secrets in GitHub");
-    return;
-  }
-
-  try {
-    const info = await transporter.sendMail({
-      from: `"Disclosure Daily" <${process.env.GMAIL_USER}>`,
-      to: process.env.GMAIL_USER,
-      subject: newsletter.subject,
-      html: newsletter.html,
-    });
-    console.log("  ✅ Email sent! Message ID:", info.messageId);
-  } catch (sendErr) {
-    console.error("  ❌ Email send failed:", sendErr.message);
-  }
+  await transporter.sendMail({
+    from: `"Disclosure Daily" <${process.env.GMAIL_USER}>`,
+    to: process.env.GMAIL_USER,
+    subject: newsletter.subject,
+    html: newsletter.html,
+  });
 }
 
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// STEP 7: POST TO SOCIAL
+// STEP 8: POST TO SOCIAL
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 async function postToSocial(articles) {
@@ -853,14 +829,13 @@ async function postToSocial(articles) {
         {
           role: "user",
           content: `Write social media posts for this UFO/UAP news article.
-
 Headline: ${featured.headline}
 Deck: ${featured.deck}
 Category: ${featured.category}
 
 Write:
-1. An X (Twitter) post — max 280 chars, punchy, include 3-4 relevant hashtags, end with "ufofinders.com"
-2. A longer Facebook/Instagram post — 2-3 sentences, more context, same hashtags
+1. An X (Twitter) post — max 280 chars, punchy, 3-4 hashtags, end with "ufofinders.com"
+2. A longer Instagram post — 2-3 sentences, same hashtags
 
 Return as JSON: { "twitter": string, "instagram": string }
 Return ONLY valid JSON.`,
@@ -871,7 +846,6 @@ Return ONLY valid JSON.`,
 
   const text = extractText(response);
   const socialCopy = safeParseJSON(text);
-
   if (socialCopy) {
     console.log("\n  📣 Social copy ready:");
     console.log("  X:", socialCopy.twitter);
@@ -883,7 +857,7 @@ Return ONLY valid JSON.`,
 // FALLBACK STORIES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-async function getFallbackStories(recentHeadlines = [], recentUrls = []) {
+async function getFallbackStories() {
   const response = await withRetry(() =>
     anthropic.messages.create({
       model: CONFIG.model,
@@ -893,31 +867,12 @@ async function getFallbackStories(recentHeadlines = [], recentUrls = []) {
         {
           role: "user",
           content: `Search for the most significant recent UAP/UFO news from the past week. Find ${CONFIG.storiesPerDay} credible stories.
-
-Do NOT include stories similar to these already published headlines:
-${recentHeadlines.slice(0, 15).join("\n")}
-
-Return a JSON array:
-[
-  {
-    "title": string,
-    "summary": string,
-    "source": string,
-    "url": string,
-    "date": string,
-    "category": "government|science|sighting|testimony|international|investigation",
-    "isFeatured": boolean,
-    "isBreaking": false,
-    "editorialNote": string
-  }
-]
-
+Return a JSON array with title, summary, source, url, date, category, isFeatured, isBreaking, editorialNote.
 Return ONLY valid JSON.`,
         },
       ],
     })
   );
-
   const text = extractText(response);
   return safeParseJSON(text) || [];
 }
@@ -940,11 +895,7 @@ function safeParseJSON(text) {
   } catch {
     const match = text.match(/\[[\s\S]*\]|\{[\s\S]*\}/);
     if (match) {
-      try {
-        return JSON.parse(match[0]);
-      } catch {
-        return null;
-      }
+      try { return JSON.parse(match[0]); } catch { return null; }
     }
     return null;
   }
@@ -964,11 +915,5 @@ function slugify(str) {
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 runDailyPipeline()
-  .then((result) => {
-    console.log("\n🟢 Done:", result);
-    process.exit(0);
-  })
-  .catch((err) => {
-    console.error("\n🔴 Fatal error:", err);
-    process.exit(1);
-  });
+  .then((result) => { console.log("\n🟢 Done:", result); process.exit(0); })
+  .catch((err) => { console.error("\n🔴 Fatal error:", err); process.exit(1); });
