@@ -934,6 +934,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     globeInstance.controls().autoRotate = true;
     globeInstance.controls().autoRotateSpeed = 0.5;
 
+    // Center the globe in view
+    globeInstance.pointOfView({ lat: 20, lng: 0, altitude: 2.5 });
+
     window.addEventListener('resize', function(){
       globeInstance.width(container.offsetWidth).height(container.offsetHeight);
     });
