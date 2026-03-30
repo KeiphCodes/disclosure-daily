@@ -13,38 +13,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UFO Finders — Daily News, Sightings & Community</title>
 <meta name="description" content="UFO Finders — daily UFO and UAP news, government disclosures, military sightings, whistleblower testimony and eyewitness reports. Updated every morning.">
+
+<!-- Open Graph / Facebook / Reddit previews -->
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://ufofinders.com/">
 <meta property="og:title" content="UFO Finders — Daily UAP & UFO News">
 <meta property="og:description" content="Daily UFO and UAP news powered by AI. Government disclosures, military sightings, whistleblower testimony — updated every morning at 6am.">
 <meta property="og:image" content="https://ufofinders.com/og-image.jpg">
 <meta property="og:site_name" content="UFO Finders">
+
+<!-- Twitter / X card -->
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@ufofinders">
 <meta name="twitter:title" content="UFO Finders — Daily UAP & UFO News">
 <meta name="twitter:description" content="Daily UFO and UAP news powered by AI. Government disclosures, military sightings, whistleblower testimony — updated every morning.">
 <meta name="twitter:image" content="https://ufofinders.com/og-image.jpg">
+
+<!-- SEO -->
 <meta name="keywords" content="UFO news, UAP news, UFO sightings 2025, government disclosure, Pentagon UFO, AARO, UAP hearings, alien disclosure, military UFO, UFO today">
 <meta name="robots" content="index, follow">
 <meta name="author" content="UFO Finders">
 <link rel="canonical" href="https://ufofinders.com/">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
-<link rel="icon" type="image/png" sizes="192x192" href="/logo-192.png">
-<link rel="apple-touch-icon" href="/logo-192.png">
+
+<!-- Schema.org structured data -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "NewsMediaOrganization",
   "name": "UFO Finders",
   "url": "https://ufofinders.com",
-  "logo": {
-    "@type": "ImageObject",
-    "url": "https://ufofinders.com/logo-192.png",
-    "width": 192,
-    "height": 192
-  },
   "description": "Daily UFO and UAP news, government disclosures, military sightings and eyewitness reports.",
-  "sameAs": ["https://x.com/ufofinders","https://reddit.com/r/ufofinders"]
+  "sameAs": [
+    "https://x.com/ufofinders",
+    "https://reddit.com/r/ufofinders"
+  ]
 }
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -57,19 +59,23 @@
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:var(--bg);color:var(--white);font-family:'Barlow',sans-serif;font-weight:300;line-height:1.6;overflow-x:hidden}
+
 nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;padding:0 1rem;gap:0.75rem}
 .nav-logo{font-family:'Bebas Neue',sans-serif;font-size:1.4rem;letter-spacing:0.08em;color:var(--glow);flex-shrink:0}
 .nav-links{display:flex;gap:1rem;list-style:none;flex:1}
 .nav-links a{font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color 0.2s}
 .nav-links a:hover{color:var(--glow)}
 .nav-sub{font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.1em;text-transform:uppercase;background:var(--glow);color:var(--bg);padding:0.35rem 0.875rem;border:none;cursor:pointer;font-weight:700;flex-shrink:0}
+
 .ticker{background:var(--glow);height:24px;display:flex;align-items:center;overflow:hidden}
 .ticker-label{font-family:'Share Tech Mono',monospace;font-size:0.5rem;font-weight:700;letter-spacing:0.2em;padding:0 0.75rem;white-space:nowrap;background:var(--bg);color:var(--glow);height:100%;display:flex;align-items:center;flex-shrink:0}
 .ticker-inner{overflow:hidden;flex:1}
 .ticker-track{display:inline-flex;animation:tick 60s linear infinite;white-space:nowrap}
 .ticker-item{font-family:'Share Tech Mono',monospace;font-size:0.55rem;padding:0 2rem;color:var(--bg);font-weight:700}
 @keyframes tick{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+
 .page{max-width:1200px;margin:0 auto;padding:1.5rem 1rem}
+
 .hero{border:1px solid var(--border);background:var(--surface);cursor:pointer;margin-bottom:1.5rem;padding:1.5rem;transition:border-color 0.2s}
 .hero:hover{border-color:var(--glow)}
 .hero-label{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.25em;color:var(--glow);margin-bottom:0.5rem}
@@ -81,10 +87,12 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .meta{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim)}
 .read-more{margin-left:auto;font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;border:1px solid var(--glow);color:var(--glow);padding:0.35rem 0.875rem;background:none;cursor:pointer;transition:all 0.2s}
 .hero:hover .read-more{background:var(--glow);color:var(--bg)}
+
 .sec-head{display:flex;align-items:center;gap:0.75rem;margin:1.5rem 0 1rem}
 .sec-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.08em;color:var(--glow);white-space:nowrap}
 .sec-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border),transparent)}
 .sec-ct{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);white-space:nowrap}
+
 .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border)}
 .card{background:var(--bg);padding:1.1rem;cursor:pointer;transition:background 0.2s;display:flex;flex-direction:column;gap:0.4rem}
 .card:hover{background:var(--surface)}
@@ -95,18 +103,21 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .card-foot{display:flex;justify-content:space-between;align-items:center;margin-top:0.35rem;padding-top:0.4rem;border-top:1px solid var(--border)}
 .card-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
 .card-read{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--glow)}
+
 .arch-row{display:grid;grid-template-columns:80px 1fr 70px;gap:0.75rem;align-items:center;padding:0.6rem 0;border-bottom:1px solid var(--border);cursor:pointer;transition:all 0.2s}
 .arch-row:hover{padding-left:0.4rem}
 .arch-row:hover .arch-hl{color:var(--glow)}
 .arch-date{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--dim)}
 .arch-hl{font-weight:600;font-size:0.82rem;color:var(--white);line-height:1.3;transition:color 0.2s}
 .arch-cat{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--amber);text-align:right;text-transform:uppercase}
+
 .topics{display:grid;grid-template-columns:repeat(4,1fr);gap:0.6rem}
 .topic{background:var(--card);border:1px solid var(--border);padding:0.875rem;text-align:center;cursor:pointer;transition:all 0.2s}
 .topic:hover,.topic.active{border-color:var(--glow);background:var(--surface)}
 .topic-icon{font-size:1.25rem;display:block;margin-bottom:0.3rem}
 .topic-name{font-family:'Bebas Neue',sans-serif;font-size:0.85rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.1rem}
 .topic-sub{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim)}
+
 .topic-featured{border:1px solid var(--border);background:var(--surface);padding:1.25rem;margin-bottom:1.25rem;cursor:pointer;transition:border-color 0.2s}
 .topic-featured:hover{border-color:var(--glow)}
 .topic-feat-label{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--glow);margin-bottom:0.4rem}
@@ -116,6 +127,7 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .topic-feat-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim);margin-bottom:0.75rem}
 .topic-feat-btn{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em;border:1px solid var(--glow);color:var(--glow);padding:0.35rem 0.875rem;background:none;cursor:pointer;transition:all 0.2s}
 .topic-featured:hover .topic-feat-btn{background:var(--glow);color:var(--bg)}
+
 .topic-art-list{display:flex;flex-direction:column;gap:1px;background:var(--border)}
 .topic-art-row{background:var(--bg);padding:1rem;cursor:pointer;transition:background 0.2s}
 .topic-art-row:hover{background:var(--surface)}
@@ -124,6 +136,38 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .topic-art-hl{font-weight:700;font-size:0.88rem;line-height:1.25;color:var(--white);margin-bottom:0.25rem;transition:color 0.2s}
 .topic-art-deck{font-size:0.78rem;color:var(--mid);line-height:1.45;margin-bottom:0.3rem}
 .topic-art-meta{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
+
+
+.sightings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-bottom:0.5rem}
+.sighting-card{background:var(--card);border:1px solid var(--border);overflow:hidden;display:flex;flex-direction:column;transition:border-color 0.2s}
+.sighting-card:hover{border-color:var(--glow)}
+.sighting-media{position:relative;width:100%;height:220px;background:var(--surface);overflow:hidden;flex-shrink:0}
+.sighting-img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.3s}
+.sighting-card:hover .sighting-img{transform:scale(1.03)}
+.sighting-no-media{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0.5rem}
+.sighting-no-media-icon{font-size:2.5rem;opacity:0.3}
+.sighting-no-media-txt{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.15em;text-transform:uppercase;color:var(--dim)}
+.sighting-vid-badge{position:absolute;top:0.5rem;left:0.5rem;background:var(--red);color:#fff;font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.1em;padding:0.2rem 0.5rem;display:flex;align-items:center;gap:0.3rem}
+.sighting-vid-badge::before{content:'▶';font-size:0.5rem}
+.sighting-shape-badge{position:absolute;top:0.5rem;right:0.5rem;background:rgba(3,5,8,0.82);border:1px solid var(--border);color:var(--amber);font-family:'Share Tech Mono',monospace;font-size:0.42rem;letter-spacing:0.12em;text-transform:uppercase;padding:0.2rem 0.5rem}
+.sighting-body{padding:1rem;display:flex;flex-direction:column;gap:0.4rem;flex:1}
+.sighting-meta{display:flex;align-items:center;gap:0.5rem;flex-wrap:wrap}
+.sighting-date{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--glow)}
+.sighting-loc{font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--mid)}
+.sighting-loc::before{content:'📍';font-size:0.5rem;margin-right:0.15rem}
+.sighting-title{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;line-height:1;color:var(--white);transition:color 0.2s}
+.sighting-card:hover .sighting-title{color:var(--glow)}
+.sighting-desc{font-size:0.78rem;color:var(--mid);line-height:1.55;flex:1}
+.sighting-footer{display:flex;align-items:center;justify-content:space-between;padding-top:0.6rem;margin-top:0.25rem;border-top:1px solid var(--border);gap:0.5rem;flex-wrap:wrap}
+.sighting-source{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);text-transform:uppercase;letter-spacing:0.08em}
+.sighting-links{display:flex;gap:0.5rem}
+.sighting-link{font-family:'Share Tech Mono',monospace;font-size:0.44rem;letter-spacing:0.08em;border:1px solid var(--border);color:var(--mid);padding:0.25rem 0.6rem;text-decoration:none;transition:all 0.2s;white-space:nowrap}
+.sighting-link:hover{border-color:var(--glow);color:var(--glow)}
+.sighting-link.primary{border-color:var(--glow);color:var(--glow)}
+.sighting-link.primary:hover{background:var(--glow);color:var(--bg)}
+.sighting-link.video{border-color:var(--red);color:var(--red)}
+.sighting-link.video:hover{background:var(--red);color:#fff}
+
 .contact-section{background:var(--surface);border:1px solid var(--border);border-top:2px solid var(--glow);padding:2rem;margin-top:1.5rem;text-align:center}
 .contact-hl{font-family:'Bebas Neue',sans-serif;font-size:2.2rem;line-height:0.95;color:var(--white);margin-bottom:0.5rem}
 .contact-hl span{color:var(--glow)}
@@ -138,6 +182,7 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .cg-item{background:var(--card);border:1px solid var(--border);padding:0.875rem}
 .cg-num{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--glow);margin-bottom:0.25rem}
 .cg-text{font-size:0.78rem;color:var(--mid);line-height:1.5}
+
 .support-bar{background:var(--deep);border-top:1px solid var(--border);padding:1.5rem 1rem;text-align:center}
 .support-inner{max-width:480px;margin:0 auto}
 .support-label{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--amber);margin-bottom:0.35rem}
@@ -145,6 +190,7 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .support-sub{font-size:0.78rem;color:var(--mid);margin-bottom:1rem;line-height:1.55}
 .bmc-btn{display:inline-flex;align-items:center;gap:0.6rem;background:#ffdd00;color:#000000;border:none;padding:0.75rem 1.75rem;font-family:'Share Tech Mono',monospace;font-size:0.7rem;letter-spacing:0.1em;font-weight:700;cursor:pointer;text-decoration:none;transition:all 0.2s}
 .bmc-btn:hover{background:#ffe833}
+
 .nl-bar{background:var(--bg);border-top:1px solid var(--border);padding:1.5rem 1rem;text-align:center}
 .nl-inner{max-width:440px;margin:0 auto}
 .nl-label{font-family:'Share Tech Mono',monospace;font-size:0.46rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--glow);margin-bottom:0.3rem}
@@ -155,6 +201,7 @@ nav{position:sticky;top:0;z-index:600;background:rgba(3,5,8,0.97);border-bottom:
 .nl-in:focus{border-color:var(--glow)}
 .nl-btn{background:var(--glow);color:var(--bg);border:none;padding:0.6rem 0.875rem;font-family:'Share Tech Mono',monospace;font-size:0.55rem;letter-spacing:0.08em;font-weight:700;cursor:pointer;white-space:nowrap}
 .nl-btn:hover{background:#33ffaa}
+
 footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:var(--deep)}
 .ft-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:1.5rem}
 .ft-brand{font-family:'Bebas Neue',sans-serif;font-size:1.2rem;letter-spacing:0.08em;color:var(--glow);margin-bottom:0.35rem}
@@ -164,13 +211,13 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .ft-links a{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--mid);text-decoration:none;transition:color 0.2s}
 .ft-links a:hover{color:var(--glow)}
 .ft-bottom{max-width:1200px;margin:1rem auto 0;padding-top:0.75rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim)}
-.ft-disclaimer{max-width:1200px;margin:1rem auto 0;padding-top:0.75rem;border-top:1px solid var(--border)}
-.ft-disclaimer p{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);line-height:1.7;margin-bottom:0.4rem;letter-spacing:0.02em}
+
 .loading{display:flex;align-items:center;justify-content:center;min-height:180px;flex-direction:column;gap:0.75rem}
 .spinner{width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--glow);border-radius:50%;animation:spin 0.9s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .load-txt{font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--dim)}
 .empty{padding:2rem;text-align:center;font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);border:1px solid var(--border)}
+
 .overlay{display:none;position:fixed;inset:0;background:rgba(3,5,8,0.85);z-index:800}
 .overlay.on{display:block}
 .panel{position:fixed;top:0;right:0;bottom:0;width:min(660px,100vw);background:var(--deep);border-left:1px solid var(--border);overflow-y:auto;z-index:900;transform:translateX(100%);transition:transform 0.32s cubic-bezier(0.4,0,0.2,1)}
@@ -182,6 +229,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .panel-body{padding:1.5rem}
 .p-image{width:100%;max-height:320px;object-fit:cover;display:block;margin-bottom:0.5rem;border:1px solid var(--border)}
 .p-image-caption{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);margin-bottom:1.25rem;line-height:1.4;padding:0.4rem 0.5rem;border-left:2px solid var(--border)}
+
 .p-cat{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--glow);margin-bottom:0.5rem}
 .p-hl{font-family:'Bebas Neue',sans-serif;font-size:1.9rem;line-height:0.95;color:var(--white);margin-bottom:0.65rem}
 .p-deck{font-size:0.88rem;color:var(--mid);font-style:italic;line-height:1.6;margin-bottom:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
@@ -195,15 +243,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .p-facts ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem}
 .p-facts li{font-size:0.76rem;color:var(--mid);padding-left:0.75rem;position:relative;line-height:1.45}
 .p-facts li::before{content:'>';position:absolute;left:0;color:var(--glow)}
-.p-sources{margin:1.25rem 0;padding:1rem;background:var(--surface);border-left:2px solid var(--amber)}
-.p-sources-title{font-family:'Share Tech Mono',monospace;font-size:0.48rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--amber);margin-bottom:0.55rem}
-.p-sources ul{list-style:none;display:flex;flex-direction:column;gap:0.35rem}
-.p-sources li{font-size:0.72rem;color:var(--mid);padding-left:0.75rem;position:relative;line-height:1.45;word-break:break-all}
-.p-sources li::before{content:'→';position:absolute;left:0;color:var(--amber)}
-.p-sources a{color:var(--glow);text-decoration:none}
-.p-sources a:hover{text-decoration:underline}
-.p-disclaimer{font-family:'Share Tech Mono',monospace;font-size:0.42rem;color:var(--dim);line-height:1.6;padding:0.75rem;border:1px solid var(--border);margin:1.25rem 0;letter-spacing:0.04em}
-.c-policy{font-family:'Share Tech Mono',monospace;font-size:0.44rem;color:var(--dim);line-height:1.6;padding:0.5rem 0.75rem;border-left:2px solid var(--border);margin-bottom:0.875rem}
+
 .comments{margin-top:1.75rem;padding-top:1.5rem;border-top:1px solid var(--border)}
 .c-hl{font-family:'Bebas Neue',sans-serif;font-size:1.1rem;letter-spacing:0.06em;color:var(--white);margin-bottom:0.875rem}
 .c-form{display:flex;flex-direction:column;gap:0.5rem;margin-bottom:1rem}
@@ -223,25 +263,9 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 .no-c{font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--dim);text-align:center;padding:1rem;border:1px solid var(--border)}
 .c-loading{font-family:'Share Tech Mono',monospace;font-size:0.48rem;color:var(--dim);text-align:center;padding:0.75rem}
 
-/* ── GLOBE SECTION ── */
-.globe-wrap{position:relative;width:100%;background:var(--bg);border:1px solid var(--border);overflow:hidden;margin-bottom:0.5rem}
-#globe-canvas{display:block;width:100%;height:520px;cursor:grab}
-#globe-canvas:active{cursor:grabbing}
-.globe-legend{display:flex;gap:1.5rem;padding:0.6rem 1rem;background:var(--deep);border-top:1px solid var(--border);flex-wrap:wrap}
-.legend-item{display:flex;align-items:center;gap:0.4rem;font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--mid)}
-.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.legend-dot.green{background:#00ff88;box-shadow:0 0 6px #00ff88}
-.legend-dot.orange{background:#ff8800;box-shadow:0 0 6px #ff8800}
-.legend-dot.red{background:#ff3344;box-shadow:0 0 4px #ff334466}
-.globe-tooltip{position:fixed;background:rgba(6,12,20,0.97);border:1px solid var(--border);padding:0.6rem 0.875rem;font-family:'Share Tech Mono',monospace;font-size:0.5rem;color:var(--white);pointer-events:none;z-index:500;max-width:220px;line-height:1.5;display:none}
-.globe-tooltip .tt-title{color:var(--glow);font-size:0.52rem;margin-bottom:0.2rem;font-weight:700}
-.globe-tooltip .tt-loc{color:var(--mid);margin-bottom:0.1rem}
-.globe-tooltip .tt-date{color:var(--dim)}
-.globe-tooltip .tt-src{color:var(--amber);margin-top:0.2rem}
-.globe-no-data{display:flex;align-items:center;justify-content:center;height:520px;flex-direction:column;gap:0.75rem;color:var(--dim);font-family:'Share Tech Mono',monospace;font-size:0.5rem;letter-spacing:0.1em}
-
 @media(max-width:860px){
   .grid{grid-template-columns:1fr 1fr}
+  .sightings-grid{grid-template-columns:1fr}
   .topics{grid-template-columns:repeat(2,1fr)}
   .ft-inner{grid-template-columns:1fr 1fr}
   .nav-links{display:none}
@@ -252,20 +276,32 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   .contact-email-box{flex-direction:column;width:90%}
   .contact-email-addr{text-align:center;width:100%}
   .copy-btn{width:100%}
-  #globe-canvas{height:380px}
 }
 @media(max-width:480px){
   .grid{grid-template-columns:1fr}
   .panel-body{padding:1rem}
   .p-hl{font-size:1.55rem}
-  #globe-canvas{height:300px}
 }
+
+/* ── GLOBE.GL SECTION ── */
+.globe-wrap{width:100%;background:#030508;border:1px solid var(--border);overflow:hidden;margin-bottom:0.5rem;height:520px;position:relative}
+#globe-container{width:100%;height:100%}
+#globe-container canvas{display:block}
+.globe-legend{display:flex;gap:1.5rem;padding:0.6rem 1rem;background:var(--deep);border-top:1px solid var(--border);flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:0.4rem;font-family:'Share Tech Mono',monospace;font-size:0.46rem;color:var(--mid)}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.legend-dot.green{background:#00ff88;box-shadow:0 0 6px #00ff88}
+.legend-dot.orange{background:#ff8800;box-shadow:0 0 6px #ff8800}
+.legend-dot.red{background:#ff3344;box-shadow:0 0 4px #ff334466}
+@media(max-width:860px){.globe-wrap{height:380px}}
+@media(max-width:480px){.globe-wrap{height:300px}}
 </style>
+  <script src="https://unpkg.com/globe.gl@2.45.0/dist/globe.gl.min.js"></script>
 </head>
 <body>
 
 <nav>
-  <div class="nav-logo">UFO FINDERS</div>
+  <div class="nav-logo">🛸 UFO FINDERS</div>
   <ul class="nav-links">
     <li><a href="#sightings">Sightings</a></li>
     <li><a href="#news">News</a></li>
@@ -289,7 +325,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
 <div class="page">
 
-  <!-- ── GLOBE ── -->
   <div id="sightings">
     <div class="sec-head">
       <div class="sec-title">Global Sightings Map</div>
@@ -297,10 +332,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div class="sec-ct" id="sightings-ct">Loading...</div>
     </div>
     <div class="globe-wrap">
-      <canvas id="globe-canvas"></canvas>
-      <div class="globe-no-data" id="globe-no-data" style="display:none">
-        <div>🛸</div><div>No sighting data available</div>
-      </div>
+      <div id="globe-container" style="width:100%;height:520px;"></div>
     </div>
     <div class="globe-legend">
       <div class="legend-item"><div class="legend-dot green"></div>Last 7 days</div>
@@ -308,12 +340,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div class="legend-item"><div class="legend-dot red"></div>8–30 days old</div>
       <div class="legend-item" style="margin-left:auto;color:var(--dim)">Drag to spin · Click dot for details</div>
     </div>
-  </div>
-  <div class="globe-tooltip" id="globe-tooltip">
-    <div class="tt-title" id="tt-title"></div>
-    <div class="tt-loc" id="tt-loc"></div>
-    <div class="tt-date" id="tt-date"></div>
-    <div class="tt-src" id="tt-src"></div>
   </div>
 
   <div class="hero" id="hero-wrap">
@@ -363,8 +389,10 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <button class="copy-btn" id="copy-email-btn">COPY EMAIL</button>
     </div>
     <div class="contact-types">
-      <span class="ctype">UFO Sighting</span><span class="ctype">Photo / Video</span>
-      <span class="ctype">Encounter Report</span><span class="ctype">News Tip</span>
+      <span class="ctype">UFO Sighting</span>
+      <span class="ctype">Photo / Video</span>
+      <span class="ctype">Encounter Report</span>
+      <span class="ctype">News Tip</span>
       <span class="ctype">Document / Leak</span>
     </div>
     <div class="contact-guide">
@@ -373,6 +401,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
       <div class="cg-item"><div class="cg-num">03 — STAY ANONYMOUS</div><div class="cg-text">You can remain anonymous. We never share your identity without permission.</div></div>
     </div>
   </div>
+
 </div>
 
 <div class="support-bar">
@@ -405,16 +434,20 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     <div>
       <div class="ft-col-title">Navigate</div>
       <ul class="ft-links">
-        <li><a href="#news">Today's News</a></li><li><a href="#sightings">Sightings</a></li>
-        <li><a href="#topics">Topics</a></li><li><a href="#archive">Archive</a></li>
+        <li><a href="#news">Today's News</a></li>
+        <li><a href="#sightings">Sightings</a></li>
+    <li><a href="#topics">Topics</a></li>
+        <li><a href="#archive">Archive</a></li>
         <li><a href="#contact">Contact</a></li>
       </ul>
     </div>
     <div>
       <div class="ft-col-title">Topics</div>
       <ul class="ft-links">
-        <li><a href="#topics">Gov Disclosure</a></li><li><a href="#topics">Military Encounters</a></li>
-        <li><a href="#topics">Science</a></li><li><a href="#topics">Historic Cases</a></li>
+        <li><a href="#topics">Gov Disclosure</a></li>
+        <li><a href="#topics">Military Encounters</a></li>
+        <li><a href="#topics">Science</a></li>
+        <li><a href="#topics">Historic Cases</a></li>
       </ul>
     </div>
     <div>
@@ -430,11 +463,6 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     <span>2026 UFO Finders &middot; ufofinders.com</span>
     <span>Updated Daily</span>
   </div>
-  <div class="ft-disclaimer">
-    <p>UFO Finders is an independent news publication. Articles are produced with AI assistance and are based on publicly available sources. We make no claims beyond what cited evidence supports. UFO Finders is not responsible for the accuracy of third-party sources.</p>
-    <p>Comments on this site represent the views of individual users and not UFO Finders. UFO Finders is not liable for user-submitted content under Section 230 of the Communications Decency Act.</p>
-    <p>UFO Finders has no affiliation with any government agency, military branch, or intelligence organization.</p>
-  </div>
 </footer>
 
 <div class="overlay" id="overlay"></div>
@@ -447,93 +475,399 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 </div>
 
 <script>
+
 (function() {
   var SUPA_URL = 'https://ocryrrvlrsfrytuajvho.supabase.co';
   var SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9jcnlycnZscnNmcnl0dWFqdmhvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI4MzM1ODAsImV4cCI6MjA4ODQwOTU4MH0.Cyr695cGFGQWujvForCHF8sTEuUhmSPYspfP6K7ysuI';
   var articles = [];
   var currentArticleId = null;
 
+  // ── HELPERS ──────────────────────────────────────────────
   function cleanText(s) {
     if (!s) return '';
-    var t = String(s).replace(/<cite[^>]*>([\s\S]*?)<\/cite>/gi,'$1');
-    t = t.replace(/<[^>]*>/g,'');
-    t = t.replace(/^[\s,;:.!\-\u2013\u2014]+/,'');
+    var t = String(s).replace(/<cite[^>]*>([\s\S]*?)<\/cite>/gi, '$1');
+    t = t.replace(/<[^>]*>/g, '');
+    t = t.replace(/^[\s,;:.!\-\u2013\u2014]+/, '');
     return t.trim();
   }
   function esc(s) {
     var t = cleanText(s);
     return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
   }
-  function cap(s){ return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+  function cap(s) { return s ? s.charAt(0).toUpperCase() + s.slice(1) : ''; }
   function timeAgo(d) {
-    if (!d) return '';
-    var date=new Date(d), h=Math.floor((Date.now()-date.getTime())/3600000);
-    var dateStr=date.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
-    if (h<1) return 'Just now · '+dateStr;
-    if (h<24) return h+'h ago · '+dateStr;
-    return Math.floor(h/24)+'d ago · '+dateStr;
+    var h = Math.floor((Date.now() - new Date(d).getTime()) / 3600000);
+    if (h < 1) return 'Just now';
+    if (h < 24) return h + 'h ago';
+    return Math.floor(h / 24) + 'd ago';
   }
-  function supaFetch(path,opts) {
-    return fetch(SUPA_URL+path,Object.assign({headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Accept':'application/json'}},opts||{}));
+  function supaFetch(path, opts) {
+    return fetch(SUPA_URL + path, Object.assign({
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + SUPA_KEY,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      }
+    }, opts || {}));
   }
+
+  // ── ARTICLE BODY CLEANER ─────────────────────────────────
   function buildBody(bodyText) {
     if (!bodyText) return '<p>Full article text coming soon.</p>';
-    var out='', lines=bodyText.split('\n');
-    for (var i=0;i<lines.length;i++) {
-      var t=cleanText(lines[i]);
-      if (!t||t.length<12) continue;
+    var out = '';
+    var lines = bodyText.split('\n');
+    for (var i = 0; i < lines.length; i++) {
+      var t = cleanText(lines[i]);
+      if (!t || t.length < 12) continue;
       if (/^[\s.,;:!?\-\u2013\u2014]+$/.test(t)) continue;
       if (/^[,;:.!\-\u2013\u2014]/.test(t)) continue;
       if (/^[a-z]/.test(t)) continue;
-      out+='<p>'+esc(t)+'</p>';
+      out += '<p>' + esc(t) + '</p>';
     }
-    return out||'<p>Article content loading.</p>';
+    return out || '<p>Article content loading.</p>';
   }
 
-  // ── GLOBE ────────────────────────────────────────────────
-  // Hardcoded gold dots — famous credible historic cases
+  // ── LOAD ARTICLES ────────────────────────────────────────
+  function loadArticles() {
+    supaFetch('/rest/v1/articles?select=*&order=published_at.desc&limit=60')
+      .then(function(r) { return r.json(); })
+      .then(function(data) {
+        articles = data || [];
+        if (!articles.length) { showEmpty('No articles yet — check back tomorrow!'); return; }
+        buildTicker();
+        buildHero();
+        buildCards(articles.slice(1, 10));
+        buildArchive(articles.slice(10));
+      })
+      .catch(function() { showEmpty('Could not load articles. Please refresh.'); });
+  }
+
+  function buildTicker() {
+    var h = articles.slice(0,8).map(function(a){ return a.headline || ''; }).join('   \u2022   ');
+    var t = document.getElementById('ticker-track');
+    if (t) t.innerHTML = '<span class="ticker-item">'+esc(h)+'</span><span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span><span class="ticker-item">'+esc(h)+'</span>';
+  }
+
+  function buildHero() {
+    var hero = null;
+    for (var i = 0; i < articles.length; i++) { if (articles[i].is_featured) { hero = articles[i]; break; } }
+    if (!hero) hero = articles[0];
+    var hc = document.getElementById('hero-content');
+    if (!hc) return;
+    hc.innerHTML =
+      '<div class="hero-hl">'+esc(hero.headline)+'</div>'+
+      '<div class="hero-deck">'+esc(hero.deck||'')+'</div>'+
+      '<div class="hero-foot">'+
+        '<span class="tag">'+esc(cap(hero.category||'News'))+'</span>'+
+        '<span class="meta">'+timeAgo(hero.published_at)+'</span>'+
+        '<button class="read-more">Read Full Story &rarr;</button>'+
+      '</div>';
+    document.getElementById('hero-wrap').onclick = function() { openArticle(hero); };
+  }
+
+  function buildCards(list) {
+    var ct = document.getElementById('news-ct');
+    if (ct) ct.textContent = (list.length + 1) + ' stories today';
+    var grid = document.getElementById('cards-grid');
+    if (!grid) return;
+    if (!list.length) { grid.innerHTML = '<div class="empty" style="grid-column:span 3">No stories for this topic yet.</div>'; return; }
+    grid.innerHTML = '';
+    list.forEach(function(a) {
+      var div = document.createElement('div');
+      div.className = 'card';
+      div.innerHTML =
+        '<div class="card-cat">'+esc(cap(a.category||'News'))+'</div>'+
+        '<div class="card-hl">'+esc(a.headline)+'</div>'+
+        '<div class="card-deck">'+esc(a.deck||'')+'</div>'+
+        '<div class="card-foot"><span class="card-meta">'+timeAgo(a.published_at)+'</span><span class="card-read">Read &rarr;</span></div>';
+      (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
+      grid.appendChild(div);
+    });
+  }
+
+  function buildArchive(list) {
+    var ct = document.getElementById('arch-ct');
+    if (ct) ct.textContent = articles.length + ' total';
+    var container = document.getElementById('arch-list');
+    if (!container) return;
+    if (!list.length) { container.innerHTML = '<div class="empty">More stories arriving tomorrow.</div>'; return; }
+    container.innerHTML = '';
+    list.forEach(function(a) {
+      var div = document.createElement('div');
+      div.className = 'arch-row';
+      var d = new Date(a.published_at);
+      div.innerHTML =
+        '<div class="arch-date">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div>'+
+        '<div class="arch-hl">'+esc(a.headline)+'</div>'+
+        '<div class="arch-cat">'+esc(cap(a.category||''))+'</div>';
+      (function(art){ div.onclick = function(){ openArticle(art); }; })(a);
+      container.appendChild(div);
+    });
+  }
+
+  // ── TOPICS ───────────────────────────────────────────────
+  var TOPIC_LABELS = {
+    government:'Gov Disclosure', sighting:'Sightings', science:'Science',
+    technology:'UAP Tech', whistleblower:'Whistleblowers', global:'Global',
+    history:'Historic Cases', contact:'Contact'
+  };
+
+  function matchesTopic(a, cat) {
+    if (!a.category) return false;
+    var c = a.category.toLowerCase();
+    if (c === cat || c.indexOf(cat) !== -1) return true;
+    if (cat === 'government' && (c.indexOf('gov') !== -1 || c.indexOf('pentagon') !== -1 || c.indexOf('disclosure') !== -1 || c.indexOf('aaro') !== -1)) return true;
+    if (cat === 'sighting' && (c.indexOf('sight') !== -1 || c.indexOf('uap') !== -1 || c.indexOf('ufo') !== -1)) return true;
+    if (cat === 'history' && (c.indexOf('histor') !== -1 || c.indexOf('roswell') !== -1)) return true;
+    if (cat === 'whistleblower' && (c.indexOf('whistle') !== -1 || c.indexOf('testim') !== -1 || c.indexOf('witness') !== -1)) return true;
+    if (cat === 'technology' && (c.indexOf('tech') !== -1 || c.indexOf('propul') !== -1)) return true;
+    if (cat === 'global' && (c.indexOf('global') !== -1 || c.indexOf('intern') !== -1)) return true;
+    if (cat === 'contact' && (c.indexOf('contact') !== -1 || c.indexOf('encounter') !== -1)) return true;
+    return false;
+  }
+
+  function openTopicPage(cat, label) {
+    var filtered = articles.filter(function(a) { return matchesTopic(a, cat); });
+    var bc = document.getElementById('panel-bc');
+    if (bc) bc.textContent = 'UFO Finders / ' + label;
+    var pb = document.getElementById('panel-body');
+    if (!filtered.length) {
+      pb.innerHTML =
+        '<div class="p-cat">'+esc(label)+'</div>'+
+        '<div class="p-hl">NO STORIES YET</div>'+
+        '<div class="p-deck">No articles filed under this topic yet. Check back tomorrow.</div>'+
+        '<div class="empty">New stories for this topic are published every morning.</div>';
+      openPanel();
+      document.getElementById('panel').scrollTop = 0;
+      return;
+    }
+    var first = filtered[0];
+    var rest  = filtered.slice(1);
+    var restHtml = '';
+    rest.forEach(function(a) {
+      restHtml +=
+        '<div class="topic-art-row" data-id="'+a.id+'">'+
+          '<div class="topic-art-cat">'+esc(cap(a.category||''))+'</div>'+
+          '<div class="topic-art-hl">'+esc(a.headline)+'</div>'+
+          '<div class="topic-art-deck">'+esc(a.deck||'')+'</div>'+
+          '<div class="topic-art-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div>'+
+        '</div>';
+    });
+    pb.innerHTML =
+      '<div class="p-cat">'+esc(label)+' &mdash; '+filtered.length+' ARTICLE'+(filtered.length!==1?'S':'')+' TODAY</div>'+
+      '<div class="topic-featured" data-id="'+first.id+'">'+
+        '<div class="topic-feat-label">TOP STORY</div>'+
+        '<div class="topic-feat-hl">'+esc(first.headline)+'</div>'+
+        '<div class="topic-feat-deck">'+esc(first.deck||'')+'</div>'+
+        '<div class="topic-feat-meta">'+timeAgo(first.published_at)+(first.word_count?' &middot; '+first.word_count+' words':'')+'</div>'+
+        '<button class="topic-feat-btn">Read Full Story &rarr;</button>'+
+      '</div>'+
+      (rest.length ? '<div class="topic-art-list">'+restHtml+'</div>' : '');
+
+    pb.querySelector('.topic-featured').onclick = function() { openArticle(first); };
+    pb.querySelectorAll('.topic-art-row').forEach(function(row) {
+      var id = row.getAttribute('data-id');
+      var art = null;
+      for (var i=0;i<articles.length;i++) { if (String(articles[i].id)===String(id)) { art=articles[i]; break; } }
+      if (art) row.onclick = function() { openArticle(art); };
+    });
+    openPanel();
+    document.getElementById('panel').scrollTop = 0;
+  }
+
+  document.querySelectorAll('.topic').forEach(function(el) {
+    el.onclick = function() {
+      var cat = el.getAttribute('data-cat').toLowerCase();
+      openTopicPage(cat, TOPIC_LABELS[cat] || cap(cat));
+    };
+  });
+
+  // ── COPY EMAIL ───────────────────────────────────────────
+  document.getElementById('copy-email-btn').onclick = function() {
+    var btn = this;
+    var email = 'ufofinders.subs@gmail.com';
+    function done() { btn.textContent='COPIED!'; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)'; setTimeout(function(){ btn.textContent='COPY EMAIL'; btn.style.background=''; btn.style.color=''; },2500); }
+    if (navigator.clipboard) { navigator.clipboard.writeText(email).then(done).catch(done); }
+    else { var ta=document.createElement('textarea'); ta.value=email; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+  };
+
+  // ── NEWSLETTER ───────────────────────────────────────────
+  function subscribeEmail(email, btn, resetText) {
+    if (!email || email.indexOf('@')===-1 || email.indexOf('.')===-1) {
+      btn.textContent='ENTER VALID EMAIL'; btn.style.background='var(--amber)'; btn.style.color='var(--bg)';
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },2500); return;
+    }
+    btn.textContent='SUBSCRIBING...'; btn.disabled=true;
+    fetch('https://formspree.io/f/mqeyknno',{
+      method:'POST', headers:{'Content-Type':'application/json','Accept':'application/json'},
+      body:JSON.stringify({email:email,_subject:'New Subscriber: '+email,message:'New signup from ufofinders.com'})
+    }).then(function(r){
+      btn.disabled=false;
+      if(r.ok){ btn.textContent="YOU'RE IN!"; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)';
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },4000);
+      } else { btn.textContent='TRY AGAIN'; btn.style.background='var(--red)';
+        setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); }
+    }).catch(function(){ btn.disabled=false; btn.textContent='TRY AGAIN'; btn.style.background='var(--red)';
+      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); });
+  }
+
+  document.getElementById('nl-btn').onclick = function() {
+    var email = document.getElementById('nl-email').value.trim();
+    document.getElementById('nl-email').value = '';
+    subscribeEmail(email, this, 'SUBSCRIBE FREE');
+  };
+
+  // ── PANEL ────────────────────────────────────────────────
+  function openPanel() {
+    document.getElementById('overlay').classList.add('on');
+    document.getElementById('panel').classList.add('on');
+    document.body.style.overflow = 'hidden';
+  }
+  function closePanel() {
+    document.getElementById('overlay').classList.remove('on');
+    document.getElementById('panel').classList.remove('on');
+    document.body.style.overflow = '';
+    currentArticleId = null;
+  }
+  document.getElementById('overlay').onclick = closePanel;
+  document.getElementById('panel-close').onclick = closePanel;
+
+  // ── OPEN ARTICLE ─────────────────────────────────────────
+  function openArticle(a) {
+    currentArticleId = a.id;
+    var bc = document.getElementById('panel-bc');
+    if (bc) bc.textContent = 'UFO Finders / ' + cap(a.category || 'News');
+
+    var imageHtml = '';
+    if (a.image_url) {
+      imageHtml =
+        '<img class="p-image" src="'+esc(a.image_url)+'" alt="'+esc(a.headline)+'" '+
+          'onerror="this.style.display=\'none\';var c=document.getElementById(\'p-img-cap\');if(c)c.style.display=\'none\'">'+
+        (a.image_caption ? '<div class="p-image-caption" id="p-img-cap">'+esc(a.image_caption)+'</div>' : '');
+    }
+
+    var facts = '';
+    if (a.key_facts && a.key_facts.length) {
+      facts = '<div class="p-facts"><h4>Key Facts</h4><ul>';
+      a.key_facts.forEach(function(f){ facts += '<li>'+esc(f)+'</li>'; });
+      facts += '</ul></div>';
+    }
+
+    var pb = document.getElementById('panel-body');
+    pb.innerHTML =
+      '<div class="p-cat">'+esc(cap(a.category||'News'))+'</div>'+
+      '<div class="p-hl">'+esc(a.headline)+'</div>'+
+      '<div class="p-deck">'+esc(a.deck||'')+'</div>'+
+      '<div class="p-meta">'+
+        '<span class="p-ct">'+esc(cap(a.category||'News'))+'</span>'+
+        '<span>'+timeAgo(a.published_at)+'</span>'+
+        (a.word_count?'<span>'+a.word_count+' words</span>':'')+
+      '</div>'+
+      imageHtml+
+      '<div class="p-body">'+buildBody(a.body)+'</div>'+
+      facts+
+      '<div class="comments">'+
+        '<div class="c-hl">Discussion</div>'+
+        '<div class="c-form">'+
+          '<div class="c-row">'+
+            '<input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)">'+
+            '<input class="c-in" id="c-loc" type="text" placeholder="Location (optional)">'+
+          '</div>'+
+          '<textarea class="c-ta" id="c-text" placeholder="Share your thoughts..."></textarea>'+
+          '<button class="c-btn" id="c-post-btn">POST COMMENT</button>'+
+        '</div>'+
+        '<div class="c-list" id="c-list"><div class="c-loading">Loading comments...</div></div>'+
+      '</div>';
+
+    document.getElementById('c-post-btn').onclick = function(){ postComment(a.id); };
+    openPanel();
+    document.getElementById('panel').scrollTop = 0;
+    loadComments(a.id);
+  }
+
+  // ── COMMENTS ─────────────────────────────────────────────
+  function loadComments(articleId) {
+    var list = document.getElementById('c-list');
+    if (!list) return;
+    supaFetch('/rest/v1/comments?article_id=eq.'+encodeURIComponent(articleId)+'&order=created_at.desc&select=*')
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        if (!list || currentArticleId !== articleId) return;
+        renderComments(Array.isArray(data) ? data : []);
+      })
+      .catch(function(){ if(list) list.innerHTML='<div class="no-c">Comments unavailable right now.</div>'; });
+  }
+
+  function postComment(articleId) {
+    var nameEl=document.getElementById('c-name'), locEl=document.getElementById('c-loc'),
+        textEl=document.getElementById('c-text'), btn=document.getElementById('c-post-btn');
+    var name=(nameEl&&nameEl.value.trim())||'Anonymous', loc=locEl?locEl.value.trim():'', text=textEl?textEl.value.trim():'';
+    if (!text) return;
+    btn.textContent='POSTING...'; btn.disabled=true;
+    supaFetch('/rest/v1/comments',{
+      method:'POST',
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},
+      body:JSON.stringify({article_id:articleId,author_name:name,author_location:loc,body:text})
+    }).then(function(r){
+      btn.disabled=false; btn.textContent='POST COMMENT';
+      if(r.ok||r.status===201){ if(textEl)textEl.value=''; loadComments(articleId); }
+      else { btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); }
+    }).catch(function(){ btn.disabled=false; btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); });
+  }
+
+  function renderComments(data) {
+    var list = document.getElementById('c-list');
+    if (!list) return;
+    if (!data.length) { list.innerHTML='<div class="no-c">No comments yet — be the first</div>'; return; }
+    list.innerHTML='';
+    data.forEach(function(c){
+      var div=document.createElement('div'); div.className='comment';
+      var d=new Date(c.created_at);
+      var ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+      div.innerHTML='<div class="c-head"><span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span><span class="c-time">'+ds+'</span></div><div class="c-text">'+esc(c.body)+'</div>';
+      list.appendChild(div);
+    });
+  }
+
+  // ── NEWSLETTER PANEL ─────────────────────────────────────
+  function openNLPanel() {
+    var bc=document.getElementById('panel-bc'); if(bc) bc.textContent='UFO Finders / Newsletter';
+    var pb=document.getElementById('panel-body');
+    pb.innerHTML=
+      '<div class="p-cat">Free Daily Briefing</div>'+
+      '<div class="p-hl">JOIN THE FINDERS</div>'+
+      '<div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div>'+
+      '<div class="nl-form" style="margin-top:1rem;max-width:100%">'+
+        '<input type="email" class="nl-in" id="nl-panel-email" placeholder="your@email.com" style="flex:1">'+
+        '<button class="nl-btn" id="nl-panel-btn">JOIN FREE</button>'+
+      '</div>';
+    openPanel();
+    setTimeout(function(){
+      var b=document.getElementById('nl-panel-btn');
+      if(b) b.onclick=function(){ var e=document.getElementById('nl-panel-email').value.trim(); document.getElementById('nl-panel-email').value=''; subscribeEmail(e,b,'JOIN FREE'); };
+    },100);
+  }
+  document.getElementById('nl-open-btn').onclick = openNLPanel;
+  document.getElementById('nl-open-btn2').onclick = function(e){ e.preventDefault(); openNLPanel(); };
+
+  // ── SIGHTINGS ─────────────────────────────────────────────
+  // ── HISTORIC CREDIBLE CASES (orange dots) ────────────────
   var HISTORIC_CASES = [
-    {title:'Nimitz Tic Tac Encounter',description:'US Navy pilots encountered a fast-moving white object off the coast of California. Corroborated by multiple pilots, radar operators, and FLIR video.',city:'Off San Diego Coast',state:'CA',country:'USA',lat:29.5,lng:-117.5,shape:'disc',sighted_date:'2004-11-14',source:'US Navy / Pentagon',source_url:'https://www.navair.navy.mil',is_credible:true,dot_color:'orange'},
-    {title:'Phoenix Lights',description:'Thousands of witnesses across Phoenix reported a massive V-shaped craft and orbs of light. One of the most witnessed UFO events in history.',city:'Phoenix',state:'AZ',country:'USA',lat:33.4484,lng:-112.074,shape:'triangle',sighted_date:'1997-03-13',source:'Multiple witnesses',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Nimitz Tic Tac Encounter',description:'US Navy pilots encountered a fast-moving white object off the coast of California. Corroborated by multiple pilots, radar operators, and FLIR video.',city:'Off San Diego Coast',state:'CA',country:'USA',lat:29.5,lng:-117.5,shape:'disc',sighted_date:'2004-11-14',source:'US Navy / Pentagon',source_url:'https://www.defense.gov',is_credible:true,dot_color:'orange'},
+    {title:'Phoenix Lights',description:'Thousands of witnesses across Phoenix reported a massive V-shaped craft and orbs of light. One of the most witnessed UFO events in history.',city:'Phoenix',state:'AZ',country:'USA',lat:33.4484,lng:-112.074,shape:'triangle',sighted_date:'1997-03-13',source:'Multiple witnesses / NUFORC',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
     {title:'Rendlesham Forest Incident',description:'US Air Force personnel reported encountering a landed craft in Rendlesham Forest, UK. Radiation readings and physical traces were recorded.',city:'Rendlesham Forest',state:'Suffolk',country:'UK',lat:52.09,lng:1.45,shape:'triangle',sighted_date:'1980-12-26',source:'US Air Force',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
     {title:'JAL Flight 1628',description:'Japan Airlines crew reported a massive craft following their Boeing 747 over Alaska for 50 minutes. Confirmed on FAA radar.',city:'Anchorage',state:'AK',country:'USA',lat:61.2181,lng:-149.9003,shape:'disc',sighted_date:'1986-11-17',source:'FAA / JAL',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
     {title:'USS Roosevelt Gimbal Video',description:'Navy F/A-18 pilots filmed a rotating UAP off the US East Coast. Later officially released by the Pentagon.',city:'Off Jacksonville Coast',state:'FL',country:'USA',lat:30.5,lng:-79.5,shape:'disc',sighted_date:'2015-01-20',source:'US Navy / Pentagon',source_url:'https://www.defense.gov',is_credible:true,dot_color:'orange'},
-    {title:'Shag Harbour Crash',description:'Multiple witnesses including RCMP officers observed a craft crash into Shag Harbour, Nova Scotia. Canadian government investigation confirmed.',city:'Shag Harbour',state:'Nova Scotia',country:'Canada',lat:43.47,lng:-65.73,shape:'unknown',sighted_date:'1967-10-04',source:'Royal Canadian Mounted Police',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
-    {title:'Belgian UFO Wave',description:'Over 13,500 witnesses reported large triangular craft across Belgium. Belgian Air Force F-16s confirmed radar lock on object performing impossible maneuvers.',city:'Brussels',state:'Brussels',country:'Belgium',lat:50.8503,lng:4.3517,shape:'triangle',sighted_date:'1989-11-29',source:'Belgian Air Force',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
-    {title:'Zimbabwe Ariel School Encounter',description:'62 schoolchildren reported seeing craft land near their school. Harvard psychiatrist Dr. John Mack interviewed the children and deemed them credible.',city:'Ruwa',state:'Mashonaland East',country:'Zimbabwe',lat:-17.89,lng:31.25,shape:'disc',sighted_date:'1994-09-16',source:'Harvard / BBC',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
-    {title:'Malmstrom AFB Nuclear Shutdown',description:'UFOs observed over Malmstrom Air Force Base as 10 ICBMs went offline simultaneously. Declassified documents confirm the incident.',city:'Great Falls',state:'MT',country:'USA',lat:47.5,lng:-111.3,shape:'orb',sighted_date:'1967-03-16',source:'US Air Force (declassified)',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
-    {title:'Colares Brazil Wave',description:'Hundreds of residents reported being attacked by beams of light from UFOs. Brazilian Air Force launched official investigation Operation Prato.',city:'Colares',state:'Para',country:'Brazil',lat:-0.94,lng:-49.24,shape:'disc',sighted_date:'1977-09-01',source:'Brazilian Air Force',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Shag Harbour Crash',description:'Multiple witnesses including RCMP officers observed a craft crash into Shag Harbour. Canadian government investigation confirmed.',city:'Shag Harbour',state:'Nova Scotia',country:'Canada',lat:43.47,lng:-65.73,shape:'unknown',sighted_date:'1967-10-04',source:'RCMP',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Belgian UFO Wave',description:'Over 13,500 witnesses reported large triangular craft. Belgian Air Force F-16s confirmed radar lock on objects performing impossible maneuvers.',city:'Brussels',state:'Brussels',country:'Belgium',lat:50.8503,lng:4.3517,shape:'triangle',sighted_date:'1989-11-29',source:'Belgian Air Force',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Zimbabwe Ariel School Encounter',description:'62 schoolchildren saw craft land near their school. Harvard psychiatrist Dr. John Mack interviewed children and deemed them credible.',city:'Ruwa',state:'Mashonaland East',country:'Zimbabwe',lat:-17.89,lng:31.25,shape:'disc',sighted_date:'1994-09-16',source:'Harvard / BBC',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Malmstrom AFB Nuclear Shutdown',description:'UFOs observed over Malmstrom AFB as 10 ICBMs went offline simultaneously. Declassified documents confirm the incident.',city:'Great Falls',state:'MT',country:'USA',lat:47.5,lng:-111.3,shape:'orb',sighted_date:'1967-03-16',source:'US Air Force (declassified)',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'},
+    {title:'Colares Brazil Wave',description:'Hundreds of residents reported being attacked by beams of light from UFOs. Brazilian Air Force launched official investigation Operation Prato.',city:'Colares',state:'Para',country:'Brazil',lat:-0.94,lng:-49.24,shape:'disc',sighted_date:'1977-09-01',source:'Brazilian Air Force',source_url:'https://nuforc.org',is_credible:true,dot_color:'orange'}
   ];
 
-  var globeSightings = [];
-  var globeCanvas, globeCtx, globeW, globeH;
-  var rotX = 0.3, rotY = 0;
-  var isDragging = false, lastX, lastY, dragMoved = false;
-  var autoSpin = true;
-  var animFrame;
-  var hoveredDot = null;
-
-  function latLngToXYZ(lat, lng, r) {
-    var phi = (90 - lat) * Math.PI / 180;
-    var theta = (lng + 180) * Math.PI / 180;
-    return {
-      x: -r * Math.sin(phi) * Math.cos(theta),
-      y: r * Math.cos(phi),
-      z: r * Math.sin(phi) * Math.sin(theta)
-    };
-  }
-
-  function rotatePoint(p, rx, ry) {
-    // Rotate Y
-    var cosY = Math.cos(ry), sinY = Math.sin(ry);
-    var x1 = p.x * cosY + p.z * sinY;
-    var z1 = -p.x * sinY + p.z * cosY;
-    // Rotate X
-    var cosX = Math.cos(rx), sinX = Math.sin(rx);
-    var y2 = p.y * cosX - z1 * sinX;
-    var z2 = p.y * sinX + z1 * cosX;
-    return { x: x1, y: y2, z: z2 };
-  }
+  // ── GLOBE.GL INIT ─────────────────────────────────────────
+  var globeInstance = null;
 
   function openSightingPanel(s) {
     var bc = document.getElementById('panel-bc');
@@ -547,447 +881,95 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     var pb = document.getElementById('panel-body');
     pb.innerHTML =
       '<div class="p-cat" style="color:'+dotColor+'">'+dotLabel+'</div>'+
-      '<div class="p-hl">'+esc(s.title||'UFO Sighting')+'</div>'+
+      '<div class="p-hl">'+(s.title||'UFO Sighting')+'</div>'+
       '<div class="p-meta">'+
-        (s.sighted_date ? '<span>📅 '+s.sighted_date+'</span>' : '')+
-        (location ? '<span>📍 '+esc(location)+'</span>' : '')+
-        (shape ? '<span>Shape: '+esc(shape)+'</span>' : '')+
+        (s.sighted_date?'<span>📅 '+s.sighted_date+'</span>':'')+
+        (location?'<span>📍 '+location+'</span>':'')+
+        (shape?'<span>Shape: '+shape+'</span>':'')+
       '</div>'+
-      '<div class="p-deck">'+esc(s.description||'No description available.')+'</div>'+
-      (s.source ? '<div class="p-sources"><div class="p-sources-title">Source</div><ul><li>'+(s.source_url?'<a href="'+esc(s.source_url)+'" target="_blank" rel="noopener">'+esc(s.source)+'</a>':esc(s.source))+'</li></ul></div>' : '')+
-      '<div class="p-disclaimer">Sighting data sourced from NUFORC and credible media reports. UFO Finders makes no claims beyond what cited sources support.</div>';
+      '<div class="p-deck">'+(s.description||'No description available.')+'</div>'+
+      (s.source?'<div class="p-sources"><div class="p-sources-title">Source</div><ul><li>'+(s.source_url?'<a href="'+s.source_url+'" target="_blank" rel="noopener">'+s.source+'</a>':s.source)+'</li></ul></div>':'')+
+      '<div class="p-disclaimer">Sighting data sourced from NUFORC and credible media. UFO Finders makes no claims beyond what sources support.</div>';
     openPanel();
     document.getElementById('panel').scrollTop = 0;
   }
 
-  function initGlobe() {
-    globeCanvas = document.getElementById('globe-canvas');
-    globeCtx = globeCanvas.getContext('2d');
-    resizeGlobe();
-    window.addEventListener('resize', resizeGlobe);
+  function initGlobe(sightings) {
+    var container = document.getElementById('globe-container');
+    if (!container) return;
+    if (typeof Globe === 'undefined') {
+      setTimeout(function(){ initGlobe(sightings); }, 200);
+      return;
+    }
+    // Set explicit px dimensions before init
+    var w = container.parentElement.offsetWidth || 360;
+    var h = container.parentElement.offsetHeight || 520;
+    container.style.width = w + 'px';
+    container.style.height = h + 'px';
 
-    // Mouse events
-    globeCanvas.addEventListener('mousedown', function(e) {
-      isDragging = true; dragMoved = false; autoSpin = false;
-      lastX = e.clientX; lastY = e.clientY;
+        var w = container.offsetWidth || container.parentElement.offsetWidth || 600;
+    var h = 520;
+
+    globeInstance = Globe()
+      .width(w)
+      .height(h)
+      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
+      .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+      .pointsData(sightings)
+      .pointLat(function(d){ return d.lat; })
+      .pointLng(function(d){ return d.lng; })
+      .pointColor(function(d){
+        return d.dot_color === 'orange' ? '#ff8800' :
+               d.dot_color === 'green'  ? '#00ff88' : '#ff3344';
+      })
+      .pointAltitude(0.01)
+      .pointRadius(function(d){ return d.is_credible ? 0.5 : 0.35; })
+      .pointResolution(8)
+      .onPointClick(function(point){ openSightingPanel(point); })
+      .onPointHover(function(point){
+        container.style.cursor = point ? 'pointer' : 'default';
+      })
+      (container);
+
+    globeInstance.controls().autoRotate = true;
+    globeInstance.controls().autoRotateSpeed = 0.5;
+
+    window.addEventListener('resize', function(){
+      globeInstance.width(container.offsetWidth).height(container.offsetHeight);
     });
-    window.addEventListener('mousemove', function(e) {
-      if (isDragging) {
-        dragMoved = true;
-        rotY += (e.clientX - lastX) * 0.005;
-        rotX += (e.clientY - lastY) * 0.005;
-        rotX = Math.max(-1.4, Math.min(1.4, rotX));
-        lastX = e.clientX; lastY = e.clientY;
-      }
-      checkHover(e.clientX, e.clientY);
-    });
-    window.addEventListener('mouseup', function() { isDragging = false; });
-
-    // Touch events
-    globeCanvas.addEventListener('touchstart', function(e) {
-      isDragging = true; autoSpin = false;
-      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-    }, {passive:true});
-    globeCanvas.addEventListener('touchmove', function(e) {
-      if (!isDragging) return;
-      rotY += (e.touches[0].clientX - lastX) * 0.006;
-      rotX += (e.touches[0].clientY - lastY) * 0.006;
-      rotX = Math.max(-1.4, Math.min(1.4, rotX));
-      lastX = e.touches[0].clientX; lastY = e.touches[0].clientY;
-    }, {passive:true});
-    globeCanvas.addEventListener('touchend', function() { isDragging = false; });
-
-    // Click to open sighting detail panel
-    globeCanvas.addEventListener('click', function(e) {
-      if (dragMoved) return;
-      var dot = getDotAt(e.clientX, e.clientY);
-      if (dot) openSightingPanel(dot);
-    });
-
-    drawGlobe();
   }
 
-  function resizeGlobe() {
-    globeW = globeCanvas.offsetWidth;
-    globeH = globeCanvas.offsetHeight;
-    globeCanvas.width = globeW * window.devicePixelRatio;
-    globeCanvas.height = globeH * window.devicePixelRatio;
-    globeCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-
-  function getRadius() { return Math.min(globeW, globeH) * 0.42; }
-
-  function getDotScreenPos(s) {
-    var r = getRadius();
-    var cx = globeW / 2, cy = globeH / 2;
-    var p = latLngToXYZ(s.lat, s.lng, r);
-    var rp = rotatePoint(p, rotX, rotY);
-    if (rp.z < 0) return null; // behind globe
-    return { x: cx + rp.x, y: cy - rp.y, z: rp.z, s: s };
-  }
-
-  function getDotAt(mx, my) {
-    var rect = globeCanvas.getBoundingClientRect();
-    var cx = mx - rect.left, cy = my - rect.top;
-    for (var i = globeSightings.length - 1; i >= 0; i--) {
-      var pos = getDotScreenPos(globeSightings[i]);
-      if (!pos) continue;
-      var dx = pos.x - cx, dy = pos.y - cy;
-      if (Math.sqrt(dx*dx + dy*dy) < 8) return globeSightings[i];
-    }
-    return null;
-  }
-
-  function checkHover(mx, my) {
-    var dot = getDotAt(mx, my);
-    var tt = document.getElementById('globe-tooltip');
-    if (dot) {
-      hoveredDot = dot;
-      globeCanvas.style.cursor = 'pointer';
-      document.getElementById('tt-title').textContent = dot.title || '';
-      document.getElementById('tt-loc').textContent = [dot.city, dot.state, dot.country].filter(Boolean).join(', ');
-      document.getElementById('tt-date').textContent = dot.sighted_date || '';
-      document.getElementById('tt-src').textContent = dot.source ? 'Via ' + dot.source : '';
-      tt.style.display = 'block';
-      tt.style.left = (mx + 14) + 'px';
-      tt.style.top = (my - 10) + 'px';
-    } else {
-      hoveredDot = null;
-      globeCanvas.style.cursor = isDragging ? 'grabbing' : 'grab';
-      tt.style.display = 'none';
-    }
-  }
-
-  function drawGlobe() {
-    animFrame = requestAnimationFrame(drawGlobe);
-    if (autoSpin) rotY += 0.002;
-
-    var ctx = globeCtx;
-    var r = getRadius();
-    var cx = globeW / 2, cy = globeH / 2;
-
-    ctx.clearRect(0, 0, globeW, globeH);
-
-    // Space background
-    ctx.fillStyle = '#030508';
-    ctx.fillRect(0, 0, globeW, globeH);
-
-    // Stars
-    ctx.fillStyle = 'rgba(255,255,255,0.5)';
-    var starSeed = 42;
-    function rand() { starSeed = (starSeed * 16807 + 0) % 2147483647; return (starSeed - 1) / 2147483646; }
-    for (var i = 0; i < 120; i++) {
-      ctx.fillRect(rand() * globeW, rand() * globeH, rand() < 0.3 ? 1.5 : 1, rand() < 0.3 ? 1.5 : 1);
-    }
-
-    // Globe shadow (atmosphere glow)
-    var atmoGrad = ctx.createRadialGradient(cx, cy, r * 0.88, cx, cy, r * 1.15);
-    atmoGrad.addColorStop(0, 'rgba(0,80,40,0)');
-    atmoGrad.addColorStop(0.5, 'rgba(0,180,80,0.06)');
-    atmoGrad.addColorStop(1, 'rgba(0,255,136,0)');
-    ctx.beginPath();
-    ctx.arc(cx, cy, r * 1.15, 0, Math.PI * 2);
-    ctx.fillStyle = atmoGrad;
-    ctx.fill();
-
-    // Globe body
-    var globeGrad = ctx.createRadialGradient(cx - r*0.2, cy - r*0.2, r*0.1, cx, cy, r);
-    globeGrad.addColorStop(0, '#0d2035');
-    globeGrad.addColorStop(0.5, '#060c14');
-    globeGrad.addColorStop(1, '#030508');
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.fillStyle = globeGrad;
-    ctx.fill();
-
-    // Grid lines
-    ctx.strokeStyle = 'rgba(0,255,136,0.06)';
-    ctx.lineWidth = 0.5;
-    // Latitude lines
-    for (var lat = -60; lat <= 60; lat += 30) {
-      ctx.beginPath();
-      var first = true;
-      for (var lng2 = -180; lng2 <= 180; lng2 += 3) {
-        var p = latLngToXYZ(lat, lng2, r);
-        var rp = rotatePoint(p, rotX, rotY);
-        if (rp.z < 0) { first = true; continue; }
-        var sx = cx + rp.x, sy = cy - rp.y;
-        if (first) { ctx.moveTo(sx, sy); first = false; } else ctx.lineTo(sx, sy);
-      }
-      ctx.stroke();
-    }
-    // Longitude lines
-    for (var lng3 = -180; lng3 < 180; lng3 += 30) {
-      ctx.beginPath();
-      var first2 = true;
-      for (var lat2 = -90; lat2 <= 90; lat2 += 3) {
-        var p2 = latLngToXYZ(lat2, lng3, r);
-        var rp2 = rotatePoint(p2, rotX, rotY);
-        if (rp2.z < 0) { first2 = true; continue; }
-        var sx2 = cx + rp2.x, sy2 = cy - rp2.y;
-        if (first2) { ctx.moveTo(sx2, sy2); first2 = false; } else ctx.lineTo(sx2, sy2);
-      }
-      ctx.stroke();
-    }
-
-    // Globe rim
-    ctx.beginPath();
-    ctx.arc(cx, cy, r, 0, Math.PI * 2);
-    ctx.strokeStyle = 'rgba(0,255,136,0.15)';
-    ctx.lineWidth = 1.5;
-    ctx.stroke();
-
-    // Dots — sort back to front
-    var visible = [];
-    for (var di = 0; di < globeSightings.length; di++) {
-      var pos = getDotScreenPos(globeSightings[di]);
-      if (pos) visible.push(pos);
-    }
-    visible.sort(function(a, b) { return a.z - b.z; });
-
-    for (var vi = 0; vi < visible.length; vi++) {
-      var v = visible[vi];
-      var s = v.s;
-      var dotR = s.dot_color === 'gold' ? 5 : 4;
-      var isHovered = hoveredDot && hoveredDot === s;
-      if (isHovered) dotR += 2;
-
-      var color = s.dot_color === 'orange' ? '#ff8800' :
-                  s.dot_color === 'green'  ? '#00ff88' : '#ff3344';
-
-      // Glow
-      var glowColor = s.dot_color === 'orange' ? 'rgba(255,136,0,0.4)' :
-                      s.dot_color === 'green'  ? 'rgba(0,255,136,0.4)' : 'rgba(255,51,68,0.25)';
-      var glow = ctx.createRadialGradient(v.x, v.y, 0, v.x, v.y, dotR * 3);
-      glow.addColorStop(0, glowColor);
-      glow.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.beginPath();
-      ctx.arc(v.x, v.y, dotR * 3, 0, Math.PI * 2);
-      ctx.fillStyle = glow;
-      ctx.fill();
-
-      // Dot
-      ctx.beginPath();
-      ctx.arc(v.x, v.y, dotR, 0, Math.PI * 2);
-      ctx.fillStyle = color;
-      ctx.fill();
-    }
-  }
-
-  function loadGlobeSightings() {
-    // Load from Supabase map_sightings table
+  function loadGlobe() {
     supaFetch('/rest/v1/map_sightings?select=*&order=sighted_date.desc&limit=200')
-      .then(function(r) { return r.json(); })
-      .then(function(data) {
-        var fresh = Array.isArray(data) ? data : [];
-        // Combine with hardcoded historic cases
-        globeSightings = HISTORIC_CASES.concat(fresh.filter(function(s) {
-          return s.lat && s.lng;
-        }).map(function(s) {
-          // Re-apply color logic on frontend too in case DB has stale values
-          var daysOld = s.sighted_date ? (Date.now() - new Date(s.sighted_date).getTime()) / 86400000 : 999;
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var fresh = Array.isArray(data) ? data.filter(function(s){ return s.lat && s.lng; }).map(function(s){
+          var daysOld = s.sighted_date ? (Date.now()-new Date(s.sighted_date).getTime())/86400000 : 999;
           s.dot_color = s.is_credible ? 'orange' : daysOld <= 7 ? 'green' : 'red';
           return s;
-        }));
+        }) : [];
+        var all = HISTORIC_CASES.concat(fresh);
         var ct = document.getElementById('sightings-ct');
-        var recentCount = fresh.length;
-        if (ct) ct.textContent = recentCount + ' recent · ' + HISTORIC_CASES.length + ' notable cases';
-        if (globeSightings.length === 0) {
-          document.getElementById('globe-no-data').style.display = 'flex';
-          globeCanvas.style.display = 'none';
-        }
+        if (ct) ct.textContent = fresh.length + ' recent · ' + HISTORIC_CASES.length + ' notable cases';
+        initGlobe(all);
       })
-      .catch(function() {
-        // Fall back to just historic cases
-        globeSightings = HISTORIC_CASES;
+      .catch(function(){
         var ct = document.getElementById('sightings-ct');
         if (ct) ct.textContent = HISTORIC_CASES.length + ' notable cases';
+        initGlobe(HISTORIC_CASES);
       });
   }
 
-  // ── ARTICLES ─────────────────────────────────────────────
-  function loadArticles() {
-    supaFetch('/rest/v1/articles?select=*&order=published_at.desc&limit=60')
-      .then(function(r){ return r.json(); })
-      .then(function(data){
-        articles = data || [];
-        if (!articles.length) { showEmpty('No articles yet — check back tomorrow!'); return; }
-        buildTicker(); buildHero(); buildCards(articles.slice(1,10)); buildArchive(articles.slice(10));
-      })
-      .catch(function(){ showEmpty('Could not load articles. Please refresh.'); });
-  }
-
-  function buildTicker() {
-    var h=articles.slice(0,8).map(function(a){ return a.headline||''; }).join('   \u2022   ');
-    var t=document.getElementById('ticker-track');
-    if(t) t.innerHTML='<span class="ticker-item">'+esc(h)+'</span><span class="ticker-item">&nbsp;&nbsp;&bull;&nbsp;&nbsp;</span><span class="ticker-item">'+esc(h)+'</span>';
-  }
-
-  function buildHero() {
-    var hero=null;
-    for(var i=0;i<articles.length;i++){ if(articles[i].is_featured){ hero=articles[i]; break; } }
-    if(!hero) hero=articles[0];
-    var hc=document.getElementById('hero-content'); if(!hc) return;
-    hc.innerHTML='<div class="hero-hl">'+esc(hero.headline)+'</div><div class="hero-deck">'+esc(hero.deck||'')+'</div><div class="hero-foot"><span class="tag">'+esc(cap(hero.category||'News'))+'</span><span class="meta">'+timeAgo(hero.published_at)+'</span><button class="read-more">Read Full Story &rarr;</button></div>';
-    document.getElementById('hero-wrap').onclick=function(){ openArticle(hero); };
-  }
-
-  function buildCards(list) {
-    var ct=document.getElementById('news-ct'); if(ct) ct.textContent=(list.length+1)+' stories today';
-    var grid=document.getElementById('cards-grid'); if(!grid) return;
-    if(!list.length){ grid.innerHTML='<div class="empty" style="grid-column:span 3">No stories yet.</div>'; return; }
-    grid.innerHTML='';
-    list.forEach(function(a){
-      var div=document.createElement('div'); div.className='card';
-      div.innerHTML='<div class="card-cat">'+esc(cap(a.category||'News'))+'</div><div class="card-hl">'+esc(a.headline)+'</div><div class="card-deck">'+esc(a.deck||'')+'</div><div class="card-foot"><span class="card-meta">'+timeAgo(a.published_at)+'</span><span class="card-read">Read &rarr;</span></div>';
-      (function(art){ div.onclick=function(){ openArticle(art); }; })(a);
-      grid.appendChild(div);
-    });
-  }
-
-  function buildArchive(list) {
-    var ct=document.getElementById('arch-ct'); if(ct) ct.textContent=articles.length+' total';
-    var container=document.getElementById('arch-list'); if(!container) return;
-    if(!list.length){ container.innerHTML='<div class="empty">More stories arriving tomorrow.</div>'; return; }
-    container.innerHTML='';
-    list.forEach(function(a){
-      var div=document.createElement('div'); div.className='arch-row';
-      var d=new Date(a.published_at);
-      div.innerHTML='<div class="arch-date">'+d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})+'</div><div class="arch-hl">'+esc(a.headline)+'</div><div class="arch-cat">'+esc(cap(a.category||''))+'</div>';
-      (function(art){ div.onclick=function(){ openArticle(art); }; })(a);
-      container.appendChild(div);
-    });
-  }
-
-  // ── TOPICS ───────────────────────────────────────────────
-  var TOPIC_LABELS={government:'Gov Disclosure',sighting:'Sightings',science:'Science',technology:'UAP Tech',whistleblower:'Whistleblowers',global:'Global',history:'Historic Cases',contact:'Contact'};
-  function matchesTopic(a,cat){
-    if(!a.category) return false; var c=a.category.toLowerCase();
-    if(c===cat||c.indexOf(cat)!==-1) return true;
-    if(cat==='government'&&(c.indexOf('gov')!==-1||c.indexOf('pentagon')!==-1||c.indexOf('disclosure')!==-1||c.indexOf('aaro')!==-1)) return true;
-    if(cat==='sighting'&&(c.indexOf('sight')!==-1||c.indexOf('uap')!==-1||c.indexOf('ufo')!==-1)) return true;
-    if(cat==='history'&&(c.indexOf('histor')!==-1||c.indexOf('roswell')!==-1)) return true;
-    if(cat==='whistleblower'&&(c.indexOf('whistle')!==-1||c.indexOf('testim')!==-1||c.indexOf('witness')!==-1)) return true;
-    if(cat==='technology'&&(c.indexOf('tech')!==-1||c.indexOf('propul')!==-1)) return true;
-    if(cat==='global'&&(c.indexOf('global')!==-1||c.indexOf('intern')!==-1)) return true;
-    if(cat==='contact'&&(c.indexOf('contact')!==-1||c.indexOf('encounter')!==-1)) return true;
-    return false;
-  }
-  function openTopicPage(cat,label){
-    var filtered=articles.filter(function(a){ return matchesTopic(a,cat); });
-    var bc=document.getElementById('panel-bc'); if(bc) bc.textContent='UFO Finders / '+label;
-    var pb=document.getElementById('panel-body');
-    if(!filtered.length){
-      pb.innerHTML='<div class="p-cat">'+esc(label)+'</div><div class="p-hl">NO STORIES YET</div><div class="p-deck">No articles filed under this topic yet.</div><div class="empty">New stories published every morning.</div>';
-      openPanel(); document.getElementById('panel').scrollTop=0; return;
-    }
-    var first=filtered[0], rest=filtered.slice(1), restHtml='';
-    rest.forEach(function(a){ restHtml+='<div class="topic-art-row" data-id="'+a.id+'"><div class="topic-art-cat">'+esc(cap(a.category||''))+'</div><div class="topic-art-hl">'+esc(a.headline)+'</div><div class="topic-art-deck">'+esc(a.deck||'')+'</div><div class="topic-art-meta">'+timeAgo(a.published_at)+(a.word_count?' &middot; '+a.word_count+' words':'')+'</div></div>'; });
-    pb.innerHTML='<div class="p-cat">'+esc(label)+' &mdash; '+filtered.length+' ARTICLE'+(filtered.length!==1?'S':'')+' TODAY</div><div class="topic-featured" data-id="'+first.id+'"><div class="topic-feat-label">TOP STORY</div><div class="topic-feat-hl">'+esc(first.headline)+'</div><div class="topic-feat-deck">'+esc(first.deck||'')+'</div><div class="topic-feat-meta">'+timeAgo(first.published_at)+(first.word_count?' &middot; '+first.word_count+' words':'')+'</div><button class="topic-feat-btn">Read Full Story &rarr;</button></div>'+(rest.length?'<div class="topic-art-list">'+restHtml+'</div>':'');
-    pb.querySelector('.topic-featured').onclick=function(){ openArticle(first); };
-    pb.querySelectorAll('.topic-art-row').forEach(function(row){
-      var id=row.getAttribute('data-id'), art=null;
-      for(var i=0;i<articles.length;i++){ if(String(articles[i].id)===String(id)){ art=articles[i]; break; } }
-      if(art) row.onclick=function(){ openArticle(art); };
-    });
-    openPanel(); document.getElementById('panel').scrollTop=0;
-  }
-  document.querySelectorAll('.topic').forEach(function(el){
-    el.onclick=function(){ var cat=el.getAttribute('data-cat').toLowerCase(); openTopicPage(cat,TOPIC_LABELS[cat]||cap(cat)); };
-  });
-
-  // ── COPY EMAIL ───────────────────────────────────────────
-  document.getElementById('copy-email-btn').onclick=function(){
-    var btn=this, email='ufofinders.subs@gmail.com';
-    function done(){ btn.textContent='COPIED!'; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)'; setTimeout(function(){ btn.textContent='COPY EMAIL'; btn.style.background=''; btn.style.color=''; },2500); }
-    if(navigator.clipboard){ navigator.clipboard.writeText(email).then(done).catch(done); }
-    else{ var ta=document.createElement('textarea'); ta.value=email; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
-  };
-
-  // ── NEWSLETTER ───────────────────────────────────────────
-  function subscribeEmail(email,btn,resetText){
-    if(!email||email.indexOf('@')===-1||email.indexOf('.')===-1){
-      btn.textContent='ENTER VALID EMAIL'; btn.style.background='var(--amber)'; btn.style.color='var(--bg)';
-      setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },2500); return;
-    }
-    btn.textContent='SUBSCRIBING...'; btn.disabled=true;
-    fetch('https://formspree.io/f/mqeyknno',{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({email:email,_subject:'New Subscriber: '+email,message:'New signup from ufofinders.com'})})
-    .then(function(r){ btn.disabled=false; if(r.ok){ btn.textContent="YOU'RE IN!"; btn.style.background='#1a3a2a'; btn.style.color='var(--glow)'; setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; btn.style.color=''; },4000); } else { btn.textContent='TRY AGAIN'; btn.style.background='var(--red)'; setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); } })
-    .catch(function(){ btn.disabled=false; btn.textContent='TRY AGAIN'; btn.style.background='var(--red)'; setTimeout(function(){ btn.textContent=resetText; btn.style.background=''; },3000); });
-  }
-  document.getElementById('nl-btn').onclick=function(){ var email=document.getElementById('nl-email').value.trim(); document.getElementById('nl-email').value=''; subscribeEmail(email,this,'SUBSCRIBE FREE'); };
-
-  // ── PANEL ────────────────────────────────────────────────
-  function openPanel(){ document.getElementById('overlay').classList.add('on'); document.getElementById('panel').classList.add('on'); document.body.style.overflow='hidden'; }
-  function closePanel(){ document.getElementById('overlay').classList.remove('on'); document.getElementById('panel').classList.remove('on'); document.body.style.overflow=''; currentArticleId=null; }
-  document.getElementById('overlay').onclick=closePanel;
-  document.getElementById('panel-close').onclick=closePanel;
-
-  // ── OPEN ARTICLE ─────────────────────────────────────────
-  function openArticle(a){
-    currentArticleId=a.id;
-    var bc=document.getElementById('panel-bc'); if(bc) bc.textContent='UFO Finders / '+cap(a.category||'News');
-    var imageHtml='';
-    if(a.image_url) imageHtml='<img class="p-image" src="'+esc(a.image_url)+'" alt="'+esc(a.headline)+'" onerror="this.style.display=\'none\'">'+(a.image_caption?'<div class="p-image-caption">'+esc(a.image_caption)+'</div>':'');
-    var facts='';
-    if(a.key_facts&&a.key_facts.length){ facts='<div class="p-facts"><h4>Key Facts</h4><ul>'; a.key_facts.forEach(function(f){ facts+='<li>'+esc(f)+'</li>'; }); facts+='</ul></div>'; }
-    var sources='';
-    if(a.sources_used&&a.sources_used.length){ sources='<div class="p-sources"><div class="p-sources-title">Sources</div><ul>'; a.sources_used.forEach(function(s){ var isUrl=s&&(s.indexOf('http://')===0||s.indexOf('https://')===0); sources+='<li>'+(isUrl?'<a href="'+esc(s)+'" target="_blank" rel="noopener noreferrer">'+esc(s)+'</a>':esc(s))+'</li>'; }); sources+='</ul></div>'; }
-    else if(a.original_url){ sources='<div class="p-sources"><div class="p-sources-title">Sources</div><ul><li><a href="'+esc(a.original_url)+'" target="_blank" rel="noopener noreferrer">'+esc(a.original_url)+'</a></li></ul></div>'; }
-    var pb=document.getElementById('panel-body');
-    pb.innerHTML='<div class="p-cat">'+esc(cap(a.category||'News'))+'</div><div class="p-hl">'+esc(a.headline)+'</div><div class="p-deck">'+esc(a.deck||'')+'</div><div class="p-meta"><span class="p-ct">'+esc(cap(a.category||'News'))+'</span><span>'+timeAgo(a.published_at)+'</span>'+(a.word_count?'<span>'+a.word_count+' words</span>':'')+'</div>'+imageHtml+'<div class="p-body">'+buildBody(a.body)+'</div>'+facts+sources+'<div class="p-disclaimer">This article was produced with AI assistance. All claims are based on cited sources.</div><div class="comments"><div class="c-hl">Discussion</div><div class="c-policy">Comments represent the views of individual users, not UFO Finders. Keep it respectful.</div><div class="c-form"><div class="c-row"><input class="c-in" id="c-name" type="text" placeholder="Your name (or Anonymous)"><input class="c-in" id="c-loc" type="text" placeholder="Location (optional)"></div><textarea class="c-ta" id="c-text" placeholder="Share your thoughts..."></textarea><button class="c-btn" id="c-post-btn">POST COMMENT</button></div><div class="c-list" id="c-list"><div class="c-loading">Loading comments...</div></div></div>';
-    document.getElementById('c-post-btn').onclick=function(){ postComment(a.id); };
-    openPanel(); document.getElementById('panel').scrollTop=0; loadComments(a.id);
-  }
-
-  // ── COMMENTS ─────────────────────────────────────────────
-  function loadComments(articleId){
-    var list=document.getElementById('c-list'); if(!list) return;
-    supaFetch('/rest/v1/comments?article_id=eq.'+encodeURIComponent(articleId)+'&order=created_at.desc&select=*')
-    .then(function(r){ return r.json(); }).then(function(data){ if(!list||currentArticleId!==articleId) return; renderComments(Array.isArray(data)?data:[]); })
-    .catch(function(){ if(list) list.innerHTML='<div class="no-c">Comments unavailable right now.</div>'; });
-  }
-  function postComment(articleId){
-    var nameEl=document.getElementById('c-name'),locEl=document.getElementById('c-loc'),textEl=document.getElementById('c-text'),btn=document.getElementById('c-post-btn');
-    var name=(nameEl&&nameEl.value.trim())||'Anonymous',loc=locEl?locEl.value.trim():'',text=textEl?textEl.value.trim():'';
-    if(!text) return; btn.textContent='POSTING...'; btn.disabled=true;
-    supaFetch('/rest/v1/comments',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+SUPA_KEY,'Content-Type':'application/json','Prefer':'return=representation'},body:JSON.stringify({article_id:articleId,author_name:name,author_location:loc,body:text})})
-    .then(function(r){ btn.disabled=false; btn.textContent='POST COMMENT'; if(r.ok||r.status===201){ if(textEl)textEl.value=''; loadComments(articleId); } else{ btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); } })
-    .catch(function(){ btn.disabled=false; btn.textContent='ERROR — TRY AGAIN'; setTimeout(function(){ btn.textContent='POST COMMENT'; },2500); });
-  }
-  function renderComments(data){
-    var list=document.getElementById('c-list'); if(!list) return;
-    if(!data.length){ list.innerHTML='<div class="no-c">No comments yet — be the first</div>'; return; }
-    list.innerHTML='';
-    data.forEach(function(c){
-      var div=document.createElement('div'); div.className='comment';
-      var d=new Date(c.created_at);
-      var ds=d.toLocaleDateString('en-US',{month:'short',day:'numeric'})+' at '+d.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
-      div.innerHTML='<div class="c-head"><span class="c-author">'+esc(c.author_name)+(c.author_location?' &middot; '+esc(c.author_location):'')+'</span><span class="c-time">'+ds+'</span></div><div class="c-text">'+esc(c.body)+'</div>';
-      list.appendChild(div);
-    });
-  }
-
-  // ── NEWSLETTER PANEL ─────────────────────────────────────
-  function openNLPanel(){
-    var bc=document.getElementById('panel-bc'); if(bc) bc.textContent='UFO Finders / Newsletter';
-    var pb=document.getElementById('panel-body');
-    pb.innerHTML='<div class="p-cat">Free Daily Briefing</div><div class="p-hl">JOIN THE FINDERS</div><div class="p-deck">Every day our team delivers the most important UFO and UAP developments straight to your inbox. Free forever.</div><div class="nl-form" style="margin-top:1rem;max-width:100%"><input type="email" class="nl-in" id="nl-panel-email" placeholder="your@email.com" style="flex:1"><button class="nl-btn" id="nl-panel-btn">JOIN FREE</button></div>';
-    openPanel();
-    setTimeout(function(){ var b=document.getElementById('nl-panel-btn'); if(b) b.onclick=function(){ var e=document.getElementById('nl-panel-email').value.trim(); document.getElementById('nl-panel-email').value=''; subscribeEmail(e,b,'JOIN FREE'); }; },100);
-  }
-  document.getElementById('nl-open-btn').onclick=openNLPanel;
-  document.getElementById('nl-open-btn2').onclick=function(e){ e.preventDefault(); openNLPanel(); };
-
-  function showEmpty(msg){
-    var hc=document.getElementById('hero-content'); if(hc) hc.innerHTML='<div style="padding:1rem;color:var(--mid);font-size:0.9rem">'+msg+'</div>';
-    var grid=document.getElementById('cards-grid'); if(grid) grid.innerHTML='<div class="empty" style="grid-column:span 3">'+msg+'</div>';
+  function showEmpty(msg) {
+    var hc=document.getElementById('hero-content');
+    if(hc) hc.innerHTML='<div style="padding:1rem;color:var(--mid);font-size:0.9rem">'+msg+'</div>';
+    var grid=document.getElementById('cards-grid');
+    if(grid) grid.innerHTML='<div class="empty" style="grid-column:span 3">'+msg+'</div>';
   }
 
   // ── INIT ─────────────────────────────────────────────────
   loadArticles();
-  loadGlobeSightings();
-  initGlobe();
+  loadGlobe();
 
 })();
 </script>
