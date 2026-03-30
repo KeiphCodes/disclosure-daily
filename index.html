@@ -508,7 +508,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
   var globeSightings = [];
   var globeCanvas, globeCtx, globeW, globeH;
   var rotX = 0.3, rotY = 0;
-  var isDragging = false, lastX, lastY;
+  var isDragging = false, lastX, lastY, dragMoved = false;
   var autoSpin = true;
   var animFrame;
   var hoveredDot = null;
@@ -535,6 +535,31 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     return { x: x1, y: y2, z: z2 };
   }
 
+  function openSightingPanel(s) {
+    var bc = document.getElementById('panel-bc');
+    if (bc) bc.textContent = 'UFO Finders / Sighting Report';
+    var dotLabel = s.dot_color === 'orange' ? 'CREDIBLE CASE' :
+                   s.dot_color === 'green'  ? 'RECENT SIGHTING' : 'REPORTED SIGHTING';
+    var dotColor = s.dot_color === 'orange' ? 'var(--amber)' :
+                   s.dot_color === 'green'  ? 'var(--glow)' : 'var(--red)';
+    var location = [s.city, s.state, s.country].filter(Boolean).join(', ');
+    var shape = s.shape ? s.shape.charAt(0).toUpperCase() + s.shape.slice(1) : 'Unknown';
+    var pb = document.getElementById('panel-body');
+    pb.innerHTML =
+      '<div class="p-cat" style="color:'+dotColor+'">'+dotLabel+'</div>'+
+      '<div class="p-hl">'+esc(s.title||'UFO Sighting')+'</div>'+
+      '<div class="p-meta">'+
+        (s.sighted_date ? '<span>📅 '+s.sighted_date+'</span>' : '')+
+        (location ? '<span>📍 '+esc(location)+'</span>' : '')+
+        (shape ? '<span>Shape: '+esc(shape)+'</span>' : '')+
+      '</div>'+
+      '<div class="p-deck">'+esc(s.description||'No description available.')+'</div>'+
+      (s.source ? '<div class="p-sources"><div class="p-sources-title">Source</div><ul><li>'+(s.source_url?'<a href="'+esc(s.source_url)+'" target="_blank" rel="noopener">'+esc(s.source)+'</a>':esc(s.source))+'</li></ul></div>' : '')+
+      '<div class="p-disclaimer">Sighting data sourced from NUFORC and credible media reports. UFO Finders makes no claims beyond what cited sources support.</div>';
+    openPanel();
+    document.getElementById('panel').scrollTop = 0;
+  }
+
   function initGlobe() {
     globeCanvas = document.getElementById('globe-canvas');
     globeCtx = globeCanvas.getContext('2d');
@@ -543,11 +568,12 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
     // Mouse events
     globeCanvas.addEventListener('mousedown', function(e) {
-      isDragging = true; autoSpin = false;
+      isDragging = true; dragMoved = false; autoSpin = false;
       lastX = e.clientX; lastY = e.clientY;
     });
     window.addEventListener('mousemove', function(e) {
       if (isDragging) {
+        dragMoved = true;
         rotY += (e.clientX - lastX) * 0.005;
         rotX += (e.clientY - lastY) * 0.005;
         rotX = Math.max(-1.4, Math.min(1.4, rotX));
@@ -571,10 +597,11 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     }, {passive:true});
     globeCanvas.addEventListener('touchend', function() { isDragging = false; });
 
-    // Click to open detail
+    // Click to open sighting detail panel
     globeCanvas.addEventListener('click', function(e) {
+      if (dragMoved) return;
       var dot = getDotAt(e.clientX, e.clientY);
-      if (dot && dot.source_url) window.open(dot.source_url, '_blank');
+      if (dot) openSightingPanel(dot);
     });
 
     drawGlobe();
