@@ -112,9 +112,13 @@ async function runDailyPipeline() {
     const rawNews = await searchForNews();
 
     // 5. Curate and rank the stories
+    // Fetch recent headlines to avoid repeats
+    const recentHeadlines = await getRecentHeadlines();
+    console.log(`  Loaded ${recentHeadlines.length} recent headlines for dedup check`);
+
     console.log("\n[5/8] Curating and ranking stories...");
     await sleep(15000);
-    const curatedStories = await curateStories(rawNews);
+    const curatedStories = await curateStories(rawNews, recentHeadlines);
 
     // 6. Write full articles
     console.log("\n[6/8] Writing articles...");
@@ -501,7 +505,7 @@ Return ONLY valid JSON, nothing else.`,
 // STEP 4: CURATE STORIES
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-async function curateStories(rawNews) {
+async function curateStories(rawNews, recentHeadlines = []) {
   if (rawNews.length === 0) {
     console.log("  ⚠️  No raw news found — using fallback sources");
     return await getFallbackStories();
@@ -518,16 +522,19 @@ async function curateStories(rawNews) {
           role: "user",
           content: `As editor of Disclosure Daily, select and rank the best ${CONFIG.storiesPerDay} stories for today's edition.
 
-Here are the raw stories found:
+ALREADY PUBLISHED (do NOT cover these topics/events again — skip anything about the same underlying story):
+${recentHeadlines.slice(0, 40).map(h => `- ${h.headline}`).join("\n")}
+
+Here are today's raw stories found:
 ${JSON.stringify(rawNews, null, 2)}
 
-Criteria:
-- Newsworthiness and significance to UAP/disclosure community
-- Source credibility
-- Variety (mix government, science, sightings, international)
-- Avoid duplicates or very similar stories
+STRICT RULES:
+1. If a story covers an event or topic already in the published list above — SKIP IT completely.
+2. Only include stories about genuinely NEW events, NEW disclosures, NEW sightings, or NEW developments not yet covered.
+3. If there are fewer than ${CONFIG.storiesPerDay} truly new stories, return only what is genuinely new — do NOT pad with recycled content.
+4. Prefer stories from the last 48 hours. Reject anything older than 7 days unless it is major breaking news.
 
-Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
+Return a JSON array of up to ${CONFIG.storiesPerDay} curated stories (can be fewer if not enough new content):
 [
   {
     "title": string,
@@ -538,7 +545,7 @@ Return a JSON array of exactly ${CONFIG.storiesPerDay} curated stories:
     "category": "government|science|sighting|testimony|international|investigation",
     "isFeatured": boolean (true for #1 story only),
     "isBreaking": boolean,
-    "editorialNote": "Why this story matters"
+    "editorialNote": "Why this story matters and why it has NOT been covered before"
   }
 ]
 
