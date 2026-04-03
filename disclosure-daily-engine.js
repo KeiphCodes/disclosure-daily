@@ -463,6 +463,21 @@ Prioritise sightings with real photos or video. Return ONLY valid JSON.`,
 // STEP 3: SEARCH FOR NEWS
 // ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+async function getRecentHeadlines() {
+  try {
+    const { data, error } = await supabase
+      .from("articles")
+      .select("headline, original_url, published_at")
+      .order("published_at", { ascending: false })
+      .limit(60);
+    if (error || !data) return [];
+    return data;
+  } catch (err) {
+    console.log("  ⚠️  Could not fetch recent headlines:", err.message);
+    return [];
+  }
+}
+
 async function searchForNews() {
   const todaysTopics = SEARCH_TOPICS.sort(() => Math.random() - 0.5).slice(0, 3);
   const allResults = [];
