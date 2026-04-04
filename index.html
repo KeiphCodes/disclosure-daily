@@ -296,7 +296,7 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 @media(max-width:860px){.globe-wrap{height:380px}}
 @media(max-width:480px){.globe-wrap{height:300px}}
 </style>
-  <script src="https://unpkg.com/globe.gl@2.45.0/dist/globe.gl.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/globe.gl@2.45.0/dist/globe.gl.min.js"></script>
 </head>
 <body>
 
@@ -957,8 +957,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
     globeInstance = Globe()
       .width(w)
       .height(h)
-      .globeImageUrl('https://unpkg.com/three-globe/example/img/earth-night.jpg')
-      .backgroundImageUrl('https://unpkg.com/three-globe/example/img/night-sky.png')
+      .globeImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/earth-night.jpg')
+      .backgroundImageUrl('https://cdn.jsdelivr.net/npm/three-globe/example/img/night-sky.png')
       .pointsData(sightings)
       .pointLat(function(d){ return d.lat; })
       .pointLng(function(d){ return d.lng; })
@@ -1016,7 +1016,8 @@ footer{border-top:1px solid var(--border);padding:1.5rem 1rem 1rem;background:va
 
   // ── INIT ─────────────────────────────────────────────────
   loadArticles();
-  loadGlobe();
+  // Load globe after short delay so articles always render first
+  setTimeout(loadGlobe, 500);
 
 })();
 </script>
