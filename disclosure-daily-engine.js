@@ -45,7 +45,7 @@ async function withRetry(fn, retries = 5, baseDelay = 10000) {
 // ─── CONFIG ──────────────────────────────────────────────────────────────────
 const CONFIG = {
   model: "claude-haiku-4-5",
-  storiesPerDay: 3,
+  storiesPerDay: 1,
   featuredCount: 1,
   deepDiveWeekly: true,
   timezone: "America/New_York",
@@ -88,7 +88,7 @@ async function runDailyPipeline() {
     try {
       console.log("\n[1/8] Scraping NUFORC recent sightings for map...");
       await scrapeNUFORCForMap();
-      await sleep(15000);
+      await sleep(8000);
     } catch (err) {
       console.log("  ⚠️  NUFORC map scrape skipped:", err.message);
     }
@@ -96,13 +96,13 @@ async function runDailyPipeline() {
     // 2. Generate today's conspiracy deep-dive (never repeats)
     console.log("\n[2/8] Generating daily conspiracy...");
     await generateDailyConspiracy();
-    await sleep(15000);
+    await sleep(8000);
 
     // 3. Find today's best credible sighting
     try {
       console.log("\n[3/8] Finding today's best sighting...");
       await findAndSaveSightings();
-      await sleep(15000);
+      await sleep(8000);
     } catch (err) {
       console.log("  ⚠️  Sighting step skipped — continuing pipeline.");
     }
@@ -117,12 +117,12 @@ async function runDailyPipeline() {
     console.log(`  Loaded ${recentHeadlines.length} recent headlines for dedup check`);
 
     console.log("\n[5/8] Curating and ranking stories...");
-    await sleep(15000);
+    await sleep(8000);
     const curatedStories = await curateStories(rawNews, recentHeadlines);
 
     // 6. Write full articles
     console.log("\n[6/8] Writing articles...");
-    await sleep(15000);
+    await sleep(8000);
     const articles = await writeArticles(curatedStories);
 
     // 6b. Friday deep dive
@@ -140,7 +140,7 @@ async function runDailyPipeline() {
     // 8. Newsletter + social
     console.log("\n[8/8] Building newsletter and posting to social...");
     await sleep(12000);
-    await buildNewsletter(articles);
+    // Newsletter disabled for now
     await postToSocial(articles);
 
     console.log(`\n✅ Pipeline complete. ${saved} articles published.`);
@@ -591,7 +591,7 @@ async function writeArticles(curatedStories) {
 
   for (const story of curatedStories) {
     console.log(`  ✍️  Writing: "${story.title?.slice(0, 50)}..."`);
-    await sleep(20000);
+    await sleep(8000);
 
     const response = await withRetry(() =>
       anthropic.messages.create({
